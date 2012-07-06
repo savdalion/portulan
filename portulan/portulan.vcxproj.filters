@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Файлы исходного кода">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Заголовочные файлы">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Заголовочные файлы\command">
+      <UniqueIdentifier>{65ee33ee-aa12-4583-8ef3-0c45d233f188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\command\common">
+      <UniqueIdentifier>{5559dd10-69b5-409e-becd-79c39537ff71}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\configure.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Portulan3D.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\command\common\common.h">
+      <Filter>Заголовочные файлы\command\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\command.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Portulan3D.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="README.markdown">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="include\command\common\common.inl">
+      <Filter>Заголовочные файлы\command\common</Filter>
+    </None>
+  </ItemGroup>
+</Project>
