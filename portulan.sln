@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "typelib", "..\typelib\typelib.vcxproj", "{41DEF228-0340-4356-99FE-FC473A36B1DE}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portulan-visualtest", "portulan-visualtest\portulan-visualtest.vcxproj", "{5EB36EC3-7E9D-4E74-AC5E-0E692690BCE4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{41DEF228-0340-4356-99FE-FC473A36B1DE} = {41DEF228-0340-4356-99FE-FC473A36B1DE}
@@ -20,16 +18,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portulan", "portulan\portul
 		{584C9643-4035-44CA-BE52-337B63E02DD8} = {584C9643-4035-44CA-BE52-337B63E02DD8}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "typelib", "..\typelib\typelib\typelib.vcxproj", "{41DEF228-0340-4356-99FE-FC473A36B1DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Debug|Win32.Build.0 = Debug|Win32
-		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Release|Win32.ActiveCfg = Release|Win32
-		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Release|Win32.Build.0 = Release|Win32
 		{5EB36EC3-7E9D-4E74-AC5E-0E692690BCE4}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5EB36EC3-7E9D-4E74-AC5E-0E692690BCE4}.Debug|Win32.Build.0 = Debug|Win32
 		{5EB36EC3-7E9D-4E74-AC5E-0E692690BCE4}.Release|Win32.ActiveCfg = Release|Win32
@@ -42,6 +38,10 @@ Global
 		{3421E387-6F9F-4E23-91FC-50DF404B12FA}.Debug|Win32.Build.0 = Debug|Win32
 		{3421E387-6F9F-4E23-91FC-50DF404B12FA}.Release|Win32.ActiveCfg = Release|Win32
 		{3421E387-6F9F-4E23-91FC-50DF404B12FA}.Release|Win32.Build.0 = Release|Win32
+		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Debug|Win32.Build.0 = Debug|Win32
+		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Release|Win32.ActiveCfg = Release|Win32
+		{41DEF228-0340-4356-99FE-FC473A36B1DE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

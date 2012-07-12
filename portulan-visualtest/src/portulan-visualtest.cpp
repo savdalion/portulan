@@ -3,7 +3,7 @@
 #include <portulan/include/Portulan3D.h>
 #include <portulan/include/io/VolumeVTKVisual.h>
 #include <portulan/include/command.h>
-#include <json.h>
+#include <typelib/include/json.h>
 
 
 

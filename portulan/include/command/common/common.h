@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../../Portulan3D.h"
-#include <Sign.h>
 #include <silhouette/include/shape/ElevationMap.h>
 #include <silhouette/include/Shaper.h>
-#include <mapcontent3d/BitMap.h>
-#include <mapcontent3d/InverseFilterMap.h>
-#include <coord.h>
-#include <size.h>
+#include <typelib/include/Sign.h>
+#include <typelib/include/mapcontent3d/BitMap.h>
+#include <typelib/include/mapcontent3d/InverseFilterMap.h>
+#include <typelib/include/coord.h>
+#include <typelib/include/size.h>
 
 
 namespace portulan {

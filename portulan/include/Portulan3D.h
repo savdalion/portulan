@@ -1,7 +1,7 @@
 #pragma once
 
 #include "command.h"
-#include <mapcontent3d/SignBitMap.h>
+#include <typelib/include/mapcontent3d/SignBitMap.h>
 //#include <mapcontent3d/SignNumberMap.h>
 #include <memory>
 
