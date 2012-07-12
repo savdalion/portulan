@@ -2,6 +2,20 @@
 
 #include "../../Portulan3D.h"
 #include <Sign.h>
+#include <silhouette/include/shape/ElevationMap.h>
+#include <silhouette/include/Shaper.h>
+#include <mapcontent3d/BitMap.h>
+#include <mapcontent3d/InverseFilterMap.h>
+#include <coord.h>
+#include <size.h>
+
+
+namespace portulan {
+
+template< size_t SX, size_t SY, size_t SZ, typename Number >
+class Portulan3D;
+
+}
 
 
 
@@ -12,21 +26,23 @@ namespace portulan {
     namespace command {
 
 
-template< typename T >
+#if 0
+// - Заменено на более простые методы. См. ниже.
+template< size_t SX, size_t SY, size_t SZ, typename Number >
 struct cmd {
     /**
     * Этот функтор используется классом Portulan3D для своей трансформации.
     * Внтури метода у нас есть доступ к свойствам Portulan3D, а каждая команда
     * несёт с собой данные и алгоритм для изменения портулана.
     */
-    virtual void operator()( T& ) const = 0;
+    virtual void operator()( typename Portulan3D< SX, SY, SZ, Number >& ) const = 0;
 };
 
 
 
 
-template< typename T >
-struct elevationMap : public cmd< T > {
+template< size_t SX, size_t SY, size_t SZ, typename Number >
+struct elevationMap : public cmd< SX, SY, SZ, Number > {
     /**
     * Метка элемента.
     */
@@ -60,21 +76,51 @@ struct elevationMap : public cmd< T > {
 
 
 
-    virtual void operator()( T& ) const;
+    virtual void operator()( typename Portulan3D< SX, SY, SZ, Number >& ) const;
 
 };
 
+#endif
 
 
 
 
-/*
-template< size_t SX, size_t SY, size_t SZ, typename Number >
-boost::function< void ( typename Portulan3D< SX, SY, SZ, Number >& ) >
-elevationMap = operator( typename Portulan3D< SX, SY, SZ, Number >& ) -> const {
 
-};
+/**
+* Карта высот создаётся в битовом объёме согласно указанному файлу-источнику.
 */
+template< size_t SX, size_t SY, size_t SZ, typename Number >
+void elevationMap(
+    typename Portulan3D< SX, SY, SZ, Number >& map,
+    const std::string& sign,
+    const std::string& source,
+    double scaleXY,
+    double hMin,
+    double hMax,
+    const typelib::coordInt_t& shiftArea = typelib::coordInt_t::UNDEFINED(),
+    const typelib::psizeInt_t& sizeArea = typelib::psizeInt_t::ONE()
+);
+
+
+
+
+
+
+/**
+* Затапливает территорию (битовый объём), заданную битовым файлом (0 - нет
+* значения, >0 - заполнить), указанным веществом (задаётся меткой).
+* Заданная файлом битовая маска растягивается на всю поверхность SX, SY.
+* Высота затопления определяется 
+*/
+template< size_t SX, size_t SY, size_t SZ, typename Number >
+void flood(
+    typename Portulan3D< SX, SY, SZ, Number >& map,
+    const std::string& sign,
+    const std::string& source,
+    size_t gridHMin,
+    size_t gridHMax
+);
+
 
 
 

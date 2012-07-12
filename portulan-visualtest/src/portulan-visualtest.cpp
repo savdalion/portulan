@@ -1,7 +1,9 @@
 #include "../include/StdAfx.h"
 #include "../include/configure.h"
-#include <Portulan3D.h>
-#include <command.h>
+#include <portulan/include/Portulan3D.h>
+#include <portulan/include/io/VolumeVTKVisual.h>
+#include <portulan/include/command.h>
+#include <json.h>
 
 
 
@@ -37,32 +39,48 @@ int main( int argc, char** argv ) {
 
 
 
-    // Соберём карту из готовой карты высот
+    // Соберём карту из карты высот
     const size_t GRID = 81;
     typedef Portulan3D< GRID, GRID, GRID, float >  city_t;
     city_t city;
 
     // холм из каменной соли
-    const std::string elevationFile = PATH_MEDIA + "a/center-hill-elevation-map.png";
+    const std::string elevationFile = PATH_MEDIA + "a/center-plato-elevation-map.png";
+    //const std::string elevationFile = PATH_MEDIA + "a/minimax-elevation-map.png";
+    // размеры задаются в км
     // картинка "a/center-hill-elevation-map.png" протяжённостью
-    // 400 пкс (размер изображения) или ~30 км (размер создаваемой карты)
-    const double scaleXY = 30.0 / 400.0;
-    // т.к. высота много меньше размера поверхности, вводим "коэффициент для
-    // наглядности"; чтобы увидеть реальный масштаб, пишем "clearness = 1".
-    // (!) Сейчас не отрабатывается момент, когда размер по Z превышает размеры XY.
-    const double clearness = 5;
-    const double hMin = -10.0 * clearness;
-    const double hMax = 20.0 * clearness;
-    city << co::elevationMap< city_t >( "NaCl", elevationFile, scaleXY, hMin, hMax );
+    // = 100 м (размер изображения = 400 пкс)
+    // квадратная картинка
+    const size_t sizeImage = 400;
+    const double scaleXY = 0.100 / static_cast< double>( sizeImage );
+    // высота холма = 50 м
+    const double hMin = -0.010;
+    const double hMax =  0.040;
+    const double h = hMax - hMin;
+    /* - Работаем проще. См. ниже.
+    city << co::elevationMap< GRID, GRID, GRID, float >( "NaCl", elevationFile, scaleXY, hMin, hMax );
+    */
+    co::elevationMap( city, "NaCl", elevationFile, scaleXY, hMin, hMax );
 
     // заливаем водой места, которые задаёт маска
     const std::string waterFile = PATH_MEDIA + "a/water1-mask-map.png";
-    const double depth = 10.0 * clearness;
-    //city << co::flood( "H2O", waterFile, depth );
+    const size_t gridHMin = static_cast< size_t >( hMin * h * scaleXY * static_cast< double >( GRID ) );
+    const size_t gridHMax = static_cast< size_t >( hMax * h * scaleXY * static_cast< double >( GRID ) );
+    co::flood( city, "H2O", waterFile, gridHMin, gridHMax );
 
 
     // показываем результат
-    // @todo ...
+    io::VolumeVTKVisual::option_t o;
+    o[ "size-window" ] = 700;
+    o[ "size-point" ] = 1;
+    o[ "show-corner" ] = true;
+    o[ "show-axes" ] = false;
+    auto color = typelib::json::Variant( "{ 'NaCl': 'FFFFFFFF',  'H2O': '0000FFFF' }" );
+    o[ "rgba" ] = color;
+
+    io::VolumeVTKVisual visual( o );
+    visual << city;
+    visual.wait();
 
 
 
@@ -70,7 +88,7 @@ int main( int argc, char** argv ) {
     EZLOGGERVLSTREAM( axter::log_always ) << "Portulan -> END" << std::endl;
 
     std::cout << std::endl << "^" << std::endl;
-    std::cin.ignore();
+    //std::cin.ignore();
 
     return 0;
 

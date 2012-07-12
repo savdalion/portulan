@@ -19,6 +19,9 @@
     <Filter Include="Заголовочные файлы\command\common">
       <UniqueIdentifier>{5559dd10-69b5-409e-becd-79c39537ff71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\io">
+      <UniqueIdentifier>{8abf5970-9c5a-4045-928b-44fa14262435}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\configure.h">
@@ -33,6 +36,9 @@
     <ClInclude Include="include\command.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\io\VolumeVTKVisual.h">
+      <Filter>Заголовочные файлы\io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Portulan3D.inl">
@@ -43,6 +49,9 @@
     </None>
     <None Include="include\command\common\common.inl">
       <Filter>Заголовочные файлы\command\common</Filter>
+    </None>
+    <None Include="include\io\VolumeVTKVisual.inl">
+      <Filter>Заголовочные файлы\io</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "command.h"
-#include <SignBitMapContent3D.h>
-#include <SignNumberMapContent3D.h>
+#include <mapcontent3d/SignBitMap.h>
+//#include <mapcontent3d/SignNumberMap.h>
 #include <memory>
 
 
@@ -11,11 +11,6 @@ namespace portulan {
 
 template< size_t SX, size_t SY, size_t SZ, typename Number = float >
 class Portulan;
-
-/* - @todo ...
-template<>
-typedef std::shared_ptr< Portulan<> >  PortulanPtr;
-*/
 
 }
 
@@ -39,30 +34,40 @@ namespace portulan {
 * процессорах (OpenCL, Cuda).
 *
 * Соглашения
-*   # Портулан (карта) разбит(а) на равные ячейки.
+*   # Портулан (карта) разбит(а) на равные и равносторонние ячейки.
 *   # Карта хранит информацию в виде элементов, заполняющих ячейки.
 *   # Элементы представляют собой "блоки из вещества" (воздух, горные
 *     породы, чистые хим. элементы и т.п.).
 *   # Элементы позиционируются по целым ячейкам.
-*   # Если не указано обратного (см. "plenum"), элемент заполняет собой
-*     всю ячейку.
+*   # Если не указано обратного (см. св-во "plenum"), элемент заполняет
+*     собой всю ячейку.
 *
 * 
 * @template Number В каком формате будут задаваться числа. Рекомендации:
-*             - "float" - для эффективных рассчётов
+*             - "float" - для быстрых расчётов
 *             - "char" - для оптимального хранения
 */
 template< size_t SX, size_t SY, size_t SZ, typename Number >
 class Portulan3D {
 public:
     /**
+    * Ссылки.
+    */
+    typedef std::shared_ptr< Portulan3D >  Ptr;
+    typedef std::unique_ptr< Portulan3D >  UPtr;
+
+
+public:
+    /**
     * Слои 3D-наборов.
     */
-    typedef typelib::SignBitMapContent3D< SX, SY, SZ >  bitLayer_t;
+    typedef typelib::SignBitMap< SX, SY, SZ >  bitLayer_t;
     typedef std::shared_ptr< bitLayer_t >  bitLayerPtr_t;
 
+    /* - @todo ...
     typedef typelib::SignNumberMapContent3D< Number, SX, SY, SZ >  numberLayer_t;
     typedef std::shared_ptr< numberLayer_t >  numberLayerPtr_t;
+    */
 
 
     /**
@@ -93,7 +98,7 @@ public:
         * Дисперсность / пористость.
         *   # Частицы считаются сферами.
         *   # Дисперсность = 1 / диаметр частицы.
-        *//* - @todo ...
+        *//* - @todo ... Понятней будет включать "диаметр частицы".
         */
 
     };
@@ -125,9 +130,9 @@ public:
 
 
 
-
-    template< typename T >
-    Portulan3D& operator<<( const command::cmd< T >& );
+    /* - Заменено на простые методы - см. portulan::command.
+    Portulan3D& operator<<( const command::cmd< SX, SY, SZ, Number >& );
+    */
 
 
 

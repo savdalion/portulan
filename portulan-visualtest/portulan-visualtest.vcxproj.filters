@@ -30,9 +30,4 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="V:\bin\debug-portulan\portulan-visualtest.exe_debuglog.txt">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
-  </ItemGroup>
 </Project>
