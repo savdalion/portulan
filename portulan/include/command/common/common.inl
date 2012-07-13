@@ -40,9 +40,9 @@ inline void elevationMap< SX, SY, SZ, Number >::operator()(
 
 
 
-template< size_t SX, size_t SY, size_t SZ, typename Number >
+template< size_t SX, size_t SY, size_t SZ >
 inline void elevationMap(
-    typename Portulan3D< SX, SY, SZ, Number >& map, 
+    typename Portulan3D< SX, SY, SZ >& map,
     const std::string& sign,
     const std::string& source,
     double scaleXY,
@@ -58,7 +58,7 @@ inline void elevationMap(
     auto& topology = map.topology();
     const auto bm = shaper.draw();
     const auto sl = typelib::SignBitMap< SX, SY, SZ >::signLayerRaw_t( sign, bm.raw );
-    topology.present = sl;
+    topology.presence = sl;
 }
 
 
@@ -66,9 +66,9 @@ inline void elevationMap(
 
 
 
-template< size_t SX, size_t SY, size_t SZ, typename Number >
-void flood(
-    typename Portulan3D< SX, SY, SZ, Number >& map,
+template< size_t SX, size_t SY, size_t SZ >
+inline void flood(
+    typename Portulan3D< SX, SY, SZ >& map,
     const std::string& sign,
     const std::string& source,
     size_t gridHMin,
@@ -82,7 +82,7 @@ void flood(
     // других веществ.
 
     auto& topology = map.topology();
-    const auto pm = topology.present.presence();
+    const auto pm = topology.presence.presence();
     if ( pm.full() ) {
         // объём полностью заполнен? нечего затапливать и нет смысла смотреть дальше.
         return;
@@ -101,7 +101,7 @@ void flood(
     do {
         // проверяем, что эту ячейку нас попросили заполнить
         const typelib::coordInt_t c =
-            Portulan3D< SX, SY, SZ, Number >::bitLayer_t::ci( i );
+            Portulan3D< SX, SY, SZ, Number >::signBitLayer_t::ci( i );
 
         // проверка по координатам
         if ( typelib::between( c.z, gridHMin, gridHMax ) ) {
@@ -115,11 +115,37 @@ void flood(
     } while (i != 0);
 
     const auto sl = typelib::SignBitMap< SX, SY, SZ >::signLayerRaw_t( sign, r.raw );
-    topology.present = sl;
+    topology.presence = sl;
 
 #endif
 }
 
+
+
+
+
+
+template< size_t SX, size_t SY, size_t SZ >
+inline void temperature(
+    typename Portulan3D< SX, SY, SZ >& map,
+    const fnTemperature_t& fn
+) {
+    typedef Portulan3D< SX, SY, SZ >::numberLayer_t  nl_t;
+
+    auto& topology = map.topology();
+
+    topology.temperature = 0.0f;
+
+    for (int z = nl_t::minCoord().z; z <= nl_t::maxCoord().z; ++z) {
+        for (int y = nl_t::minCoord().y; y <= nl_t::maxCoord().y; ++y) {
+            for (int x = nl_t::minCoord().x; x <= nl_t::maxCoord().x; ++x) {
+                const typelib::coordInt_t c( x, y, z );
+                const float t = fn( c );
+                topology.temperature.set( c, t );
+            }
+        }
+    }
+}
 
 
 

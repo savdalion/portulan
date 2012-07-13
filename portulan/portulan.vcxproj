@@ -83,6 +83,7 @@
     <ClInclude Include="include\command.h" />
     <ClInclude Include="include\command\common\common.h" />
     <ClInclude Include="include\configure.h" />
+    <ClInclude Include="include\Booster.h" />
     <ClInclude Include="include\io\VolumeVTKVisual.h" />
     <ClInclude Include="include\Portulan3D.h" />
   </ItemGroup>

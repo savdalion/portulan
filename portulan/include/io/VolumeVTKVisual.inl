@@ -3,16 +3,16 @@ namespace portulan {
 
         
 inline VolumeVTKVisual::VolumeVTKVisual(
-    const io::VolumeVTKVisual::option_t& json
+    const option_t& json
 ) :
-    option( json ),
+    mOption( json ),
     renderer( vtkSmartPointer< vtkRenderer >::New() ),
     renderWindow( vtkSmartPointer< vtkRenderWindow >::New() ),
     hasAxes( false )
 {
     renderWindow->AddRenderer( renderer );
 
-    const size_t sizeWindow = option[ "size-window" ];
+    const size_t sizeWindow = mOption[ "size-window" ];
     renderWindow->SetSize( sizeWindow, sizeWindow );
 
     // Настраиваем камеру
@@ -48,18 +48,16 @@ inline VolumeVTKVisual::~VolumeVTKVisual() {
 
 
 
-template< size_t SX, size_t SY, size_t SZ, typename Number >
+template< size_t SX, size_t SY, size_t SZ >
 inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
-    const typename Portulan3D< SX, SY, SZ, Number >&  portulan
+    const typename Portulan3D< SX, SY, SZ >&  portulan
 ) {
     const auto& topology = portulan.topology();
-    const auto& tp = topology.present;
+    const auto& tp = topology.presence;
     if ( tp.empty() ) {
         // не рисуем ни точек, ни осей - абс. пустота
         return *this;
     }
-
-    typedef typelib::BitMap< SX, SY, SZ >  bm_t;
 
     // Переводим полученную карту в формат VTK
     // @todo optimize http://vtk.1045678.n5.nabble.com/Filling-vtkPoints-and-vtkCellArray-fast-td1243607.html
@@ -69,15 +67,163 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
         (typelib::coord_t( SX, SY, SZ ) - 1.0f) / 2.0f;
     const typelib::coord_t shiftCenter = typelib::coord_t::ZERO();
 
-    auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
-
 
     // собираем облако
     // портулан - это набор биткарт, которые надо раскрасить своими цветами
 
+    // смотрим, что нужно показать
+    const std::string only = mOption[ "only" ];
+
     // проходим по всем меткам, собираем точки в объёме
-    for (auto itr = tp.raw().cbegin(); itr != tp.raw().cend(); ++itr) {
+    const bool showAllTopology = only.empty();
+    if ( showAllTopology ) {
+        drawTopologyPresence< SX, SY, SZ >( tp, shiftCenter );
+    }
+
+    // собираем карту температур
+    const bool showTopologyTemperature = (only == ".temperature");
+    if ( showTopologyTemperature ) {
+        drawTopologyTemperature< SX, SY, SZ >( topology.temperature, shiftCenter );
+    }
+
+
+    // Отмечаем границы холста
+    const bool showCorner = mOption[ "show-corner" ];
+    if ( showCorner ) {
+        auto cornerPoints = vtkSmartPointer< vtkPoints >::New();
+        auto cornerVertices = vtkSmartPointer< vtkCellArray >::New();
+        const size_t NP = 1 + 8;
+        const float p[ NP ][ 3 ] = {
+            {  0.0f,     0.0f,     0.0f     },
+            {  halfN.x,  halfN.y,  halfN.z },
+            {  halfN.x,  halfN.y, -halfN.z },
+            {  halfN.x, -halfN.y,  halfN.z },
+            {  halfN.x, -halfN.y, -halfN.z },
+            { -halfN.x,  halfN.y,  halfN.z },
+            { -halfN.x,  halfN.y, -halfN.z },
+            { -halfN.x, -halfN.y,  halfN.z },
+            { -halfN.x, -halfN.y, -halfN.z }
+        };
+        vtkIdType pid[ NP ];
+        for (size_t i = 0; i < NP; ++i) {
+            pid[ i ] = cornerPoints->InsertNextPoint( p[i] );
+        }
+        cornerVertices->InsertNextCell( NP, pid );
+
+        auto cornerPolydata = vtkSmartPointer< vtkPolyData >::New();
+        cornerPolydata->SetPoints( cornerPoints );
+        cornerPolydata->SetVerts( cornerVertices );
+ 
+        auto cornerMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
+#if VTK_MAJOR_VERSION <= 5
+        cornerMapper->SetInput( cornerPolydata );
+#else
+        cornerMapper->SetInputData( cornerPolydata );
+#endif
+        auto cornerActor = vtkSmartPointer< vtkActor >::New();
+        cornerActor->SetMapper( cornerMapper );
+        cornerActor->GetProperty()->SetPointSize( 3.0f );
+        cornerActor->GetProperty()->SetColor( 1.0, 0.0, 0.0 );
+
+        renderer->AddActor( cornerActor );
+
+    } // if ( showCornerT )
+
+
+    // Рисуем оси
+    const bool showAxes = mOption[ "show-axes" ];
+    if ( !hasAxes && showAxes ) {
+        // Оси рисуем после визуализации, т.к. процесс их отрисовки длится неск. секунд.
+        /*
+        {
+            auto axesActor = vtkSmartPointer< vtkAxesActor >::New();
+            axesActor->SetAxisLabels( 0 );
+            renderer->AddActor( axesActor );
+        }
+        */
+
+        {
+            auto cubeAxesActor = vtkSmartPointer< vtkCubeAxesActor >::New();
+            // Xmin,Xmax,Ymin,Ymax,Zmin,Zmax
+            double bounds[6] = {
+                -halfN.x,  halfN.x,
+                -halfN.y,  halfN.y,
+                -halfN.z,  halfN.z
+            };
+            cubeAxesActor->SetBounds( bounds );
+            //cubeAxesActor->SetBounds( points->GetBounds() );
+            cubeAxesActor->SetCamera( renderer->GetActiveCamera() );
+            cubeAxesActor->GetProperty()->SetColor( 0.3, 0.3, 0.3 );
+            //cubeAxesActor->SetXTitle( "X" );
+            //cubeAxesActor->SetYTitle( "Y" );
+            //cubeAxesActor->SetZTitle( "Z" );
+            cubeAxesActor->SetFlyModeToStaticEdges();
+            renderer->AddActor( cubeAxesActor );
+        }
+
+        hasAxes = true;
+
+    } // if ( showAxesT )
+
+
+    // Обновляем что нарисовали
+    renderer->GetActiveCamera()->ParallelProjectionOn();
+    renderer->GetActiveCamera()->SetFocalPoint( 0, 0, 0 );
+    //renderer->GetActiveCamera()->SetPosition( 0, -1, 0 );
+    //renderer->GetActiveCamera()->SetViewUp( 0, 0, 1 ); 
+    renderer->ResetCamera();
+
+    renderWindow->Render();
+
+    return *this;
+}
+
+
+
+
+
+
+inline VolumeVTKVisual& VolumeVTKVisual::operator<<( const option_t& json ) {
+
+    mOption = json;
+
+    const size_t sizeWindow = mOption[ "size-window" ];
+    renderWindow->SetSize( sizeWindow, sizeWindow );
+
+    renderer->ResetCamera();
+    renderWindow->Render();
+
+    return *this;
+}
+
+
+
+
+inline void VolumeVTKVisual::wait() {
+    auto renderWindowInteractor = vtkSmartPointer< vtkRenderWindowInteractor >::New();
+    renderWindowInteractor->SetRenderWindow( renderWindow );
+    renderer->ResetCamera();
+    renderWindow->Render();
+    renderWindowInteractor->Start();
+}
+
+
+
+
+
+
+
+template< size_t SX, size_t SY, size_t SZ >
+inline void VolumeVTKVisual::drawTopologyPresence(
+    const typename Portulan3D< SX, SY, SZ >::signBitLayer_t&  topologyPresence,
+    const typelib::coord_t& shiftCenter
+) {
+    typedef typelib::BitMap< SX, SY, SZ >  bm_t;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
+    for (auto itr = topologyPresence.raw().cbegin(); itr != topologyPresence.raw().cend(); ++itr) {
         const typelib::Sign<>& sign = itr->first;
         const bm_t& bm = itr->second;
         if ( bm.empty() ) {
@@ -132,7 +278,7 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
 #endif
 
         // цвет точек текущей метки
-        auto rgba = option[ "rgba" ];
+        auto rgba = mOption[ "rgba" ];
         /* - Не распознаёт. Заменено. См. ниже.
         std::string hexColor = rgba[ sign.name() ];
         if ( !boost::starts_with( hexColor, "0x" ) ) {
@@ -162,7 +308,7 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
         // цвет ставим Actor'ом
         auto contentActor = vtkSmartPointer< vtkActor >::New();
         contentActor->SetMapper( mapper );
-        const size_t sizePoint = option[ "size-point" ];
+        const size_t sizePoint = mOption[ "size-point" ];
         contentActor->GetProperty()->SetPointSize( sizePoint );
         contentActor->GetProperty()->SetColor( r, g, b );
         // @todo contentActor->GetProperty()->SetAlpha( a );
@@ -171,110 +317,116 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
 
     } // for (auto itr = tp.cbegin(); itr != tp.cend(); ++itr)
 
+}
 
-    // Отмечаем границы холста
-    auto cornerPoints = vtkSmartPointer< vtkPoints >::New();
-    const bool showCorner = option[ "show-corner" ];
-    if ( showCorner ) {
-        auto cornerVertices = vtkSmartPointer< vtkCellArray >::New();
-        const size_t NP = 1 + 8;
-        const float p[ NP ][ 3 ] = {
-            {  0.0f,     0.0f,     0.0f     },
-            {  halfN.x,  halfN.y,  halfN.z },
-            {  halfN.x,  halfN.y, -halfN.z },
-            {  halfN.x, -halfN.y,  halfN.z },
-            {  halfN.x, -halfN.y, -halfN.z },
-            { -halfN.x,  halfN.y,  halfN.z },
-            { -halfN.x,  halfN.y, -halfN.z },
-            { -halfN.x, -halfN.y,  halfN.z },
-            { -halfN.x, -halfN.y, -halfN.z }
-        };
-        vtkIdType pid[ NP ];
-        for (size_t i = 0; i < NP; ++i) {
-            pid[ i ] = cornerPoints->InsertNextPoint( p[i] );
-        }
-        cornerVertices->InsertNextCell( NP, pid );
 
-        auto cornerPolydata = vtkSmartPointer< vtkPolyData >::New();
-        cornerPolydata->SetPoints( cornerPoints );
-        cornerPolydata->SetVerts( cornerVertices );
- 
-        auto cornerMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
+
+
+
+
+
+
+template< size_t SX, size_t SY, size_t SZ >
+inline void VolumeVTKVisual::drawTopologyTemperature(
+    const typename Portulan3D< SX, SY, SZ >::numberLayer_t&  topologyTemperature,
+    const typelib::coord_t& shiftCenter
+) {
+    typedef Portulan3D< SX, SY, SZ >::numberLayer_t  nm_t;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
+    // значения для раскраски цветом
+    // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
+    auto data = vtkSmartPointer< vtkFloatArray >::New();
+    data->Initialize();
+    const std::string dataName = "TopologyTemperatureData";
+    data->SetName( dataName.c_str() );
+    data->SetNumberOfComponents( 1 );
+    data->SetNumberOfValues( nm_t::volume() ); 
+
+    size_t n = 0;
+    for (int z = nm_t::minCoord().z; z <= nm_t::maxCoord().z; ++z) {
+        for (int y = nm_t::minCoord().y; y <= nm_t::maxCoord().y; ++y) {
+            for (int x = nm_t::minCoord().x; x <= nm_t::maxCoord().x; ++x) {
+                const typelib::coordInt_t c( x, y, z );
+                const float temperature = topologyTemperature[ c ];
+
+                const float cf[3] = {
+                    static_cast< float >( x ) + shiftCenter.x,
+                    static_cast< float >( y ) + shiftCenter.y,
+                    static_cast< float >( z ) + shiftCenter.z
+                };
+                vtkIdType pid[ 1 ];
+                // @todo optimize Использовать более быстрое заполнение точками и вершинами.
+                pid[ 0 ] = points->InsertNextPoint( cf );
+                vertices->InsertNextCell( 1, pid );
+                data->SetValue( n, temperature );
+
+                ++n;
+
+            } // for (int x =
+
+        } // for (int y =
+
+    } // for (int z =
+
+
+    // вместе
+    auto point = vtkSmartPointer< vtkPolyData >::New(); 
+    point->SetPoints( points );
+    point->SetVerts( vertices );
+
+
+    auto mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 #if VTK_MAJOR_VERSION <= 5
-        cornerMapper->SetInput( cornerPolydata );
+    mapper->SetInput( point );
 #else
-        cornerMapper->SetInputData( cornerPolydata );
+    mapper->SetInputData( point );
 #endif
-        auto cornerActor = vtkSmartPointer< vtkActor >::New();
-        cornerActor->SetMapper( cornerMapper );
-        cornerActor->GetProperty()->SetPointSize( 3.0f );
-        cornerActor->GetProperty()->SetColor( 1.0, 0.0, 0.0 );
-
-        renderer->AddActor( cornerActor );
-
-    } // if ( showCornerT )
 
 
-    // Рисуем оси
-    const bool showAxes = option[ "show-axes" ];
-    if ( !hasAxes && showAxes ) {
-        // Оси рисуем после визуализации, т.к. процесс их отрисовки длится неск. секунд.
-        /*
-        {
-            auto axesActor = vtkSmartPointer< vtkAxesActor >::New();
-            axesActor->SetAxisLabels( 0 );
-            renderer->AddActor( axesActor );
-        }
-        */
+    // цвет точек - градиент температур
+    // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
+    point->GetPointData()->AddArray( data );
 
-        {
-            auto cubeAxesActor = vtkSmartPointer< vtkCubeAxesActor >::New();
-            // Xmin,Xmax,Ymin,Ymax,Zmin,Zmax
-            double bounds[6] = {
-                -halfN.x,  halfN.x,
-                -halfN.y,  halfN.y,
-                -halfN.z,  halfN.z
-            };
-            cubeAxesActor->SetBounds( bounds );
-            //cubeAxesActor->SetBounds( points->GetBounds() );
-            cubeAxesActor->SetCamera( renderer->GetActiveCamera() );
-            cubeAxesActor->GetProperty()->SetColor( 0.3, 0.3, 0.3 );
-            //cubeAxesActor->SetXTitle( "X" );
-            //cubeAxesActor->SetYTitle( "Y" );
-            //cubeAxesActor->SetZTitle( "Z" );
-            cubeAxesActor->SetFlyModeToStaticEdges();
-            renderer->AddActor( cubeAxesActor );
-        }
+    auto lookupTable = vtkSmartPointer< vtkLookupTable >::New();
+    const auto minmax = topologyTemperature.minmax();
+#ifdef _DEBUG
+    std::cout << "Крайние значения температур: [ "
+        << minmax.first << "; " << minmax.second << " ]"
+    << std::endl;
+#endif
 
-        hasAxes = true;
+    lookupTable->SetTableRange( minmax.first, minmax.second );
+    lookupTable->SetHueRange( 0.667, 0.0 );
 
-    } // if ( showAxesT )
+    // @example Чёрно-белая картинка > http://wenku.baidu.com/view/c95242f69e31433239689326.html page 44
+    // @example Красно-зелёно-синяя картинка > http://wenku.baidu.com/view/c95242f69e31433239689326.html page 44
+
+    lookupTable->Build();
+
+    mapper->SetLookupTable( lookupTable );
+    mapper->SetScalarRange( minmax.first, minmax.second );
+    mapper->ScalarVisibilityOn();
+    mapper->SelectColorArray( dataName.c_str() );
+    mapper->SetScalarModeToUsePointFieldData();
+    mapper->SetColorModeToMapScalars();
 
 
-    // Обновляем что нарисовали
-    renderer->GetActiveCamera()->ParallelProjectionOn();
-    renderer->GetActiveCamera()->SetFocalPoint( 0, 0, 0 );
-    //renderer->GetActiveCamera()->SetPosition( 0, -1, 0 );
-    //renderer->GetActiveCamera()->SetViewUp( 0, 0, 1 ); 
-    renderer->ResetCamera();
+    // цвет ставим Actor'ом
+    auto contentActor = vtkSmartPointer< vtkActor >::New();
+    contentActor->SetMapper( mapper );
+    const size_t sizePoint = mOption[ "size-point" ];
+    contentActor->GetProperty()->SetPointSize( sizePoint );
+    // @todo contentActor->GetProperty()->SetAlpha( a );
 
-    renderWindow->Render();
+    renderer->AddActor( contentActor );
 
-    return *this;
 }
 
 
 
-
-
-
-inline void VolumeVTKVisual::wait() {
-    auto renderWindowInteractor = vtkSmartPointer< vtkRenderWindowInteractor >::New();
-    renderWindowInteractor->SetRenderWindow( renderWindow );
-    renderer->ResetCamera();
-    renderWindow->Render();
-    renderWindowInteractor->Start();
-}
 
 
     } // io

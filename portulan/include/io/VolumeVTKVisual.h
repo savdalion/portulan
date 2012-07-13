@@ -1,8 +1,6 @@
 #pragma once
 
-#include <typelib/include/mapcontent3d/BitMap.h>
-#include <typelib/include/other.h>
-#include <typelib/include/json.h>
+#include <typelib/typelib.h>
 
 #include <vtkPointSource.h>
 #include <vtkPolyData.h>
@@ -65,7 +63,7 @@ public:
     /**
     * Открывает окно для визуализации.
     */
-    VolumeVTKVisual( const io::VolumeVTKVisual::option_t& option );
+    VolumeVTKVisual( const option_t& option );
 
 
 
@@ -78,8 +76,15 @@ public:
     * Визуализирует карту. Если окно визуализации ещё не было создано, оно
     * создаётся. Иначе, карта добавляется к текущему окну.
     */
-    template< size_t SX, size_t SY, size_t SZ, typename Number >
-    VolumeVTKVisual& operator<<( const typename Portulan3D< SX, SY, SZ, Number >& );
+    template< size_t SX, size_t SY, size_t SZ >
+    VolumeVTKVisual& operator<<( const typename Portulan3D< SX, SY, SZ >& );
+
+
+
+    /**
+    * Обновляет опции визуализатора.
+    */
+    VolumeVTKVisual& operator<<( const option_t& );
 
 
 
@@ -93,10 +98,27 @@ public:
 
 
 private:
+    template< size_t SX, size_t SY, size_t SZ >
+    void drawTopologyPresence(
+        const typename Portulan3D< SX, SY, SZ >::signBitLayer_t&  topologyPresence,
+        const typelib::coord_t& shiftCenter
+    );
+
+
+    template< size_t SX, size_t SY, size_t SZ >
+    void drawTopologyTemperature(
+        const typename Portulan3D< SX, SY, SZ >::numberLayer_t&  topologyTemperature,
+        const typelib::coord_t& shiftCenter
+    );
+
+
+
+
+private:
     /**
     * Опции визуализатора.
     */
-    typelib::json::Variant option;
+    option_t mOption;
 
 
     vtkSmartPointer< vtkRenderer >  renderer;

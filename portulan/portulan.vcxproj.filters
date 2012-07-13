@@ -39,6 +39,9 @@
     <ClInclude Include="include\io\VolumeVTKVisual.h">
       <Filter>Заголовочные файлы\io</Filter>
     </ClInclude>
+    <ClInclude Include="include\Booster.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Portulan3D.inl">

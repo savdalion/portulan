@@ -3,16 +3,13 @@
 #include "../../Portulan3D.h"
 #include <silhouette/include/shape/ElevationMap.h>
 #include <silhouette/include/Shaper.h>
-#include <typelib/include/Sign.h>
-#include <typelib/include/mapcontent3d/BitMap.h>
-#include <typelib/include/mapcontent3d/InverseFilterMap.h>
-#include <typelib/include/coord.h>
-#include <typelib/include/size.h>
+#include <typelib/typelib.h>
+#include <boost/function.hpp>
 
 
 namespace portulan {
 
-template< size_t SX, size_t SY, size_t SZ, typename Number >
+template< size_t SX, size_t SY, size_t SZ >
 class Portulan3D;
 
 }
@@ -89,9 +86,9 @@ struct elevationMap : public cmd< SX, SY, SZ, Number > {
 /**
 * Карта высот создаётся в битовом объёме согласно указанному файлу-источнику.
 */
-template< size_t SX, size_t SY, size_t SZ, typename Number >
+template< size_t SX, size_t SY, size_t SZ >
 void elevationMap(
-    typename Portulan3D< SX, SY, SZ, Number >& map,
+    typename Portulan3D< SX, SY, SZ >&,
     const std::string& sign,
     const std::string& source,
     double scaleXY,
@@ -112,14 +109,31 @@ void elevationMap(
 * Заданная файлом битовая маска растягивается на всю поверхность SX, SY.
 * Высота затопления определяется 
 */
-template< size_t SX, size_t SY, size_t SZ, typename Number >
+template< size_t SX, size_t SY, size_t SZ >
 void flood(
-    typename Portulan3D< SX, SY, SZ, Number >& map,
+    typename Portulan3D< SX, SY, SZ >&,
     const std::string& sign,
     const std::string& source,
     size_t gridHMin,
     size_t gridHMax
 );
+
+
+
+
+
+
+/**
+* Устанавливает температуру в ячейках, используя заданную функцию.
+*/
+typedef boost::function< float( const typelib::coordInt_t& c ) >  fnTemperature_t;
+
+template< size_t SX, size_t SY, size_t SZ >
+void temperature(
+    typename Portulan3D< SX, SY, SZ >&,
+    const fnTemperature_t&
+);
+
 
 
 

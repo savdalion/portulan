@@ -3,7 +3,7 @@
 #include <portulan/include/Portulan3D.h>
 #include <portulan/include/io/VolumeVTKVisual.h>
 #include <portulan/include/command.h>
-#include <typelib/include/json.h>
+#include <typelib/typelib.h>
 
 
 
@@ -38,11 +38,12 @@ int main( int argc, char** argv ) {
 
 
 
-
-    // Соберём карту из карты высот
     const size_t GRID = 81;
-    typedef Portulan3D< GRID, GRID, GRID, float >  city_t;
+    typedef Portulan3D< GRID, GRID, GRID >  city_t;
     city_t city;
+
+
+    // I. Соберём карту из карты высот.
 
     // холм из каменной соли
     const std::string elevationFile = PATH_MEDIA + "a/center-plato-elevation-map.png";
@@ -69,18 +70,48 @@ int main( int argc, char** argv ) {
     co::flood( city, "H2O", waterFile, gridHMin, gridHMax );
 
 
-    // показываем результат
+
+    // II. Добавим карту температур.
+    
+    const co::fnTemperature_t& fnt = [] ( const typelib::coordInt_t& c ) -> float {
+        // @test Постоянная температура во всех ячейках
+        //return 20.0f;
+
+        // @test Температура зависит от высоты Z
+        //return -static_cast< float >( c.z ) * 10.0f;
+
+        // @test Температура зависит от близости к центру
+        return 4800.0f - static_cast< float >( c.x * c.x + c.y * c.y + c.z * c.z );
+    };
+
+    co::temperature( city, fnt );
+
+
+    
+    // III. Покажем результат.
     io::VolumeVTKVisual::option_t o;
     o[ "size-window" ] = 700;
     o[ "size-point" ] = 1;
-    o[ "show-corner" ] = true;
+    o[ "show-corner" ] = false;
     o[ "show-axes" ] = false;
-    auto color = typelib::json::Variant( "{ 'NaCl': 'FFFFFFFF',  'H2O': '0000FFFF' }" );
+    const auto color = typelib::json::Variant( "{ 'NaCl': 'FFFFFFFF',  'H2O': '0000FFFF' }" );
     o[ "rgba" ] = color;
+    o[ "only" ] = ".temperature";
 
     io::VolumeVTKVisual visual( o );
+
     visual << city;
     visual.wait();
+
+
+#if 0
+    // @test Покажем ещё.
+    o[ "size-point" ] = 5;
+    o[ "only" ] = "";
+    visual << o;
+    visual << city;
+    visual.wait();
+#endif
 
 
 
