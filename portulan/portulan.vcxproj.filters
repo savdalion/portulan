@@ -39,16 +39,16 @@
     <ClInclude Include="include\io\VolumeVTKVisual.h">
       <Filter>Заголовочные файлы\io</Filter>
     </ClInclude>
-    <ClInclude Include="include\Booster.h">
+    <ClInclude Include="configure.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="portulan.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Portulan3D.inl">
       <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="README.markdown">
-      <Filter>Файлы ресурсов</Filter>
     </None>
     <None Include="include\command\common\common.inl">
       <Filter>Заголовочные файлы\command\common</Filter>

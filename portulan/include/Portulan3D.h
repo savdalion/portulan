@@ -1,7 +1,6 @@
 #pragma once
 
 #include "command.h"
-#include "Booster.h"
 #include <typelib/typelib.h>
 #include <memory>
 
@@ -10,7 +9,7 @@
 namespace portulan {
 
 template< size_t SX, size_t SY, size_t SZ >
-class Portulan;
+class Portulan3D;
 
 }
 
@@ -43,19 +42,16 @@ namespace portulan {
 *     собой всю ячейку.
 *   # Числовые значения объёма хранятся в виде float-чисел.
 *
-* 
-* @template Number В каком формате будут задаваться числа. Рекомендации:
-*             - "float" - для быстрых расчётов
-*             - "char" - для оптимального хранения
 */
 template< size_t SX, size_t SY, size_t SZ >
-class Portulan3D : public Booster {
+class Portulan3D {
 public:
     /**
     * Ссылки.
     */
     typedef std::shared_ptr< Portulan3D >  Ptr;
     typedef std::unique_ptr< Portulan3D >  UPtr;
+    typedef std::weak_ptr< Portulan3D >    WPtr;
 
 
 public:
@@ -134,21 +130,8 @@ public:
 
 
 
-    /**
-    * Структура для ускорения работы с картой.
-    * Данные хранятся в виде, подходящем для обработки параллельными
-    * алгоритмами (технологии OpenCL, Cuda).
-    */
-    struct booster_t {
-        float temperature[ SX * SY * SZ ];
-    };
-
-
-
-
 
     inline Portulan3D() {
-        // для пустых меток не создаём слой
     }
 
 
@@ -156,6 +139,7 @@ public:
 
     inline virtual ~Portulan3D() {
     }
+
 
 
 
@@ -179,34 +163,11 @@ public:
 
 
 
-protected:
-    /**
-    * Методы для записи данных портулана в структуру booster_t.
-    */
-    virtual void toBooster();
-
-
-
-    /**
-    * Методы для записи данных из структуры booster_t в портулан.
-    */
-    virtual void fromBooster();
-
-
-
-
-
 private:
     /**
     * Топология карты.
     */
     topology_t mTopology;
-
-
-    /**
-    * Структура для быстрой работы с картой.
-    */
-    booster_t mBooster;
 
 };
 
