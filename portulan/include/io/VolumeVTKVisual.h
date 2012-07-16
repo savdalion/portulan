@@ -77,7 +77,7 @@ public:
     * создаётся. Иначе, карта добавляется к текущему окну.
     */
     template< size_t SX, size_t SY, size_t SZ >
-    VolumeVTKVisual& operator<<( const typename Portulan3D< SX, SY, SZ >& );
+    VolumeVTKVisual& operator<<( const Portulan3D< SX, SY, SZ >& );
 
 
 
@@ -93,6 +93,13 @@ public:
     */
     void wait();
 
+
+
+
+    /**
+    * Очищает окно визаулизатора.
+    */
+    void clear();
 
 
 

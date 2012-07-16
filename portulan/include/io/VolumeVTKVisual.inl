@@ -50,14 +50,13 @@ inline VolumeVTKVisual::~VolumeVTKVisual() {
 
 template< size_t SX, size_t SY, size_t SZ >
 inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
-    const typename Portulan3D< SX, SY, SZ >&  portulan
+    const Portulan3D< SX, SY, SZ >&  portulan
 ) {
+    // Очищаем образ
+    clear();
+
+
     const auto& topology = portulan.topology();
-    const auto& tp = topology.presence;
-    if ( tp.empty() ) {
-        // не рисуем ни точек, ни осей - абс. пустота
-        return *this;
-    }
 
     // Переводим полученную карту в формат VTK
     // @todo optimize http://vtk.1045678.n5.nabble.com/Filling-vtkPoints-and-vtkCellArray-fast-td1243607.html
@@ -77,7 +76,7 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
     // проходим по всем меткам, собираем точки в объёме
     const bool showAllTopology = only.empty();
     if ( showAllTopology ) {
-        drawTopologyPresence< SX, SY, SZ >( tp, shiftCenter );
+        drawTopologyPresence< SX, SY, SZ >( topology.presence, shiftCenter );
     }
 
     // собираем карту температур
@@ -199,6 +198,7 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<( const option_t& json ) {
 
 
 
+
 inline void VolumeVTKVisual::wait() {
     auto renderWindowInteractor = vtkSmartPointer< vtkRenderWindowInteractor >::New();
     renderWindowInteractor->SetRenderWindow( renderWindow );
@@ -212,6 +212,22 @@ inline void VolumeVTKVisual::wait() {
 
 
 
+inline void VolumeVTKVisual::clear() {
+    auto al = renderer->GetActors();
+    al->InitTraversal();
+    auto itr = al->GetNextItem();
+    while ( itr ) {
+        renderer->RemoveActor( itr );
+        itr = al->GetNextItem();
+    }
+}
+
+
+
+
+
+
+
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void VolumeVTKVisual::drawTopologyPresence(
@@ -219,6 +235,10 @@ inline void VolumeVTKVisual::drawTopologyPresence(
     const typelib::coord_t& shiftCenter
 ) {
     typedef typelib::BitMap< SX, SY, SZ >  bm_t;
+
+    if ( topologyPresence.empty() ) {
+        return;
+    }
 
     auto points = vtkSmartPointer< vtkPoints >::New();
     auto vertices = vtkSmartPointer< vtkCellArray >::New();
@@ -333,6 +353,10 @@ inline void VolumeVTKVisual::drawTopologyTemperature(
 ) {
     typedef Portulan3D< SX, SY, SZ >::numberLayer_t  nm_t;
 
+    if ( topologyTemperature.empty() ) {
+        return;
+    }
+
     auto points = vtkSmartPointer< vtkPoints >::New();
     auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
@@ -365,11 +389,11 @@ inline void VolumeVTKVisual::drawTopologyTemperature(
 
                 ++n;
 
-            } // for (int x =
+            } // for (int x
 
-        } // for (int y =
+        } // for (int y
 
-    } // for (int z =
+    } // for (int z
 
 
     // вместе
@@ -391,14 +415,25 @@ inline void VolumeVTKVisual::drawTopologyTemperature(
     point->GetPointData()->AddArray( data );
 
     auto lookupTable = vtkSmartPointer< vtkLookupTable >::New();
-    const auto minmax = topologyTemperature.minmax();
+
+    const typelib::json::Array colorRange = mOption[ "color-range" ];
+    std::pair< float, float > minmaxColor;
+    if ( colorRange.empty() ) {
+        minmaxColor = topologyTemperature.minmax();
+    } else {
+        assert( (colorRange.size() == 2)
+            && "Опция \"color-range\" должна содержать 2 элемента или отсутствовать." );
+        minmaxColor = std::make_pair( colorRange[0], colorRange[1] );
+    }
+
 #ifdef _DEBUG
-    std::cout << "Крайние значения температур: [ "
-        << minmax.first << "; " << minmax.second << " ]"
+    const auto minmaxNumber = topologyTemperature.minmax();
+    std::cout << "Температуры [" << minmaxNumber.first << "; " << minmaxNumber.second << "]"
+        << " при диапазоне цвета [" << minmaxColor.first << "; " << minmaxColor.second << "]"
     << std::endl;
 #endif
 
-    lookupTable->SetTableRange( minmax.first, minmax.second );
+    lookupTable->SetTableRange( minmaxColor.first, minmaxColor.second );
     lookupTable->SetHueRange( 0.667, 0.0 );
 
     // @example Чёрно-белая картинка > http://wenku.baidu.com/view/c95242f69e31433239689326.html page 44
@@ -406,8 +441,9 @@ inline void VolumeVTKVisual::drawTopologyTemperature(
 
     lookupTable->Build();
 
+
     mapper->SetLookupTable( lookupTable );
-    mapper->SetScalarRange( minmax.first, minmax.second );
+    mapper->SetScalarRange( minmaxColor.first, minmaxColor.second );
     mapper->ScalarVisibilityOn();
     mapper->SelectColorArray( dataName.c_str() );
     mapper->SetScalarModeToUsePointFieldData();
