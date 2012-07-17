@@ -1,6 +1,7 @@
 #pragma once
 
 #include "command.h"
+#include "Topology.h"
 #include <typelib/typelib.h>
 #include <memory>
 
@@ -17,8 +18,8 @@ class Portulan3D;
 /* - @todo ...
 namespace std {
 
-template< typename Number, size_t SX, size_t SY, size_t SZ >
-std::ostream& operator<<( std::ostream&, const typelib::Portulan< SX, SY, SZ, Number >& );
+template< size_t SX, size_t SY, size_t SZ >
+std::ostream& operator<<( std::ostream&, const typelib::Portulan< SX, SY, SZ >& );
 
 } // std
 */
@@ -54,82 +55,11 @@ public:
     typedef std::weak_ptr< Portulan3D >    WPtr;
 
 
+    typedef Topology< SX, SY, SZ>  topology_t;
+
+
+
 public:
-    /**
-    * Слои 3D-наборов меток.
-    */
-    typedef typelib::SignBitMap< SX, SY, SZ >  signBitLayer_t;
-
-    //typedef typelib::SignNumberMap< float, SX, SY, SZ >  signNumberLayer_t;
-
-
-    /**
-    * Одиночные 3D-слои.
-    */
-    typedef typelib::NumberMap< float, SX, SY, SZ >  numberLayer_t;
-
-
-
-
-    /**
-    * Строение (топология) карты.
-    */
-    struct topology_t {
-        /**
-        * Слой с информацией об элементах и их "присутствии" на карты.
-        */
-        signBitLayer_t presence;
-
-        
-        // Количественные характеристики элементов.
-
-        /**
-        * Заполненность.
-        * На сколько % ячейка заполнена элементом. Обычно, сумма "заполненности"
-        * для одной ячейки == 100%. Этот же % подразумевается по умолчанию (если
-        * элемента нет в списке "plenum"). Но @todo существуют элементы в разном
-        * дисперсном состоянии. И, например, кварцевая галька вполне может
-        * принять в свою ячейку некоторый % воды или магнетитового песка. При
-        * этом % гальки в ячейке остаётся неизменным.
-        *//* - @todo ...
-        numberLayer_t plenum;
-        */
-
-        /**
-        * Дисперсность / пористость.
-        *   # Частицы считаются сферами.
-        *   # Дисперсность = 1 / диаметр частицы.
-        *//* - @todo ... Понятней будет включать "диаметр частицы".
-        */
-
-
-        /**
-        * Температура в ячейках карты.
-        * Один слой температур на всю карту.
-        * Температура и характеристика элементов определяют агрегатное
-        * состояние находящихся в ячейке элементов (веществ).
-        */
-        numberLayer_t temperature;
-
-
-        /**
-        * Давление в ячейках карты.
-        * Один слой давлений на всю карту.
-        */
-        //numberLayer_t pressure;
-
-
-        /**
-        * Направление сил, действующих на ячейки карты.
-        * ? Один слой сил на всю карту.
-        */
-        //numberLayer_t force;
-
-    };
-
-
-
-
 
     inline Portulan3D() {
     }
@@ -158,6 +88,36 @@ public:
     /* - Заменено на простые методы - см. portulan::command.
     Portulan3D& operator<<( const command::cmd< SX, SY, SZ, Number >& );
     */
+
+
+
+    /**
+    * Согласовывает все характеристики топологии.
+    * Правила - см. в коде метода.
+    */
+    void harmonize();
+
+
+
+    /**
+    * Согласовывает знач. для "заполненности" (топология).
+    * Правила - см. в коде метода.
+    *
+    * @param saveCorrect Нормализация проходит только для значений выходящих
+    *        за пределы диапазона [0.0; 1.0]
+    * @param strictHarmonize Нормализовать, даже если все значения лежат в
+    *        диапазоне [0.0; 1.0].
+    */
+    void harmonizePlenum( bool saveCorrect, bool strictHarmonize );
+
+
+
+    /**
+    * Согласовывает знач. "заполненности" с учётом "присутствия" (топология).
+    * Правила - см. в коде метода.
+    */
+    void harmonizePresenceToPlenum();
+
 
 
 

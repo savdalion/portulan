@@ -130,18 +130,18 @@ inline void temperature(
     typename Portulan3D< SX, SY, SZ >& map,
     const fnTemperature_t& fn
 ) {
-    typedef Portulan3D< SX, SY, SZ >::numberLayer_t  nl_t;
+    typedef typename Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t  nl_t;
 
     auto& topology = map.topology();
 
-    topology.temperature = 0.0f;
+    topology.temperature() = 0.0f;
 
     for (int z = nl_t::minCoord().z; z <= nl_t::maxCoord().z; ++z) {
         for (int y = nl_t::minCoord().y; y <= nl_t::maxCoord().y; ++y) {
             for (int x = nl_t::minCoord().x; x <= nl_t::maxCoord().x; ++x) {
                 const typelib::coordInt_t c( x, y, z );
                 const float t = fn( c );
-                topology.temperature.set( c, t );
+                topology.temperature().set( c, t );
             }
         }
     }

@@ -76,13 +76,13 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
     // проходим по всем меткам, собираем точки в объёме
     const bool showAllTopology = only.empty();
     if ( showAllTopology ) {
-        drawTopologyPresence< SX, SY, SZ >( topology.presence, shiftCenter );
+        drawTopologyPresence< SX, SY, SZ >( topology.presence(), shiftCenter );
     }
 
     // собираем карту температур
     const bool showTopologyTemperature = (only == ".temperature");
     if ( showTopologyTemperature ) {
-        drawTopologyTemperature< SX, SY, SZ >( topology.temperature, shiftCenter );
+        drawTopologyTemperature< SX, SY, SZ >( topology.temperature(), shiftCenter );
     }
 
 
@@ -231,7 +231,7 @@ inline void VolumeVTKVisual::clear() {
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void VolumeVTKVisual::drawTopologyPresence(
-    const typename Portulan3D< SX, SY, SZ >::signBitLayer_t&  topologyPresence,
+    const typename Portulan3D< SX, SY, SZ >::topology_t::signBitLayer_t&  topologyPresence,
     const typelib::coord_t& shiftCenter
 ) {
     typedef typelib::BitMap< SX, SY, SZ >  bm_t;
@@ -348,10 +348,10 @@ inline void VolumeVTKVisual::drawTopologyPresence(
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void VolumeVTKVisual::drawTopologyTemperature(
-    const typename Portulan3D< SX, SY, SZ >::numberLayer_t&  topologyTemperature,
+    const typename Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t&  topologyTemperature,
     const typelib::coord_t& shiftCenter
 ) {
-    typedef Portulan3D< SX, SY, SZ >::numberLayer_t  nm_t;
+    typedef Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t  nm_t;
 
     if ( topologyTemperature.empty() ) {
         return;

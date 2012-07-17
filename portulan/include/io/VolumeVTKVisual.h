@@ -107,14 +107,14 @@ public:
 private:
     template< size_t SX, size_t SY, size_t SZ >
     void drawTopologyPresence(
-        const typename Portulan3D< SX, SY, SZ >::signBitLayer_t&  topologyPresence,
+        const typename Portulan3D< SX, SY, SZ >::topology_t::signBitLayer_t&  topologyPresence,
         const typelib::coord_t& shiftCenter
     );
 
 
     template< size_t SX, size_t SY, size_t SZ >
     void drawTopologyTemperature(
-        const typename Portulan3D< SX, SY, SZ >::numberLayer_t&  topologyTemperature,
+        const typename Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t&  topologyTemperature,
         const typelib::coord_t& shiftCenter
     );
 

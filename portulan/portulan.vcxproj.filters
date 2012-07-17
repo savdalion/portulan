@@ -45,6 +45,9 @@
     <ClInclude Include="portulan.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\Topology.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Portulan3D.inl">
@@ -55,6 +58,9 @@
     </None>
     <None Include="include\io\VolumeVTKVisual.inl">
       <Filter>Заголовочные файлы\io</Filter>
+    </None>
+    <None Include="include\Topology.inl">
+      <Filter>Заголовочные файлы</Filter>
     </None>
   </ItemGroup>
 </Project>
