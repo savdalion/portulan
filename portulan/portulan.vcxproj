@@ -85,14 +85,14 @@
     <ClInclude Include="include\Topology.h" />
     <ClInclude Include="include\configure.h" />
     <ClInclude Include="include\io\VolumeVTKVisual.h" />
-    <ClInclude Include="include\Portulan3D.h" />
+    <ClInclude Include="include\Portulan.h" />
     <ClInclude Include="portulan.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\command\common\common.inl" />
     <None Include="include\Topology.inl" />
     <None Include="include\io\VolumeVTKVisual.inl" />
-    <None Include="include\Portulan3D.inl" />
+    <None Include="include\Portulan.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

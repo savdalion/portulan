@@ -30,7 +30,7 @@ namespace portulan {
 /**
 * Структура для работы с топологией.
 * Помимо удобства, эта структура декларирут некоторые соглашения
-* (см. в Portulan3D).
+* (см. в Portulan).
 */
 template< size_t SX, size_t SY, size_t SZ >
 struct Topology {
@@ -46,13 +46,20 @@ struct Topology {
     * Слои 3D-наборов меток.
     */
     typedef typelib::SignBitMap< SX, SY, SZ >  signBitLayer_t;
-    typedef typelib::SignNumberMap< float, SX, SY, SZ >  signNumberLayer_t;
+    typedef float Number;
+    typedef typelib::SignNumberMap< Number, SX, SY, SZ >  signNumberLayer_t;
 
 
     /**
     * Одиночные 3D-слои.
     */
-    typedef typelib::NumberMap< float, SX, SY, SZ >  numberLayer_t;
+    typedef typelib::NumberMap< Number, SX, SY, SZ >  numberLayer_t;
+
+
+    /**
+    * Слой векторов сил.
+    */
+    typedef typelib::VectorMap< Number, SX, SY, SZ >  vectorLayer_t;
 
 
 
@@ -66,12 +73,36 @@ struct Topology {
     signBitLayer_t& presence();
 
 
+    /**
+    * @return Биткарта для заданной метки.
+    */
+    typename signBitLayer_t::layerRaw_t const&  presence( const typelib::Sign<>& ) const;
+
+
+    /**
+    * @return Присутствие заданной метки на заданной позиции.
+    *         false, если метка не найдена.
+    */
+    bool presence( const typelib::Sign<>&, size_t i ) const;
+
+
 
     /**
     * @return Заполненность.
     */
     signNumberLayer_t const& plenum() const;
     signNumberLayer_t& plenum();
+
+
+    /**
+    * @return Значение "заполненности". Проверяется поля "заполненность" и
+    *         "присутствие". См. решение разногласий в
+    *         Portulan::harmonizePresenceToPlenum().
+    *         0, если метка отсутствует.
+    *
+    * @see Portulan::harmonize()
+    */
+    Number plenum( const typelib::Sign<>&, size_t i ) const;
 
 
 
@@ -83,10 +114,18 @@ struct Topology {
 
 
 
+    /**
+    * @return Силы.
+    */
+    vectorLayer_t const& force() const;
+    vectorLayer_t& force();
+
+
+
 
 private:
     /**
-    * Слой с информацией об элементах и их "присутствии" на карты.
+    * Слой с информацией об элементах и их "присутствии" на карте.
     *
     * @see plenum
     * @see harmonize()
@@ -107,8 +146,9 @@ private:
     * гальки в ячейке остаётся неизменным.
     *
     * @see harmonize()
-    */
+    *//* - @todo ...
     signNumberLayer_t mPlenum;
+    */
 
 
     /**
@@ -136,10 +176,11 @@ private:
 
 
     /**
-    * Направление сил, действующих на ячейки карты.
-    * ? Один слой сил на всю карту.
+    * Векторы сил, действующих на ячейки карты.
+    * Один слой сил на всю карту.
+    *//* - @todo ...
+    vectorLayer_t mForce;
     */
-    //numberLayer_t force;
 
 };
 

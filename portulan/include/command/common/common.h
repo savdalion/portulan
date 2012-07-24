@@ -1,16 +1,17 @@
 #pragma once
 
-#include "../../Portulan3D.h"
+#include "../../Portulan.h"
 #include <silhouette/include/shape/ElevationMap.h>
 #include <silhouette/include/Shaper.h>
 #include <typelib/typelib.h>
 #include <boost/function.hpp>
+#include <Magick++.h>
 
 
 namespace portulan {
 
 template< size_t SX, size_t SY, size_t SZ >
-class Portulan3D;
+class Portulan;
 
 }
 
@@ -28,11 +29,11 @@ namespace portulan {
 template< size_t SX, size_t SY, size_t SZ, typename Number >
 struct cmd {
     /**
-    * Этот функтор используется классом Portulan3D для своей трансформации.
-    * Внтури метода у нас есть доступ к свойствам Portulan3D, а каждая команда
+    * Этот функтор используется классом Portulan для своей трансформации.
+    * Внтури метода у нас есть доступ к свойствам Portulan, а каждая команда
     * несёт с собой данные и алгоритм для изменения портулана.
     */
-    virtual void operator()( typename Portulan3D< SX, SY, SZ, Number >& ) const = 0;
+    virtual void operator()( typename Portulan< SX, SY, SZ, Number >& ) const = 0;
 };
 
 
@@ -73,7 +74,7 @@ struct elevationMap : public cmd< SX, SY, SZ, Number > {
 
 
 
-    virtual void operator()( typename Portulan3D< SX, SY, SZ, Number >& ) const;
+    virtual void operator()( typename Portulan< SX, SY, SZ, Number >& ) const;
 
 };
 
@@ -88,7 +89,7 @@ struct elevationMap : public cmd< SX, SY, SZ, Number > {
 */
 template< size_t SX, size_t SY, size_t SZ >
 void elevationMap(
-    typename Portulan3D< SX, SY, SZ >&,
+    typename Portulan< SX, SY, SZ >&,
     const std::string& sign,
     const std::string& source,
     double scaleXY,
@@ -107,15 +108,16 @@ void elevationMap(
 * Затапливает территорию (битовый объём), заданную битовым файлом (0 - нет
 * значения, >0 - заполнить), указанным веществом (задаётся меткой).
 * Заданная файлом битовая маска растягивается на всю поверхность SX, SY.
-* Высота затопления определяется 
+* Глубина затопления определяется аргументами "gridHMin" и "gridHMax" в
+* ячейках биткарты.
 */
 template< size_t SX, size_t SY, size_t SZ >
 void flood(
-    typename Portulan3D< SX, SY, SZ >&,
+    typename Portulan< SX, SY, SZ >&,
     const std::string& sign,
     const std::string& source,
-    size_t gridHMin,
-    size_t gridHMax
+    int gridHMin,
+    int gridHMax
 );
 
 
@@ -130,7 +132,7 @@ typedef boost::function< float( const typelib::coordInt_t& c ) >  fnTemperature_
 
 template< size_t SX, size_t SY, size_t SZ >
 void temperature(
-    typename Portulan3D< SX, SY, SZ >&,
+    typename Portulan< SX, SY, SZ >&,
     const fnTemperature_t&
 );
 

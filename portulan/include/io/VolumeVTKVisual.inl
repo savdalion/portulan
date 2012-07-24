@@ -50,7 +50,7 @@ inline VolumeVTKVisual::~VolumeVTKVisual() {
 
 template< size_t SX, size_t SY, size_t SZ >
 inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
-    const Portulan3D< SX, SY, SZ >&  portulan
+    const Portulan< SX, SY, SZ >&  portulan
 ) {
     // Очищаем образ
     clear();
@@ -231,7 +231,7 @@ inline void VolumeVTKVisual::clear() {
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void VolumeVTKVisual::drawTopologyPresence(
-    const typename Portulan3D< SX, SY, SZ >::topology_t::signBitLayer_t&  topologyPresence,
+    const typename Portulan< SX, SY, SZ >::topology_t::signBitLayer_t&  topologyPresence,
     const typelib::coord_t& shiftCenter
 ) {
     typedef typelib::BitMap< SX, SY, SZ >  bm_t;
@@ -240,15 +240,16 @@ inline void VolumeVTKVisual::drawTopologyPresence(
         return;
     }
 
-    auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     for (auto itr = topologyPresence.raw().cbegin(); itr != topologyPresence.raw().cend(); ++itr) {
         const typelib::Sign<>& sign = itr->first;
-        const bm_t& bm = itr->second;
+        const bm_t bm( itr->second );
         if ( bm.empty() ) {
             continue;
         }
+
+        auto points = vtkSmartPointer< vtkPoints >::New();
+        auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
         size_t n = 0;
         size_t i = bm.first();
@@ -335,7 +336,7 @@ inline void VolumeVTKVisual::drawTopologyPresence(
 
         renderer->AddActor( contentActor );
 
-    } // for (auto itr = tp.cbegin(); itr != tp.cend(); ++itr)
+    } // for (auto itr
 
 }
 
@@ -348,14 +349,15 @@ inline void VolumeVTKVisual::drawTopologyPresence(
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void VolumeVTKVisual::drawTopologyTemperature(
-    const typename Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t&  topologyTemperature,
+    const typename Portulan< SX, SY, SZ >::topology_t::numberLayer_t&  topologyTemperature,
     const typelib::coord_t& shiftCenter
 ) {
-    typedef Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t  nm_t;
+    typedef Portulan< SX, SY, SZ >::topology_t::numberLayer_t  nm_t;
 
     if ( topologyTemperature.empty() ) {
         return;
     }
+
 
     auto points = vtkSmartPointer< vtkPoints >::New();
     auto vertices = vtkSmartPointer< vtkCellArray >::New();

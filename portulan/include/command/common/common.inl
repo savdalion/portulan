@@ -23,7 +23,7 @@ inline elevationMap< SX, SY, SZ, Number >::elevationMap(
 
 template< size_t SX, size_t SY, size_t SZ, typename Number >
 inline void elevationMap< SX, SY, SZ, Number >::operator()(
-    typename Portulan3D< SX, SY, SZ, Number >& map
+    typename Portulan< SX, SY, SZ, Number >& map
 ) const {
 
     std::cout << "ok! " << this->sign << std::endl;
@@ -42,7 +42,7 @@ inline void elevationMap< SX, SY, SZ, Number >::operator()(
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void elevationMap(
-    typename Portulan3D< SX, SY, SZ >& map,
+    typename Portulan< SX, SY, SZ >& map,
     const std::string& sign,
     const std::string& source,
     double scaleXY,
@@ -57,8 +57,8 @@ inline void elevationMap(
 
     auto& topology = map.topology();
     const auto bm = shaper.draw();
-    const auto sl = typelib::SignBitMap< SX, SY, SZ >::signLayerRaw_t( sign, bm.raw );
-    topology.presence = sl;
+    const auto sl = typelib::SignBitMap< SX, SY, SZ >::signLayerRaw_t( sign, bm.raw() );
+    topology.presence() = sl;
 }
 
 
@@ -68,56 +68,139 @@ inline void elevationMap(
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void flood(
-    typename Portulan3D< SX, SY, SZ >& map,
+    typename Portulan< SX, SY, SZ >& map,
     const std::string& sign,
     const std::string& source,
-    size_t gridHMin,
-    size_t gridHMax
+    int gridHMin,
+    int gridHMax
 ) {
-#if 0
-// - @todo
+    assert( (gridHMin <= gridHMax)
+        && "√лубины затоплени€ должны быть заданы в пор€дке меньша€-больша€." );
 
     // —оздадим биткарту, заполненную указанным веществом.
     // ¬ещество добавл€етс€ только в те €чейки, в которых нет
     // других веществ.
 
     auto& topology = map.topology();
-    const auto pm = topology.presence.presence();
-    if ( pm.full() ) {
-        // объЄм полностью заполнен? нечего затапливать и нет смысла смотреть дальше.
+    const auto pm = topology.presence();
+
+    typedef typelib::BitMap< SX, SY, SZ >  bm_t;
+    bm_t filledMap;
+    for (auto str = pm.raw().cbegin(); str != pm.raw().cend(); ++str) {
+        filledMap |= bm_t( str->second );
+    }
+
+    if ( filledMap.full() ) {
+        // ќбъЄм полностью заполнен? Ќечего затапливать и нет смысла смотреть дальше.
         return;
     }
 
-    // получаем биткарту поверхности
-    @todo ...
 
-    // нас интересуют пустые места - инвертируем "карту присутстви€"
-    const typelib::InverseFilterMapContent  inverse;
-    inverse( pm );
+    // загружаем биткарту дл€ заполнени€ указанной "sign"
 
-    typedef BitMap< SX, SY, SZ >  bm_t;
-    bm_t r;
-    size_t i = ipm.get_first();
-    do {
-        // провер€ем, что эту €чейку нас попросили заполнить
-        const typelib::coordInt_t c =
-            Portulan3D< SX, SY, SZ, Number >::signBitLayer_t::ci( i );
+    // @use http://graphicsmagick.org/Magick++/Image.html
 
-        // проверка по координатам
-        if ( typelib::between( c.z, gridHMin, gridHMax ) ) {
-            // проверка по 
-            if ( 
-            r.set( c );
-        }
+    Magick::InitializeMagick( nullptr );
 
-        i = ipm.get_next( i );
+    // „итаем изображение карты, приводим картинку к размеру сетки с учЄтом
+    // требуемого участка и масштаба, мен€ем палитру на битовую маску
 
-    } while (i != 0);
+    // ѕопытка @todo избавитьс€ от Warning C4252, безуспешно.
+    // @source http://www.windows-api.com/microsoft/VC-Language/30952961/a-solution-to-warning-c4251--class-needs-to-have-dllinterface.aspx
+    struct Wrapper {
+        Magick::Image image;
+        Magick::Color color;
+    };
+    Wrapper wrapper;
 
-    const auto sl = typelib::SignBitMap< SX, SY, SZ >::signLayerRaw_t( sign, r.raw );
-    topology.presence = sl;
+    size_t imageSizeWidth = 0;
+    size_t imageSizeHeight = 0;
+    try {
+        wrapper.image.read( source.c_str() );
+        imageSizeWidth  = wrapper.image.size().width();
+        imageSizeHeight = wrapper.image.size().height();
 
+    } catch( const Magick::Exception& ex ) {
+        const auto exWhat = ex.what();
+        //std::cout << "Caught exception: " << ex.what() << std::endl;
+        assert( false && "Ќе удалось прочитать маску дл€ заполнени€ объЄма." );
+        return;
+    }
+    
+
+
+    // изображение (или его часть) всегда приводитс€ к размеру сетки
+    const Magick::Geometry zoomGeometry( SX, SY );
+    
+    try {
+        wrapper.image.zoom( zoomGeometry );
+
+        // переводим в однобитовую кодировку
+        // @source http://imagemagick.org/Magick++/Image.html
+        wrapper.image.quantizeColorSpace( Magick::GRAYColorspace );
+        wrapper.image.quantizeColors( 1 );
+        wrapper.image.quantize();
+
+#ifdef _DEBUG
+        // @test
+        const std::string file = "!flood-bitmask.png";
+        wrapper.image.write( file );
 #endif
+
+    } catch( const Magick::Exception& ex ) {
+        const auto exWhat = ex.what();
+        assert( false && "Ќе удалось прочитать маску дл€ заполнени€ объЄма." );
+        return;
+    }
+
+    // размер изображени€ (в общем случае) изменЄн
+    imageSizeWidth  = wrapper.image.size().width();
+    imageSizeHeight = wrapper.image.size().height();
+
+
+
+    // ѕроходим по полученному изображению и в зависимости от маски
+    // заполн€ем объЄм
+    bm_t floodMap;
+    for (size_t j = 0; j < imageSizeHeight; ++j) {
+        for (size_t i = 0; i < imageSizeWidth; ++i) {
+            // маска представлена чЄрно-белой битовой градацией: R == G == B
+            wrapper.color = wrapper.image.pixelColor( i, j );
+            const bool v = (wrapper.color.redQuantum() != 0);
+            if ( v ) {
+                const int x = static_cast< int >( i ) - bm_t::maxCoord().x;
+                const int y = static_cast< int >( j ) - bm_t::maxCoord().y;
+                for (int z = gridHMin; z <= gridHMax; ++z) {
+                    floodMap.set( x, y, z );
+                }
+            }
+
+        } // for (int i
+
+    } // for (int j
+
+#ifdef _DEBUG
+        // @test
+        const size_t nFloodBefore = floodMap.count();
+#endif
+
+
+    // заполн€ем биткарту объЄма полученной выше биткартой дл€ метки
+    // заполн€ем места, отсутствующие в "map" и присутствующие в "floodMap"
+    const typelib::InverseFilterMap inverse;
+    inverse( filledMap );
+    floodMap &= filledMap;
+
+#ifdef _DEBUG
+        // @test
+        const size_t nFloodAfter = floodMap.count();
+        const size_t nFilled = filledMap.count();
+#endif
+
+
+    // обновл€ем / добавл€ем слой "sign"
+    const auto sl = typelib::SignBitMap< SX, SY, SZ >::signLayerRaw_t( sign, floodMap.raw() );
+    topology.presence() = sl;
 }
 
 
@@ -127,10 +210,10 @@ inline void flood(
 
 template< size_t SX, size_t SY, size_t SZ >
 inline void temperature(
-    typename Portulan3D< SX, SY, SZ >& map,
+    typename Portulan< SX, SY, SZ >& map,
     const fnTemperature_t& fn
 ) {
-    typedef typename Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t  nl_t;
+    typedef typename Portulan< SX, SY, SZ >::topology_t::numberLayer_t  nl_t;
 
     auto& topology = map.topology();
 

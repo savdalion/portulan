@@ -77,7 +77,7 @@ public:
     * создаётся. Иначе, карта добавляется к текущему окну.
     */
     template< size_t SX, size_t SY, size_t SZ >
-    VolumeVTKVisual& operator<<( const Portulan3D< SX, SY, SZ >& );
+    VolumeVTKVisual& operator<<( const Portulan< SX, SY, SZ >& );
 
 
 
@@ -107,14 +107,14 @@ public:
 private:
     template< size_t SX, size_t SY, size_t SZ >
     void drawTopologyPresence(
-        const typename Portulan3D< SX, SY, SZ >::topology_t::signBitLayer_t&  topologyPresence,
+        const typename Portulan< SX, SY, SZ >::topology_t::signBitLayer_t&  topologyPresence,
         const typelib::coord_t& shiftCenter
     );
 
 
     template< size_t SX, size_t SY, size_t SZ >
     void drawTopologyTemperature(
-        const typename Portulan3D< SX, SY, SZ >::topology_t::numberLayer_t&  topologyTemperature,
+        const typename Portulan< SX, SY, SZ >::topology_t::numberLayer_t&  topologyTemperature,
         const typelib::coord_t& shiftCenter
     );
 

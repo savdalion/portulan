@@ -10,7 +10,7 @@
 namespace portulan {
 
 template< size_t SX, size_t SY, size_t SZ >
-class Portulan3D;
+class Portulan;
 
 }
 
@@ -45,14 +45,14 @@ namespace portulan {
 *
 */
 template< size_t SX, size_t SY, size_t SZ >
-class Portulan3D {
+class Portulan {
 public:
     /**
     * Ссылки.
     */
-    typedef std::shared_ptr< Portulan3D >  Ptr;
-    typedef std::unique_ptr< Portulan3D >  UPtr;
-    typedef std::weak_ptr< Portulan3D >    WPtr;
+    typedef std::shared_ptr< Portulan >  Ptr;
+    typedef std::unique_ptr< Portulan >  UPtr;
+    typedef std::weak_ptr< Portulan >    WPtr;
 
 
     typedef Topology< SX, SY, SZ>  topology_t;
@@ -61,13 +61,13 @@ public:
 
 public:
 
-    inline Portulan3D() {
+    inline Portulan() {
     }
 
 
 
 
-    inline virtual ~Portulan3D() {
+    inline virtual ~Portulan() {
     }
 
 
@@ -86,7 +86,7 @@ public:
 
 
     /* - Заменено на простые методы - см. portulan::command.
-    Portulan3D& operator<<( const command::cmd< SX, SY, SZ, Number >& );
+    Portulan& operator<<( const command::cmd< SX, SY, SZ, Number >& );
     */
 
 
@@ -143,4 +143,4 @@ private:
 
 
 
-#include "Portulan3D.inl"
+#include "Portulan.inl"

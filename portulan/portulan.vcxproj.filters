@@ -27,9 +27,6 @@
     <ClInclude Include="include\configure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\Portulan3D.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\command\common\common.h">
       <Filter>Заголовочные файлы\command\common</Filter>
     </ClInclude>
@@ -48,11 +45,11 @@
     <ClInclude Include="include\Topology.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\Portulan.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\Portulan3D.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
     <None Include="include\command\common\common.inl">
       <Filter>Заголовочные файлы\command\common</Filter>
     </None>
@@ -60,6 +57,9 @@
       <Filter>Заголовочные файлы\io</Filter>
     </None>
     <None Include="include\Topology.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\Portulan.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
   </ItemGroup>
