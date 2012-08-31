@@ -1,5 +1,6 @@
 namespace portulan {
     namespace command {
+        namespace common {
 
 
 #if 0
@@ -232,5 +233,6 @@ inline void temperature(
 
 
 
+        } // common
     } // command
 } // portulan

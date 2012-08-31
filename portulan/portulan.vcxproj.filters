@@ -27,9 +27,6 @@
     <ClInclude Include="include\configure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\command\common\common.h">
-      <Filter>Заголовочные файлы\command\common</Filter>
-    </ClInclude>
     <ClInclude Include="include\command.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -48,11 +45,20 @@
     <ClInclude Include="include\Portulan.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\planet\Portulan.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\Topology.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\command\planet.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\command\common.h">
+      <Filter>Заголовочные файлы\command\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\command\common\common.inl">
-      <Filter>Заголовочные файлы\command\common</Filter>
-    </None>
     <None Include="include\io\VolumeVTKVisual.inl">
       <Filter>Заголовочные файлы\io</Filter>
     </None>
@@ -61,6 +67,18 @@
     </None>
     <None Include="include\Portulan.inl">
       <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\planet\Portulan.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\planet\Topology.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\command\planet.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\command\common.inl">
+      <Filter>Заголовочные файлы\command\common</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -22,6 +22,7 @@ class Portulan;
 */
 namespace portulan {
     namespace command {
+        namespace common {
 
 
 #if 0
@@ -85,7 +86,7 @@ struct elevationMap : public cmd< SX, SY, SZ, Number > {
 
 
 /**
-* Карта высот создаётся в битовом объёме согласно указанному файлу-источнику.
+* В битовом объёме создаётся карта высот согласно указанному файлу-источнику.
 */
 template< size_t SX, size_t SY, size_t SZ >
 void elevationMap(
@@ -142,6 +143,7 @@ void temperature(
 
 
 
+        } // common
     } // command
 } // portulan
 
