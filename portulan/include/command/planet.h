@@ -4,6 +4,7 @@
 #include "../planet/Topology.h"
 #include <silhouette/silhouette.h>
 #include <typelib/typelib.h>
+#include <boost/assign.hpp>
 #include <boost/math/special_functions/round.hpp>
 #include <boost/math/special_functions/sign.hpp>
 #include <boost/function.hpp>
@@ -45,7 +46,7 @@ void atmosphere(
     double mass,
     double innerRadius,
     double depth,
-    const std::vector< double >&  chemicalSubstance
+    const std::map< int, double >&  chemicalSubstance
 );
 
 
@@ -67,7 +68,7 @@ void crust(
     double mass,
     double innerRadius,
     double depth,
-    const std::vector< double >&  chemicalSubstance
+    const std::map< int, double >&  chemicalSubstance
 );
 
 
@@ -87,8 +88,8 @@ void crust(
 template< size_t SX, size_t SY, size_t SZ >
 void metabolism(
     typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::metabolism_t  metabolism[],
-    const std::vector< double >&  chemicalNeed,
-    const std::vector< double >&  chemicalWaste,
+    const std::map< int, double >&  chemicalNeed,
+    const std::map< int, double >&  chemicalWaste,
     const std::vector< double >&  energyNeed,
     const std::vector< double >&  energyWaste,
     double lifetime,
@@ -136,7 +137,8 @@ void specimen(
     double lifetime,
     double massBurn,
     double massDie,
-    const std::vector< double >&  chemicalComposition,
+    double immunity,
+    const std::map< int, double >&  chemicalComposition,
     const typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::metabolism_t metabolism[],
     const typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::survivor_t&
 );
@@ -162,8 +164,8 @@ typedef boost::function< std::pair< double, double >(
 template< size_t SX, size_t SY, size_t SZ >
 void living(
     typename portulan::planet::Topology< SX, SY, SZ >::living_t&,
-    size_t uid,
-    const boost::function< std::tuple< double, double >(
+    const size_t uidCode,
+    const boost::function< double(
         size_t pulse,
         const typelib::coord_t&,
         const typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t&
@@ -213,7 +215,9 @@ void planet(
     typename portulan::planet::Topology< SX, SY, SZ >&,
     const typename portulan::planet::Topology< SX, SY, SZ >::atmosphere_t&,
     const typename portulan::planet::Topology< SX, SY, SZ >::crust_t&,
-    const typename portulan::planet::Topology< SX, SY, SZ >::living_t&
+    const typename portulan::planet::Topology< SX, SY, SZ >::living_t&,
+    const typename portulan::planet::Topology< SX, SY, SZ >::temperature_t&,
+    const typename portulan::planet::Topology< SX, SY, SZ >::perceptations_t&
 );
 
 
@@ -224,14 +228,24 @@ void planet(
 
 /**
 * Копирует список 'src' в 'dst', умножая значения на 'k'.
-* Если 'src' содержит меньше чем 'N', то остальные элементы заполняются нулями.
+* Если 'src' содержит меньше чем 'n', то остальные элементы заполняются нулями.
 */
+template < typename S >
+void copyFill(
+    portulan::planet::eportion_t  dst[],
+    size_t n,
+    portulan::planet::GROUP_ELEMENT,
+    const std::map< int, S >&  src,
+    double k
+);
+
+
 template < typename D, typename S >
 void copyFill(
     D dst[],
-    size_t N,
+    size_t n,
     const std::vector< S >&  src,
-    S k = 1
+    double k
 );
 
 

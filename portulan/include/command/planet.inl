@@ -8,7 +8,7 @@ inline void atmosphere(
     double mass,
     double innerRadius,
     double depth,
-    const std::vector< double >& chemicalSubstance
+    const std::map< int, double >&  chemicalSubstance
 ) {
     assert( (mass >= 0.0f)
         && "Масса атмосферы должна быть положительной." );
@@ -21,9 +21,12 @@ inline void atmosphere(
 
     assert( (CS >= chemicalSubstance.size())
         && "Кол-во хим. веществ для атмосферы превышает допустимое." );
-    const cl_float verifySum =
-        std::accumulate( chemicalSubstance.cbegin(), chemicalSubstance.cend(), 0.0f );
-    assert( ( typelib::equal( verifySum, 1.0f ) || typelib::equal( verifySum, 0.0f ) )
+    const double verifySum =
+        std::accumulate( chemicalSubstance.cbegin(),  chemicalSubstance.cend(),  0.0,
+            [] ( double currentSum,  const std::pair< int, double >& v ) -> double {
+                return currentSum + v.second;
+        } );
+    assert( ( typelib::equal( verifySum, 1.0 ) || typelib::equal( verifySum, 0.0 ) )
         && "Сумма частей хим. веществ атмосферы должна быть 1.0 или отсутствовать." );
 
     // Для создания сферического обруча атмосферы воспользуемся проектом Silhouette
@@ -68,15 +71,16 @@ inline void atmosphere(
     */
 
     static const size_t AG = portulan::planet::Topology< SX, SY, SZ >::ATMOSPHERE_GRID;
+    static const std::map< int, double > EMPTY = boost::assign::map_list_of( 0, 0.0 );
     for (size_t i = 0; i < AG * AG * AG; ++i) {
         const bool present = bm.test( i );
         if ( present ) {
             //std::copy( chemicalSubstance.cbegin(),  chemicalSubstance.cend(),  map.content[i] );
-            copyFill( map.content[i], CS, chemicalSubstance );
+            copyFill( map.content[i],  CS,  portulan::planet::GE_COMPONENT,  chemicalSubstance,  1 );
 
         } else {
             // заполняем нулями
-            std::fill_n( map.content[i], CS, 0.0f );
+            copyFill( map.content[i],  CS,  portulan::planet::GE_COMPONENT,  EMPTY,  1 );
         }
 
     } // for (size_t i = 0; i < AG * AG * AG; ++i)
@@ -102,7 +106,7 @@ inline void crust(
     double mass,
     double innerRadius,
     double depth,
-    const std::vector< double >& chemicalSubstance
+    const std::map< int, double >&  chemicalSubstance
 ) {
     assert( (mass >= 0.0f)
         && "Масса планетарной коры должна быть положительной." );
@@ -115,9 +119,12 @@ inline void crust(
 
     assert( (CS >= chemicalSubstance.size())
         && "Кол-во хим. веществ для планетарной коры превышает допустимое." );
-    const cl_float verifySum =
-        std::accumulate( chemicalSubstance.cbegin(), chemicalSubstance.cend(), 0.0f );
-    assert( ( typelib::equal( verifySum, 1.0f ) || typelib::equal( verifySum, 0.0f ) )
+    const double verifySum =
+        std::accumulate( chemicalSubstance.cbegin(),  chemicalSubstance.cend(),  0.0,
+            [] ( double currentSum,  const std::pair< int, double >& v ) -> double {
+                return currentSum + v.second;
+        } );
+    assert( ( typelib::equal( verifySum, 1.0 ) || typelib::equal( verifySum, 0.0 ) )
         && "Сумма частей хим. веществ планетарной коры должна быть 1.0 или отсутствовать." );
 
     // Для создания сферического обруча планетарной коры воспользуемся
@@ -150,20 +157,29 @@ inline void crust(
     map.depth = static_cast< cl_float >( depth * 1000.0 );
 
     static const size_t CG = portulan::planet::Topology< SX, SY, SZ >::CRUST_GRID;
+    const std::map< int, double > EMPTY = boost::assign::map_list_of( 0, 0.0 );
     for (size_t i = 0; i < CG * CG * CG; ++i) {
         const bool present = bm.test( i );
         if ( present ) {
-            copyFill( map.content[i], CS, chemicalSubstance );
+            copyFill( map.content[i],  CS,  portulan::planet::GE_COMPONENT,  chemicalSubstance,  1 );
 
         } else {
             // заполняем нулями
-            std::fill_n( map.content[i], CS, 0.0f );
+            //std::fill_n( map.content[i], CS, 0.0f );
+            copyFill( map.content[i],  CS,  portulan::planet::GE_COMPONENT,  EMPTY,  1 );
         }
 
     } // for (size_t i = 0; i < CG * CG * CG; ++i)
 
 
     // @todo Поверхность.
+    static const size_t SCG = portulan::planet::Topology< SX, SY, SZ >::SURFACE_CRUST_GRID;
+    portulan::planet::Topology< SX, SY, SZ >::crust_t::structSurface_t  plane;
+    plane.depth = 0.0f;
+    plane.height = 0.0f;
+    plane.jamb.drop = 0.0f;
+    plane.jamb.distance = 0.0f;
+    std::fill_n( map.surface,  SCG * SCG * SCG,  plane );
 
 }
 
@@ -175,8 +191,8 @@ inline void crust(
 template< size_t SX, size_t SY, size_t SZ >
 inline void metabolism(
     typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::metabolism_t  metabolism[],
-    const std::vector< double >&  chemicalNeed,
-    const std::vector< double >&  chemicalWaste,
+    const std::map< int, double >&  chemicalNeed,
+    const std::map< int, double >&  chemicalWaste,
     const std::vector< double >&  energyNeed,
     const std::vector< double >&  energyWaste,
     double lifetime,
@@ -193,11 +209,11 @@ inline void metabolism(
 
     const size_t EN = portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::ENERGY_NEED;
     assert( (EN >= energyNeed.size())
-        && "Кол-во хим. веществ превышает допустимое." );
+        && "Кол-во потребляемых энергий превышает допустимое." );
 
     const size_t EW = portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::ENERGY_WASTE;
     assert( (EW >= energyWaste.size())
-        && "Кол-во хим. веществ превышает допустимое." );
+        && "Кол-во излучаемых энергий превышает допустимое." );
 
     const size_t LIFETIME = static_cast< size_t >( boost::math::round( lifetime ) );
     assert( (LIFETIME >= 0)
@@ -208,23 +224,25 @@ inline void metabolism(
     assert( (massDie >= 0.0f)
         && "Масса старой особи должна быть положительной." );
 
+    static const auto GEC = portulan::planet::GE_COMPONENT;
     const double deltaMass = (massDie - massBurn) / static_cast< double >( LIFETIME );
     for (size_t pulse = 0; pulse <= LIFETIME; ++pulse) {
         const double mass = massBurn + static_cast< double >( pulse ) * deltaMass;
-        copyFill( metabolism[ pulse ].chemical.need,   CN,  chemicalNeed,   mass );
-        copyFill( metabolism[ pulse ].chemical.waste,  CW,  chemicalWaste,  mass );
+        copyFill( metabolism[ pulse ].chemical.need,   CN,  GEC,  chemicalNeed,   mass );
+        copyFill( metabolism[ pulse ].chemical.waste,  CW,  GEC,  chemicalWaste,  mass );
         copyFill( metabolism[ pulse ].energy.need,     EN,  energyNeed,     mass );
         copyFill( metabolism[ pulse ].energy.waste,    EW,  energyWaste,    mass );
     }
 
     // неиспользуемые пульсы заполняем нулями
     // @todo optimize bad Можно нулями не заполнять.
-    static const std::vector< double >  EMPTY;
+    static const std::map< int, double >  CHEMICAL_EMPTY;
+    static const std::vector< double >    ENERGY_EMPTY;
     for (size_t pulse = LIFETIME + 1; pulse < portulan::planet::Topology< SX, SY, SZ >::LIFE_CYCLE; ++pulse) {
-        copyFill( metabolism[ pulse ].chemical.need,   CN,  EMPTY );
-        copyFill( metabolism[ pulse ].chemical.waste,  CW,  EMPTY );
-        copyFill( metabolism[ pulse ].energy.need,     EN,  EMPTY );
-        copyFill( metabolism[ pulse ].energy.waste,    EW,  EMPTY );
+        copyFill( metabolism[ pulse ].chemical.need,   CN,  GEC,  CHEMICAL_EMPTY,  1 );
+        copyFill( metabolism[ pulse ].chemical.waste,  CW,  GEC,  CHEMICAL_EMPTY,  1 );
+        copyFill( metabolism[ pulse ].energy.need,     EN,  ENERGY_EMPTY,  1 );
+        copyFill( metabolism[ pulse ].energy.waste,    EW,  ENERGY_EMPTY,  1 );
     }
 }
 
@@ -239,8 +257,6 @@ inline void survivor(
     const std::pair< double, double >&  comfortTemperature,
     const std::pair< double, double >&  limitTemperature
 ) {
-    // @todo fine Проверка 'environment'.
-
     assert( (comfortTemperature.first <= comfortTemperature.second)
         && "Температура комфорта должна декларироваться диапазоном вида \"меньше:больше\"." );
     assert( (limitTemperature.first <= limitTemperature.second)
@@ -248,14 +264,15 @@ inline void survivor(
     assert( ( (comfortTemperature.first >= limitTemperature.first) && (comfortTemperature.second <= limitTemperature.second) )
         && "Температура комфорта должна лежать внутри предельной температуры выживания." );
 
+    // @todo fine Проверка 'environment'.
+    const size_t ES = portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::survivor_t::ENVIRONMENT_SURVIVOR;
+    copyFill( survivor.environment,  ES,  environment,  1 );
+
     // температуры комфорта / выживания одинаковы для всех возрастов особи
-    static const size_t LC = portulan::planet::Topology< SX, SY, SZ >::LIFE_CYCLE;
-    for (size_t pulse = 0; pulse < LC; ++pulse) {
-        survivor.temperatureRange[ pulse ].comfort.min = comfortTemperature.first;
-        survivor.temperatureRange[ pulse ].comfort.max = comfortTemperature.second;
-        survivor.temperatureRange[ pulse ].limit.min = limitTemperature.first;
-        survivor.temperatureRange[ pulse ].limit.max = limitTemperature.second;
-    }
+    survivor.temperatureRange.comfort.min = comfortTemperature.first;
+    survivor.temperatureRange.comfort.max = comfortTemperature.second;
+    survivor.temperatureRange.limit.min = limitTemperature.first;
+    survivor.temperatureRange.limit.max = limitTemperature.second;
 }
 
 
@@ -268,7 +285,8 @@ inline void specimen(
     double lifetime,
     double massBurn,
     double massDie,
-    const std::vector< double >&  chemicalComposition,
+    double immunity,
+    const std::map< int, double >&  chemicalComposition,
     const typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::metabolism_t  metabolism[],
     const typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t::survivor_t&  survivor
 ) {
@@ -286,21 +304,25 @@ inline void specimen(
         && "Кол-во составляющих особь хим. веществ превышает допустимое." );
 
     specimen.lifetime = static_cast< cl_float >( lifetime );
+    specimen.immunity = static_cast< cl_float >( immunity );
 
     const double deltaMass = (massDie - massBurn) / static_cast< double >( LIFETIME );
-    for (size_t pulse = 0; pulse <= LIFETIME; ++pulse) {
-        specimen.mass[ pulse ] = deltaMass * static_cast< double >( pulse );
+    // @copy LIFE_CYCLE
+    //     0    Эмбрионы особей, семена.
+    //     1    Дети, ростки.
+    //     2    Взрослые.
+    //     3    Старики.
+    //     4    Мёртвые особи - тела, скелеты.
+    //     5    Бессмертные особи.
+    for (size_t pulse = 0; pulse <= 3; ++pulse) {
+        specimen.mass[ pulse ] = deltaMass * static_cast< double >( pulse + 1 );
     }
+    specimen.mass[ 4 ] = specimen.mass[ 3 ] * 0.9;
+    specimen.mass[ 5 ] = specimen.mass[ 3 ] * 1.1;
 
-    // неиспользуемые пульсы заполняем нулями
-    // @todo optimize bad Можно нулями не заполнять.
+    copyFill( specimen.chemicalComposition,  CC,  portulan::planet::GE_LIVING,  chemicalComposition, 1 );
+
     static const size_t LC = portulan::planet::Topology< SX, SY, SZ >::LIFE_CYCLE;
-    for (size_t pulse = LIFETIME + 1; pulse < LC; ++pulse) {
-        specimen.mass[ pulse ] = 0.0f;
-    }
-
-    copyFill( specimen.chemicalComposition,  CC,  chemicalComposition );
-
     std::copy( metabolism,  metabolism + LC,  specimen.metabolism );
 
     specimen.survivor = survivor;
@@ -313,19 +335,23 @@ inline void specimen(
 template< size_t SX, size_t SY, size_t SZ >
 inline void living(
     typename portulan::planet::Topology< SX, SY, SZ >::living_t&  living,
-    size_t uid,
-    const boost::function< std::tuple< double, double >(
+    const size_t uidCode,
+    const boost::function< double(
         size_t pulse,
         const typelib::coord_t&,
         const typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t&
     ) >&  fnLiving,
     const typename portulan::planet::Topology< SX, SY, SZ >::living_t::specimen_t&  specimen
 ) {
-    // 1. Добавляем информацию об особи.
-    living.specimen[ uid ] = specimen;
+    portulan::planet::euid_t uid;
+    uid.group = portulan::planet::GE_LIVING;
+    uid.code = static_cast< cl_uchar >( uidCode );
 
-    // 2. Проходим по всем ареалам живых организмов в области планеты и
-    //    заполняем их кол-вом из 'fnLiving'.
+    // Добавляем информацию об особи.
+    living.specimen[ uid.code ] = specimen;
+
+    // Проходим по всем ареалам живых организмов в области планеты и
+    // заполняем их кол-вом из 'fnLiving'.
     static const size_t LG =
         portulan::planet::Topology< SX, SY, SZ >::LIVING_GRID;
     typedef typelib::StaticMapContent3D< LG, LG, LG >  sm_t;
@@ -336,15 +362,13 @@ inline void living(
                 const size_t i = sm_t::ic( x, y, z );
                 for (size_t pulse = 0; pulse < portulan::planet::Topology< SX, SY, SZ >::LIFE_CYCLE; ++pulse) {
                     const auto count = fnLiving( pulse, c, specimen );
-                    living.content[ i ][ uid ].healthy[ pulse ] =
-                        static_cast< cl_float >( std::get< 0 >( count ) );
-                    living.content[ i ][ uid ].sick[ pulse ] =
-                        static_cast< cl_float >( std::get< 1 >( count ) );
+                    living.content[ i ][ uid.code ][ pulse ] = static_cast< cl_float >( count );
                 }
 
             } // for (int x
         } // for (int y
     } // for (int z
+
 }
 
 
@@ -391,11 +415,15 @@ inline void planet(
     typename portulan::planet::Topology< SX, SY, SZ >&  map,
     const typename portulan::planet::Topology< SX, SY, SZ >::atmosphere_t&  atmosphere,
     const typename portulan::planet::Topology< SX, SY, SZ >::crust_t&  crust,
-    const typename portulan::planet::Topology< SX, SY, SZ >::living_t&  living
+    const typename portulan::planet::Topology< SX, SY, SZ >::living_t&  living,
+    const typename portulan::planet::Topology< SX, SY, SZ >::temperature_t&  temperature,
+    const typename portulan::planet::Topology< SX, SY, SZ >::precipitations_t&  precipitations
 ) {
     map.atmosphere() = atmosphere;
     map.crust() = crust;
     map.living() = living;
+    map.temperature() = temperature;
+    map.precipitations() = precipitations;
 }
 
 
@@ -405,21 +433,65 @@ inline void planet(
 
 
 
-template < typename D, typename S >
+template < typename S >
 inline void copyFill(
-    D dst[],
-    size_t N,
-    const std::vector< S >&  src,
-    S k
+    portulan::planet::eportion_t  dst[],
+    size_t n,
+    portulan::planet::GROUP_ELEMENT  egroup,
+    const std::map< int, S >&  src,
+    double k
 ) {
     auto itrSrc = src.cbegin();
     auto itrDst = dst;
 	for ( ; itrSrc != src.cend(); ++itrSrc, ++itrDst) {
-		*itrDst = static_cast< D >( (*itrSrc) * k );
+        itrDst->uid.group = static_cast< cl_uchar >( egroup );
+        itrDst->uid.code = static_cast< cl_uchar >( itrSrc->first );
+		itrDst->count = static_cast< cl_float >( itrSrc->second * k );
     }
-    const size_t filled = src.size();
-    // дозаполняем хвост нулями
-    std::fill_n( dst + filled,  N - filled,  0.0f );
+
+    // дозаполняем хвост неопределёнными элементами и нулями
+	for (size_t i = 0; i < n; ++i, ++itrDst) {
+        itrDst->uid.group = 0;
+        itrDst->uid.code = 0;
+		itrDst->count = 0.0;
+    }
+
+    /* @test
+	for (size_t i = 0; i < n; ++i) {
+        std::cout << static_cast< int >( dst[i].uid.group ) <<
+            ":" << static_cast< int >( dst[i].uid.code ) <<
+            " " << dst[i].count <<
+        std::endl;
+    }
+    */
+}
+
+
+
+
+template < typename D, typename S >
+inline void copyFill(
+    D dst[],
+    size_t n,
+    const std::vector< S >&  src,
+    double k
+) {
+    auto itrSrc = src.cbegin();
+    auto itrDst = dst;
+	for ( ; itrSrc != src.cend(); ++itrSrc, ++itrDst) {
+        *itrDst = static_cast< D >( (*itrSrc) * k );
+    }
+
+    // дозаполняем хвост неопределёнными элементами и нулями
+	for (size_t i = 0; i < n; ++i, ++itrDst) {
+        *itrDst = static_cast< D >( 0 );
+    }
+
+    /* @test
+	for (size_t i = 0; i < n; ++i) {
+        std::cout << dst[i] << std::endl;
+    }
+    */
 }
 
 

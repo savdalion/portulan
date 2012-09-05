@@ -20,19 +20,52 @@ struct Topology;
 }
 
 
-/* - @todo ...
-namespace std {
-
-template< size_t SX, size_t SY, size_t SZ >
-std::ostream& operator<<( std::ostream&, const typelib::Topology< SX, SY, SZ >& );
-
-} // std
-*/
 
 
 
 namespace portulan {
     namespace planet {
+
+
+/**
+* Группы элементов.
+*/
+enum GROUP_ELEMENT {
+    GE_UNDEFINED = 0,
+    GE_LIVING,
+    GE_COMPONENT,
+    GE_count
+};
+
+
+/**
+* UID соединения (компонента, особи).
+* Используем составную структуру, чтобы оставить возможность дополнить
+* структуры по аналогии с живыми особями и простыми компонентами. Например:
+* структуры, определяющие изменение характеристик частей планеты, включая
+* рождение / смерть особей, появление новых компонентов и т.п..
+*/
+typedef struct {
+    // type: GROUP_ELEMENT
+    cl_uchar group;
+    // номер элемента в группе GROUP_ELEMENT
+    cl_uchar code;
+} euid_t;
+
+
+/**
+* UID элемента (компонента, особи) и массовая доля элемента в
+* целом элементе.
+*
+* Например: белки = 0.2, жиры = 0.1, углеводы = 0.7.
+*/
+typedef struct {
+    euid_t uid;
+    cl_float count;
+} eportion_t;
+
+
+
 
 
 /**
@@ -71,14 +104,14 @@ struct Topology {
     typedef cl_float numberLayer_t[ SX * SY * SZ ];
 
 
-
+    
     /**
     * Макс. кол-во хим. соединений (веществ), которые могут хранится в портулане.
     * Например, для земной коры можно указать след. соответствие:
-    *   (0)O, (1)Si, Al, Fe, Ca, Na, K, (7)Mg, (8)H, (9)редкие
+    *   (0)O, (1)Si, (2)Al, (3)Fe, (4)редкие
     */
-    static const size_t CHEMICAL_SUBSTANCE = 15;
-    typedef cl_float chemicalSubstance_t[ CHEMICAL_SUBSTANCE ];
+    static const size_t CHEMICAL_SUBSTANCE = 10;
+    typedef eportion_t chemicalSubstance_t[ CHEMICAL_SUBSTANCE ];
 
 
     /**
@@ -281,6 +314,7 @@ struct Topology {
 
     /**
     * Максимально возможное кол-во *различных* особей в области планеты.
+    * @todo extend Может быть расширено до 127.
     */
     static const size_t SPECIMEN_COUNT = 100;
 
@@ -337,6 +371,8 @@ struct Topology {
         */
 
 
+#if 0
+// - Переписано через иммунитет. См. ниже.
         /**
         * Количества здоровых и больных особей.
         * Каждый ареал содержит информацию о кол-ве особей с группировкой
@@ -353,6 +389,19 @@ struct Topology {
         typedef count_t group_t[ SPECIMEN_COUNT ];
         typedef group_t content_t[ LIVING_GRID * LIVING_GRID * LIVING_GRID ];
         content_t content;
+#endif
+
+        /**
+        * Количество особей.
+        * Кол-во больных особей определяется @todo очагами болезней и
+        * иммунитетом особей.
+        * Особи собраны по группам.
+        */
+        typedef cl_float count_t[ LIFE_CYCLE ];
+        typedef count_t group_t[ SPECIMEN_COUNT ];
+        typedef group_t content_t[ LIVING_GRID * LIVING_GRID * LIVING_GRID ];
+        content_t content;
+
 
 
         /**
@@ -371,45 +420,63 @@ struct Topology {
             */
             cl_float mass[ LIFE_CYCLE ];
 
+            /**
+            * Иммунитет особи к болезни.
+            * @todo Болезнь определяется очагами и силой. Произведение
+            * иммунитета и силы очага болезни - это % особей (отн. 1.0),
+            * которые здоровы.
+            *
+            * @todo extend? Иммунитет зависит от жизненного цикла особи LIFE_CYCLE.
+            */
+            cl_float immunity;
+
 
             /**
             * Максимальное кол-во *разных* хим. компонентов, из которых может
             * состоять особь.
             */
             static const size_t CHEMICAL_COMPOSITION = 5;
+            typedef eportion_t chemicalComposition_t[ CHEMICAL_COMPOSITION ];
 
             /**
             * Макисмальное кол-во *разных* хим. компонентов, которые нужны
             * особи для поддержания жизни.
             */
             static const size_t CHEMICAL_NEED = 5;
+            typedef eportion_t chemicalNeed_t[ CHEMICAL_NEED ];
 
             /**
             * Максимальное кол-во *разных* хим. компонентов, которые выделяет
             * особь при жизнедеятельности.
             */
             static const size_t CHEMICAL_WASTE = 5;
+            typedef eportion_t chemicalWaste_t[ CHEMICAL_WASTE ];
 
             /**
             * Максимальное кол-во *разных* видов энергии, которая необходима
             * особи для поддержания жизни.
-            * Например: солнечный свет, тепло из окр. среды, электрический ток.
+            *
+            * Виды энергий (закреплены по индексу)
+            *   0 свет
+            *   1 тепло окруж. среды
+            *   2 электрический ток
+            *   3 радиация
             */
-            static const size_t ENERGY_NEED = 2;
+            static const size_t ENERGY_NEED = 4;
 
             /**
             * Максимальное кол-во *разных* видов энергии, которя излучает
             * особь при жизнедеятельности.
-            * Например: свет, тепло, электрический ток, радиация.
+            *
+            * @see ENERGY_NEED
             */
-            static const size_t ENERGY_WASTE = 2;
+            static const size_t ENERGY_WASTE = ENERGY_NEED;
 
             /**
             * Хим. состав особи.
             * Массовые доли (от общей массы особи), сумма = 1.0.
             * Например: белки (мясо), жиры, углеводы (скелет).
             */
-            typedef cl_float chemicalComposition_t[ CHEMICAL_COMPOSITION ];
             chemicalComposition_t chemicalComposition;
 
 
@@ -425,18 +492,24 @@ struct Topology {
                     * Потребности в хим. компонентах.
                     * Например: белки, жиры, углеводы, витамины, кислород.
                     */
-                    cl_float need[ CHEMICAL_NEED ];
+                    chemicalNeed_t need;
 
                     /**
                     * Продукты жизнедеятельности особи (хим. компоненты).
                     * Например: кал, моча, пот, углекислый газ, кислород.
                     */
-                    cl_float waste[ CHEMICAL_WASTE ];
+                    chemicalWaste_t waste;
 
                 } chemical_t;
 
                 chemical_t chemical;
 
+                /**
+                * Энергии особи. Т.к. энергий немного, закрепляем их жёстко
+                * по индексам.
+                *
+                * @see ENERGY_NEED
+                */
                 typedef struct {
                     /**
                     * Энергия, необходимая особи для поддержания жизни, за
@@ -445,7 +518,7 @@ struct Topology {
                     * особью в виде тепла (см. ниже).
                     * Дж/пульс
                     *
-                    * Например: солнечный свет, тепло окруж. среды.
+                    * @see ENERGY_NEED
                     */
                     cl_float need[ ENERGY_NEED ];
 
@@ -454,7 +527,7 @@ struct Topology {
                     * жизнедеятельности.
                     * Дж/пульс
                     *
-                    * Например: свет, тепло, электрический ток.
+                    * @see ENERGY_WASTE
                     */
                     cl_float waste[ ENERGY_WASTE ];
 
@@ -518,7 +591,9 @@ struct Topology {
 
                 } temperatureRange_t;
 
-                temperatureRange_t temperatureRange[ LIFE_CYCLE ];
+                // упрощение: температуры комфорта / выживания одинаковы для
+                // жизненных циклов особи
+                temperatureRange_t temperatureRange;
 
             } survivor_t;
 
@@ -541,6 +616,7 @@ struct Topology {
 
     /**
     * Максимально возможное кол-во *различных* компонентов в области планеты.
+    * @todo extend Может быть расширено до 127.
     */
     static const size_t TYPE_COMPONENT_COUNT = 100;
 
@@ -587,11 +663,7 @@ struct Topology {
             * Перечисление UID компонентов и их массовой доли в этом компоненте.
             * Например: белки = 0.2, жиры = 0.1, углеводы = 0.7.
             */
-            typedef struct {
-                cl_uchar uid;
-                cl_float count;
-            } portion_t;
-            typedef portion_t сomposition_t[ COMPONENT_COMPOSITION ];
+            typedef eportion_t сomposition_t[ COMPONENT_COMPOSITION ];
             сomposition_t сomposition;
 
 
@@ -688,42 +760,48 @@ struct Topology {
     /**
     * @return Атмосфера.
     */
-    atmosphere_t atmosphere();
+    atmosphere_t const& atmosphere() const;
+    atmosphere_t& atmosphere();
 
 
 
     /**
     * @return Кора планеты.
     */
-    crust_t crust();
+    crust_t const& crust() const;
+    crust_t& crust();
 
 
 
     /**
     * @return Живой мир.
     */
-    living_t living();
+    living_t const& living() const;
+    living_t& living();
 
 
 
     /**
     * @return Компоненты.
     */
-    component_t component();
+    component_t const& component() const;
+    component_t& component();
 
 
 
     /**
     * @return Температура.
     */
-    temperature_t temperature();
+    temperature_t const& temperature() const;
+    temperature_t& temperature();
 
 
 
     /**
     * @return Осадки.
     */
-    precipitations_t precipitations();
+    precipitations_t const& precipitations() const;
+    precipitations_t& precipitations();
 
 
 
@@ -746,6 +824,25 @@ private:
 } // portulan
 
 
+
+
+
+
+
+
+namespace std {
+
+template< size_t SX, size_t SY, size_t SZ >
+std::ostream& operator<<( std::ostream&, const portulan::planet::Topology< SX, SY, SZ >& );
+
+std::ostream& operator<<( std::ostream&, const portulan::planet::euid_t& );
+
+std::ostream& operator<<( std::ostream&, const portulan::planet::eportion_t& );
+
+std::ostream& operator<<( std::ostream&, const portulan::planet::Topology< 81, 81, 81 >::living_t::specimen_t& );
+std::ostream& operator<<( std::ostream&, const portulan::planet::Topology< 81, 81, 81 >::living_t::specimen_t::metabolism_t& );
+
+} // std
 
 
 
