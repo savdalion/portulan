@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../planet/Portulan.h"
-#include "../planet/Topology.h"
+#include "structure.h"
+#include "component.h"
+#include "living.h"
 #include <silhouette/silhouette.h>
 #include <typelib/typelib.h>
 #include <boost/assign.hpp>
@@ -10,26 +11,107 @@
 #include <boost/function.hpp>
 
 
-namespace portulan {
-    namespace planet {
-
-template< size_t SX, size_t SY, size_t SZ >
-class Portulan;
-
-    }
-}
-
-
-
 /**
 * Базовый набор команд для создания карты планеты.
 * Упрощает инициализацию planet::Topology начальными данными.
 *
-* @see planet::Topology для подробного пояснения смысла параметров.
+* @see planet::set::* для подробного пояснения смысла параметров.
 */
 namespace portulan {
-    namespace command {
-        namespace planet {
+    namespace planet {
+        namespace set {
+            namespace dungeoncrawl {
+                namespace consructor {
+
+/**
+* Заполняет структуру с общей информацией об области планеты.
+*
+* @param radius* Радиусы планеты и атмосферы, км.
+* @param mass* Массы планеты и атмосферы, кг.
+* @param component* Содержание компонентов в атмосфере, % / 100.
+*        Диапазон [ 0.0; 1.0 ]. Сумма всех равна 1.0.
+*/
+void aboutPlanet(
+    portulan::planet::structure::aboutPlanet_t&,
+    double radiusPlanet,  double massPlanet,      
+    const std::map< portulan::planet::structure::CODE_COMPONENT, double >&  componentPlanet,
+    double radiusAtmosphere,  double massAtmosphere,  
+    const std::map< portulan::planet::structure::CODE_COMPONENT, double >&  componentAtmosphere
+);
+
+
+
+
+
+/**
+* Конструктор для заполнения структуры aboutOneComponent_t.
+*/
+portulan::planet::structure::aboutOneComponent_t aoc(
+    double density,
+    double meltingPoint,    double boilingPoint,
+    double enthalpyFusion,  double enthalpyVaporization,
+    double heatCapacity
+);
+
+
+
+
+/**
+* Заполняет структуру с информацией о компонентах, встречающихся в области
+* планеты. UID компонентов согласованы с COMPONENT_CODE.
+*/
+void aboutComponent(
+    portulan::planet::structure::aboutComponent_t&
+);
+
+
+
+
+
+/**
+* Создаёт образ информации о расположении компонентов в области планеты.
+*
+* @param aboutPlanet Информация о планете.
+* @param fn Функция, заполняющая массовые доли компонентов в зависимости от
+*        ячейки 'typelib::coord_t' и информации из 'aboutPlanet'.
+*/
+void component(
+    portulan::planet::structure::component_t&,
+    const portulan::planet::structure::aboutPlanet_t&  aboutPlanet,
+    const boost::function< void(
+        portulan::planet::structure::componentCell_t&,
+        const typelib::coord_t&,
+        const portulan::planet::structure::aboutPlanet_t&
+    ) >&  fn
+);
+
+
+
+
+
+/**
+* Конструктор для заполнения структуры aboutOneLiving_t.
+*/
+portulan::planet::structure::aboutOneLiving_t aol(
+);
+
+
+
+
+/**
+* Заполняет структуру с информацией об особях живого мира,
+* встречающихся в области планеты. UID особей согласованы
+* с LIVING_CODE.
+*/
+void aboutLiving(
+    portulan::planet::structure::aboutLiving_t&
+);
+
+
+
+
+
+#if 0
 
 /**
 * Создаёт образ атмосферы планеты.
@@ -220,6 +302,7 @@ void planet(
     const typename portulan::planet::Topology< SX, SY, SZ >::perceptations_t&
 );
 
+#endif
 
 
 
@@ -232,9 +315,8 @@ void planet(
 */
 template < typename S >
 void copyFill(
-    portulan::planet::eportion_t  dst[],
+    portulan::planet::structure::eportion_t  dst[],
     size_t n,
-    portulan::planet::GROUP_ELEMENT,
     const std::map< int, S >&  src,
     double k
 );
@@ -249,8 +331,27 @@ void copyFill(
 );
 
 
-        } // planet
-    } // command
+
+
+/**
+* Заполняет перечисление 'dst' указанным набором значений из 'src'.
+* Не указанные в 'src' значения заполняются нулями.
+*
+* @see Соглашения для aboutPlanet_t::componentPlanet.
+*/
+template < typename S >
+void copyFillComponent(
+    portulan::planet::structure::componentAll_t&  dst,
+    const std::map< portulan::planet::structure::CODE_COMPONENT, S >&  src
+);
+
+
+
+
+                } // constructor
+            } // dungeoncrawl
+        } // set
+    } // planet
 } // portulan
 
 

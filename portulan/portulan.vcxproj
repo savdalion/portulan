@@ -82,8 +82,13 @@
     <ClInclude Include="configure.h" />
     <ClInclude Include="include\command.h" />
     <ClInclude Include="include\command\common.h" />
-    <ClInclude Include="include\command\planet.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\constructor.h" />
     <ClInclude Include="include\planet\Portulan.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\living.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\component.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\structure.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\living-set.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\topology.h" />
     <ClInclude Include="include\planet\Topology.h" />
     <ClInclude Include="include\Topology.h" />
     <ClInclude Include="include\configure.h" />
@@ -93,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\command\common.inl" />
-    <None Include="include\command\planet.inl" />
+    <None Include="include\planet\set\dangeon-crawl\constructor.inl" />
     <None Include="include\planet\Portulan.inl" />
     <None Include="include\planet\Topology.inl" />
     <None Include="include\Topology.inl" />

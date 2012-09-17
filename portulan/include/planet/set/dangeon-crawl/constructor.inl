@@ -2,6 +2,190 @@ namespace portulan {
     namespace command {
         namespace planet {
 
+inline void aboutPlanet(
+    portulan::planet::structure::aboutPlanet_t&  aboutPlanet,
+    double radiusPlanet,  double massPlanet,      
+    const std::map< portulan::planet::structure::CODE_COMPONENT, double >&  componentPlanet,
+    double radiusAtmosphere,  double massAtmosphere,  
+    const std::map< portulan::planet::structure::CODE_COMPONENT, double >&  componentAtmosphere
+) {
+    assert( (radiusPlanet > 0.0f)
+        && "Радиус планеты должен быть указан." );
+    assert( (massPlanet >= 0.0f)
+        && "Масса планеты должна быть положительной." );
+    assert( !componentPlanet.empty()
+        && "Состав планеты должен быть указан." );
+
+    assert( (radiusAtmosphere > 0.0f)
+        && "Радиус атмосферы должен быть указан." );
+    assert( (massAtmosphere >= 0.0f)
+        && "Масса атмосферы должна быть положительной." );
+    assert( !componentAtmosphere.empty()
+        && "Состав атмосферы должен быть указан." );
+
+    aboutPlanet.radiusPlanet = radiusPlanet * 1000.0;
+    aboutPlanet.massPlanet = massPlanet * 1000.0;
+    copyFillComponent( aboutPlanet.componentPlanet, componentPlanet );
+
+    aboutPlanet.sizeArea = radiusAtmosphere * 1000.0 * 2.0;
+
+    aboutPlanet.massAtmosphere = massAtmosphere;
+    copyFillComponent( aboutPlanet.componentAtmosphere, componentAtmosphere );
+}
+
+
+
+
+
+inline portulan::planet::structure::aboutOneComponent_t aoc(
+    double density,
+    double meltingPoint,    double boilingPoint,
+    double enthalpyFusion,  double enthalpyVaporization,
+    double heatCapacity
+) {
+    portulan::planet::structure::aboutOneComponent_t a;
+
+    a.density              = static_cast< cl_float >( density );
+
+    a.meltingPoint         = static_cast< cl_float >( meltingPoint );
+    a.boilingPoint         = static_cast< cl_float >( boilingPoint );
+
+    a.enthalpyFusion       = static_cast< cl_float >( enthalpyFusion );
+    a.enthalpyVaporization = static_cast< cl_float >( enthalpyVaporization );
+
+    a.heatCapacity         = static_cast< cl_float >( heatCapacity );
+
+    return a;
+}
+
+
+
+
+
+inline void aboutLiving(
+    portulan::planet::structure::aboutLiving_t&  a
+) {
+    using namespace portulan::planet;
+
+    // заполняем по умолчанию нулями
+    for (codeLiving_t code = 0; code < CC_count; ++code) {
+        a.about[ code ] = aol(
+            0.0,
+            0.0, 0.0,
+            0.0, 0.0,
+            0.0
+        );
+    }
+
+
+    // определяем компоненты
+    // @todo ... (придерживаясь алфавита)
+
+    // образец
+    // @see enum LIVING_CODE
+
+}
+
+
+
+
+
+inline portulan::planet::aboutOneComponent_t aoc(
+    double density,
+    double meltingPoint,    double boilingPoint,
+    double enthalpyFusion,  double enthalpyVaporization,
+    double heatCapacity
+) {
+    portulan::planet::structure::aboutOneComponent_t a;
+
+    a.density              = static_cast< cl_float >( density );
+
+    a.meltingPoint         = static_cast< cl_float >( meltingPoint );
+    a.boilingPoint         = static_cast< cl_float >( boilingPoint );
+
+    a.enthalpyFusion       = static_cast< cl_float >( enthalpyFusion );
+    a.enthalpyVaporization = static_cast< cl_float >( enthalpyVaporization );
+
+    a.heatCapacity         = static_cast< cl_float >( heatCapacity );
+
+    return a;
+}
+
+
+
+
+
+inline void aboutComponent(
+    portulan::planet::structure::aboutComponent_t&  a
+) {
+    using namespace portulan::planet;
+    using namespace portulan::planet::structure;
+
+    // заполняем по умолчанию нулями
+    for (codeLiving_t code = 0; code < CC_count; ++code) {
+        a.about[ code ] = aoc(
+            0.0,
+            0.0, 0.0,
+            0.0, 0.0,
+            0.0
+        );
+    }
+
+
+    // определяем компоненты
+    // @todo ... (придерживаясь алфавита)
+
+    // образец
+    // @see enum COMPONENT_CODE
+    a.about[ CC_NONE ] = aoc(
+        // плотность
+        0.0,
+        // температуры плавления, кипения (кристализации)
+        0.0, 0.0,
+        // теплота плавления, испарения (парообразования)
+        0.0, 0.0,
+        // теплоёмкость
+        0.0
+    );
+
+}
+
+
+
+
+
+inline void component(
+    portulan::planet::component_t&  component,
+    const portulan::planet::aboutPlanet_t&  aboutPlanet,
+    const boost::function< void(
+        portulan::planet::componentCell_t&,
+        const typelib::coord_t&,
+        const portulan::planet::aboutPlanet_t&  aboutPlanet
+    ) >&  fn
+) {
+    // Проходим по всем ячейкам температуры в области планеты и
+    // заполняем их информацией о компонентах из 'fn'.
+    static const size_t CG = portulan::planet::COMPONENT_GRID;
+    typedef typelib::StaticMapContent3D< CG, CG, CG >  sm_t;
+    for (int z = sm_t::minCoord().z; z <= sm_t::maxCoord().z; ++z) {
+        for (int y = sm_t::minCoord().y; y <= sm_t::maxCoord().y; ++y) {
+            for (int x = sm_t::minCoord().x; x <= sm_t::maxCoord().x; ++x) {
+                const typelib::coordInt_t c( x, y, z );
+                const size_t i = sm_t::ic( x, y, z );
+                portulan::planet::componentCell_t& cc = component.content[ i ];
+                fn( cc, c, aboutPlanet );
+
+            } // for (int x
+        } // for (int y
+    } // for (int z
+}
+
+
+
+
+
+#if 0
+
 template< size_t SX, size_t SY, size_t SZ >
 inline void atmosphere(
     typename portulan::planet::Topology< SX, SY, SZ >::atmosphere_t&  map,
@@ -426,6 +610,7 @@ inline void planet(
     map.precipitations() = precipitations;
 }
 
+#endif
 
 
 
@@ -437,33 +622,29 @@ template < typename S >
 inline void copyFill(
     portulan::planet::eportion_t  dst[],
     size_t n,
-    portulan::planet::GROUP_ELEMENT  egroup,
     const std::map< int, S >&  src,
     double k
 ) {
     auto itrSrc = src.cbegin();
     auto itrDst = dst;
 	for ( ; itrSrc != src.cend(); ++itrSrc, ++itrDst) {
-        itrDst->uid.group = static_cast< cl_uchar >( egroup );
-        itrDst->uid.code = static_cast< cl_uchar >( itrSrc->first );
+        itrDst->code = static_cast< cl_uchar >( itrSrc->first );
 		itrDst->count = static_cast< cl_float >( itrSrc->second * k );
     }
 
     // дозаполняем хвост неопределёнными элементами и нулями
 	for (size_t i = 0; i < n; ++i, ++itrDst) {
-        itrDst->uid.group = 0;
-        itrDst->uid.code = 0;
-		itrDst->count = 0.0;
+        itrDst->code = static_cast< codeLiving_t >( 0 );
+		itrDst->count = static_cast< cl_float >( 0.0 );
     }
 
-    /* @test
+    /* @test */
 	for (size_t i = 0; i < n; ++i) {
-        std::cout << static_cast< int >( dst[i].uid.group ) <<
-            ":" << static_cast< int >( dst[i].uid.code ) <<
+        std::cout << static_cast< int >( dst[i].code ) <<
             " " << dst[i].count <<
         std::endl;
     }
-    */
+    /**/
 }
 
 
@@ -492,6 +673,29 @@ inline void copyFill(
         std::cout << dst[i] << std::endl;
     }
     */
+}
+
+
+
+
+template < typename S >
+inline void copyFillComponent(
+    portulan::planet::componentAll_t&  dst,
+    const std::map< portulan::planet::CODE_COMPONENT, S >&  src
+) {
+    for (size_t n = 0; n < portulan::planet::COMPONENT_COUNT; ++n) {
+        dst[ n ].code = static_cast< portulan::planet::CODE_COMPONENT >( n );
+        const auto ftr = src.find( static_cast< portulan::planet::CODE_COMPONENT >( n ) );
+        dst[ n ].count = static_cast< cl_float >( (ftr == src.cend()) ? 0.0 : ftr->second );
+    }
+
+    /* @test */
+	for (size_t n = 0; n < portulan::planet::COMPONENT_COUNT; ++n) {
+        std::cout << static_cast< portulan::planet::CODE_COMPONENT >( dst[ n ].code ) <<
+            " " << dst[ n ].count <<
+        std::endl;
+    }
+    /**/
 }
 
 

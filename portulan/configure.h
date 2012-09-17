@@ -11,4 +11,10 @@ namespace portulan {
 #define OPENCL_PORTULAN
 
 
+/**
+* Какой набор структур использовать.
+*/
+#define DUNGEON_CRAWL_SET_PLANET_PORTULAN
+
+
 } // portulan

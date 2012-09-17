@@ -2,117 +2,34 @@ namespace portulan {
     namespace planet {
 
 
-template< size_t SX, size_t SY, size_t SZ >
-inline Topology< SX, SY, SZ >::Topology() {
-    static_assert( ((SX == SY) && (SY == SZ)),
+inline Topology::Topology() {
+    /* - @todo fine ...
+    static_assert( ((GRID_SX == GRID_SY) && (GRID_SY == GRID_SZ)),
         "@todo extend Работаем только с равными сторонами (с сеткой в виде куба)." );
-    static_assert( ((SX % 3) == 0), "Размер стороны по X должен быть кратен 3." );
-    static_assert( ((SY % 3) == 0), "Размер стороны по Y должен быть кратен 3." );
-    static_assert( ((SZ % 3) == 0), "Размер стороны по Z должен быть кратен 3." );
+    static_assert( ((GRID_SX % 3) == 0), "Размер стороны по X должен быть кратен 3." );
+    static_assert( ((GRID_SY % 3) == 0), "Размер стороны по Y должен быть кратен 3." );
+    static_assert( ((GRID_SZ % 3) == 0), "Размер стороны по Z должен быть кратен 3." );
+    */
 }
 
 
 
-template< size_t SX, size_t SY, size_t SZ >
-inline Topology< SX, SY, SZ >::~Topology() {    
-}
-
-
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::atmosphere_t const& Topology< SX, SY, SZ >::atmosphere() const {
-    return mAtmosphere;
-}
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::atmosphere_t& Topology< SX, SY, SZ >::atmosphere() {
-    return mAtmosphere;
+inline Topology::~Topology() {    
 }
 
 
 
 
 
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::crust_t const& Topology< SX, SY, SZ >::crust() const {
-    return mCrust;
+inline set::topology_t const& Topology::topology() const {
+    return mTopology;
 }
 
 
 
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::crust_t& Topology< SX, SY, SZ >::crust() {
-    return mCrust;
+inline set::topology_t& Topology::topology() {
+    return mTopology;
 }
-
-
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::living_t const& Topology< SX, SY, SZ >::living() const {
-    return mLiving;
-}
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::living_t& Topology< SX, SY, SZ >::living() {
-    return mLiving;
-}
-
-
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::component_t const& Topology< SX, SY, SZ >::component() const {
-    return mComponent;
-}
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::component_t& Topology< SX, SY, SZ >::component() {
-    return mComponent;
-}
-
-
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::temperature_t const& Topology< SX, SY, SZ >::temperature() const {
-    return mTemperature;
-}
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::temperature_t& Topology< SX, SY, SZ >::temperature() {
-    return mTemperature;
-}
-
-
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::precipitations_t const& Topology< SX, SY, SZ >::precipitations() const {
-    return mPrecipitations;
-}
-
-
-
-template< size_t SX, size_t SY, size_t SZ >
-inline typename Topology< SX, SY, SZ >::precipitations_t& Topology< SX, SY, SZ >::precipitations() {
-    return mPrecipitations;
-}
-
 
 
     } // planet
@@ -128,70 +45,76 @@ inline typename Topology< SX, SY, SZ >::precipitations_t& Topology< SX, SY, SZ >
 
 namespace std {
 
+#if 0
 
-template< size_t SX, size_t SY, size_t SZ >
-inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::Topology< SX, SY, SZ >& tp ) {
-    const auto atmosphere = tp.atmosphere();
-    const auto crust = tp.crust();
-    const auto living = tp.living();
+inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::Topology& tp ) {
+    const auto aboutPlanet = tp.aboutPlanet();
+
     const auto component = tp.component();
+    const auto aboutComponent = tp.aboutComponent();
+
+    auto pressure = tp.pressure();
+    static const size_t PG = portulan::planet::structure::PRESSURE_GRID;
+    const std::pair< float*, float* > pminmax = std::minmax_element(
+        pressure.average,
+        pressure.average + PG * PG * PG
+    );
 
     auto temperature = tp.temperature();
-    static const size_t TG =
-        portulan::planet::Topology< SX, SY, SZ >::TEMPERATURE_GRID;
+    static const size_t TG = portulan::planet::structure::TEMPERATURE_GRID;
     const std::pair< float*, float* > tminmax = std::minmax_element(
-        temperature.content,
-        temperature.content + TG * TG * TG
+        temperature.average,
+        temperature.average + TG * TG * TG
     );
 
     auto precipitations = tp.precipitations();
-    static const size_t PG =
-        portulan::planet::Topology< SX, SY, SZ >::PRECIPITATIONS_GRID;
-    const std::pair< float*, float* > pminmax = std::minmax_element(
-        precipitations.content,
-        precipitations.content + PG * PG * PG
+    static const size_t RG = portulan::planet::structure::PRECIPITATIONS_GRID;
+    const std::pair< float*, float* > rminmax = std::minmax_element(
+        precipitations.rainfall,
+        precipitations.rainfall + RG * RG * RG
     );
 
-    static const size_t AG =
-        portulan::planet::Topology< SX, SY, SZ >::ATMOSPHERE_GRID;
+    const auto aboutSurfaceVoid = tp.aboutSurfaceVoid();
+
+    const auto living = tp.living();
+    const auto aboutLiving = tp.aboutLiving();
+
     out <<
         "Память, занимаемая топологией планеты\n" <<
             "\ttopology " << sizeof( tp ) / 1024 / 1024 << " Мб\n" <<
-                "\t\tatmosphere " << sizeof( atmosphere ) / 1024 / 1024 << " Мб\n" <<
-                    "\t\t\tcontent " <<
-                        portulan::planet::Topology< SX, SY, SZ >::ATMOSPHERE_GRID << "x " <<
-                        sizeof( atmosphere.content ) / 1024 / 1024 << " Мб\n" <<
-                    "\t\t\tpressure " <<
-                        portulan::planet::Topology< SX, SY, SZ >::PRESSURE_ATMOSPHERE_GRID << "x " <<
-                        sizeof( atmosphere.pressure ) / 1024 << " Кб\n" <<
-                    "\t\t\twind " <<
-                        portulan::planet::Topology< SX, SY, SZ >::WIND_ATMOSPHERE_GRID << "x " <<
-                        sizeof( atmosphere.wind ) / 1024 << " Кб\n" <<
-                "\t\tcrust " <<
-                    portulan::planet::Topology< SX, SY, SZ >::CRUST_GRID << "x " <<
-                    sizeof( crust ) / 1024 / 1024 << " Мб\n" <<
-                "\t\tliving " << sizeof( living ) / 1024 / 1024 << " Мб\n" <<
-                    "\t\t\tcontent " <<
-                        portulan::planet::Topology< SX, SY, SZ >::LIVING_GRID << "x " <<
-                        sizeof( living.content ) / 1024 / 1024 << " Мб\n" <<
-                    "\t\t\tspecimen " <<
-                        portulan::planet::Topology< SX, SY, SZ >::SPECIMEN_COUNT << "u " <<
-                        sizeof( living.specimen ) / 1024 << " Кб\n" <<
+                "\t\taboutPlanet " <<
+                    sizeof( aboutPlanet ) / 1024 << " Кб\n" <<
                 "\t\tcomponent " << sizeof( component ) / 1024 / 1024 << " Мб\n" <<
                     "\t\t\tcontent " <<
-                        portulan::planet::Topology< SX, SY, SZ >::COMPONENT_GRID << "x " <<
+                        portulan::planet::structure::COMPONENT_GRID << "x " <<
+                        portulan::planet::structure::COMPONENT_CELL << "u " <<
                         sizeof( component.content ) / 1024 / 1024 << " Мб\n" <<
-                    "\t\t\ttype " <<
-                        portulan::planet::Topology< SX, SY, SZ >::TYPE_COMPONENT_COUNT << "u " <<
-                        sizeof( component.type ) / 1024 << " Кб\n" <<
+                "\t\taboutComponent " <<
+                    portulan::planet::structure::COMPONENT_COUNT << "u " <<
+                    sizeof( aboutComponent ) / 1024 << " Кб\n" <<
+                "\t\tliving " << sizeof( living ) / 1024 / 1024 << " Мб\n" <<
+                    "\t\t\tcontent " <<
+                        portulan::planet::structure::LIVING_GRID << "x " <<
+                        portulan::planet::structure::LIVING_CELL << "u " <<
+                        sizeof( living.content ) / 1024 / 1024 << " Мб\n" <<
+                "\t\taboutLiving " <<
+                    portulan::planet::structure::LIVING_COUNT << "u " <<
+                    sizeof( aboutLiving ) / 1024 << " Кб\n" <<
+                "\t\tpressure " <<
+                    portulan::planet::structure::PRESSURE_GRID << "x " <<
+                    sizeof( pressure ) / 1024 / 1024 << " Мб\n" <<
+                    "\t\t\taverage [ " << *pminmax.first << "; " << *pminmax.second << " ]\n" <<
                 "\t\ttemperature " <<
-                    portulan::planet::Topology< SX, SY, SZ >::TEMPERATURE_GRID << "x " <<
-                    sizeof( temperature ) / 1024 << " Кб" <<
-                    "  [ " << *tminmax.first << "; " << *tminmax.second << " ]\n" <<
+                    portulan::planet::structure::TEMPERATURE_GRID << "x " <<
+                    sizeof( temperature ) / 1024 / 1024 << " Мб\n" <<
+                    "\t\t\taverage [ " << *tminmax.first << "; " << *tminmax.second << " ]\n" <<
                 "\t\tprecipitations " <<
-                    portulan::planet::Topology< SX, SY, SZ >::PRECIPITATIONS_GRID << "x " <<
-                    sizeof( precipitations ) / 1024 << " Кб" <<
-                    "  [ " << *pminmax.first << "; " << *pminmax.second << " ]\n" <<
+                    portulan::planet::structure::PRECIPITATIONS_GRID << "x " <<
+                    sizeof( precipitations ) / 1024 / 1024 << " Мб\n" <<
+                    "\t\t\trainfall [ " << *rminmax.first << "; " << *rminmax.second << " ]\n" <<
+                "\t\tsurfaceVoid " <<
+                    portulan::planet::structure::SURFACE_VOID_GRID << "x " <<
+                    sizeof( aboutSurfaceVoid ) / 1024 /1024 << " Мб\n" <<
     std::endl;
 
     return out;
@@ -201,7 +124,7 @@ inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::Top
 
 
 
-inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::euid_t& uid ) {
+inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::structure::euid_t& uid ) {
     out << static_cast< unsigned int >( uid.group ) <<
         "." << static_cast< unsigned int >( uid.code );
     return out;
@@ -211,10 +134,11 @@ inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::eui
 
 
 
-inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::eportion_t& ep ) {
-    out << ep.uid << ":" << ep.count;
+inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::structure::eportion_t& ep ) {
+    out << ep.code << ":" << ep.count;
     return out;
 }
+
 
 
 
@@ -289,6 +213,7 @@ inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::Top
     return out;
 }
 
+#endif
 
 
 } // std

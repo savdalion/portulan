@@ -13,7 +13,6 @@
 namespace portulan {
     namespace planet {
 
-template< size_t SX, size_t SY, size_t SZ >
 class Portulan;
 
     }
@@ -23,8 +22,7 @@ class Portulan;
 /* - @todo ...
 namespace std {
 
-template< size_t SX, size_t SY, size_t SZ >
-std::ostream& operator<<( std::ostream&, const typelib::Portulan< SX, SY, SZ >& );
+std::ostream& operator<<( std::ostream&, const portulan::planet::Portulan& );
 
 } // std
 */
@@ -49,7 +47,6 @@ namespace portulan {
 *   # Общие сущности позиционируются по целым ячейкам.
 *
 */
-template< size_t SX, size_t SY, size_t SZ >
 class Portulan {
 public:
     /**
@@ -58,10 +55,6 @@ public:
     typedef std::shared_ptr< Portulan >  Ptr;
     typedef std::unique_ptr< Portulan >  UPtr;
     typedef std::weak_ptr< Portulan >    WPtr;
-
-
-    typedef Topology< SX, SY, SZ>  topology_t;
-
 
 
 public:
@@ -78,23 +71,15 @@ public:
 
 
 
-    inline topology_t const& topology() const {
+    inline Topology const& topology() const {
         return mTopology;
     }
 
 
 
-    inline topology_t& topology() {
+    inline Topology& topology() {
         return mTopology;
     }
-
-
-
-    /**
-    * Согласовывает все характеристики топологии.
-    * Правила - см. в коде метода.
-    */
-    void harmonize();
 
 
 
@@ -106,7 +91,7 @@ private:
     /**
     * Топология планеты.
     */
-    topology_t mTopology;
+    Topology mTopology;
 
 };
 
