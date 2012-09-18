@@ -371,39 +371,160 @@ enum TAG_LIVING {
 
 
 
+/**
+* Тип атаки особи.
+*
+* @see http://crawl.chaosforge.org/index.php?title=Attack_type
+* @see http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_flags_by_name.html
+*/
+enum TYPE_ATTACK_LIVING {
+    // нет атаки (служит признаком завершения списка атак)
+    TAL_NONE = 0,
+
+    // любая атака (исп. для задания защиты от атак, поиска атак в паре тип + вкус)
+    TAL_ANY = 1,
+
+    // раздробить, нанести тупой удар
+    TAL_CRUSH,
+    // порезать, нанести режущий удар, перекусить клешнями
+    TAL_CUTTING,
+    // разорвать когтями, руками
+    TAL_CLAW,
+    // сжать / душить руками, клешнями, щупальцами
+    TAL_CONSTRICT,
+    // поглотить
+    TAL_ENGULF,
+    // пронзить, нанести колющий удар
+    TAL_PIERCE,
+
+    // выстрелить, метнуть, брызнуть, плюнуть, выдохнуть в заданном направлении
+    // @see TAL_MAGIC
+    // @see Соглашение о защите в aboutOnePartLiving_t::resist.
+    // попадание тупой пулей
+    TAL_SHOOT_CRUSH,
+    // попадание газом (например, дыхание огнём / холодом / брызгами)
+    TAL_SHOOT_GAS,
+    // попадание жидкостью (например, кислота)
+    TAL_SHOOT_LIQUID,
+    // попадание острой пулей
+    TAL_SHOOT_PIERCE,
+
+    // прикоснуться (см. "вкус атаки")
+    TAL_TOUCH,
+    // толкнуть
+    TAL_TRAMPLE,
+
+    // провести магическую атаку
+    //   #! Маг. атака - это атака, не требущая физ. контакта с целью. Т.е.,
+    //     "магия" - это возможность донести вкус атаки (см. ниже) до цели без
+    //     необходимости каким-либо образом касаться цели.
+    // @see TAL_SHOOT
+    TAL_MAGIC
+};
+
 
 
 /**
-* Виды воздействия органа особи.
+* Вкус атаки.
+*
+* @see http://crawl.chaosforge.org/index.php?title=Attack_flavour
 */
-typedef struct {
-    // механическое действие
-    //   - дробящий удар
-    //   - режущий удар
-    //   - колющий удар
-    cl_float crush;
-    cl_float cutting;
-    cl_float thrust;
+enum FLAVOUR_ATTACK_LIVING {
+    // нет вкуса, простая атака
+    FAL_PLAIN = 0,
+    FAL_NONE = FAL_PLAIN,
 
-    // @see http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_flags_by_name.html
+    // любая атака (исп. для задания защиты от атак, поиска атак в паре тип + вкус)
+    FAL_ANY = FAL_PLAIN,
 
-    cl_float acid;
-    cl_float cold;
-    cl_float electricity;
-    cl_float fire;
-    cl_float hellfire;
-    cl_float holyword;
-    cl_float negative;
+    // действие кислотой
+    FAL_ACID,
 
+    // телепортировать близко
+    FAL_BLINK,
+
+    // действие холодом
+    FAL_COLD,
+
+    // сбить с толку
+    FAL_CONFUSE,
+
+    // действие электричеством
+    FAL_ELECTRICITY,
+
+    // действие огнём
+    FAL_FIRE,
+
+    // действие адским огнём
+    FAL_HELLFIRE,
+
+    // действие святым словом
+    FAL_HOLYWORD,
+
+    // действие отрицательной энергией
+    FAL_NEGATIVE,
+
+    // парализовать
+    FAL_PARALYZE,
+
+    // отравить
     //   # Шкала отравлений согласно http://crawl.chaosforge.org/index.php?title=Poison#Poison_Types
     //     10 - обычная (regular)
     //     20 - средняя (medium)
     //     40 - сильная (strong)
     //     80 - мерзкая (nasty)
-    cl_float poison;
+    FAL_POISON,
 
-} impactLiving_t;
+    // лечит атакующего на 1d(нанесённое повреждение)
+    FAL_VAMPIRIC_DRAINING
+};
 
+
+
+
+/**
+* Структура для описания атаки особи.
+* Наряду с типом и вкусом атаки задаётся сила атаки.
+* 
+*   # Сила атаки - это творческая компиляция значения Damage из
+*     http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
+*/
+typedef struct {
+    TYPE_ATTACK_LIVING     type;
+    FLAVOUR_ATTACK_LIVING  flavour;
+    cl_float               force;
+} aboutOnePartAttack_t;
+
+
+
+/**
+* Атаки, известные органу особи.
+*/
+typedef aboutOnePartAttack_t  attackPartLiving_t[ ATTACK_PART_LIVING_COUNT ];
+
+
+
+
+
+/**
+* Структура для описания защиты особи.
+* Наряду с типом и вкусом атаки задаётся сила защиты от этой атаки.
+* 
+*   # Сила защиты - это творческая компиляция значений AC и MR из
+*     http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
+*/
+typedef struct {
+    TYPE_ATTACK_LIVING     type;
+    FLAVOUR_ATTACK_LIVING  flavour;
+    cl_float               force;
+} aboutOnePartResist_t;
+
+
+
+/**
+* Защиты от известных атак.
+*/
+typedef aboutOnePartResist_t  resistPartLiving_t[ RESIST_PART_LIVING_COUNT ];
 
 
 
@@ -529,20 +650,24 @@ typedef struct {
 
 
     /**
-    * Силы действия органа особи.
-    * Как орган может воздействовать на окружающую среду.
+    * Атаки, известные органу особи.
+    *   # Из-за относительно большого разброса возможностей атак, для особи
+    *     не задаётся "общая атака" (как для защиты "resist"): все атаки
+    *     содержат абсолютные значения.
     */
-    impactLiving_t attack;
+    attackPartLiving_t attack;
 
 
     /**
     * Защита органа относительно общей защиты особи.
-    * Как надёжно орган защищён от воздействия окружающей среды.
+    * Как надёжно орган защищён от воздействия.
     *   # Защита части тела = resist особи + Относительная защита органа
     *   # Для относительной защиты органа никогда не пишется IMMUNE (достаточно
     *     записи для особи).
+    *   # Защита для вкусов TAL_SHOOT_CRUSH и TAL_SHOOT_PIERCE совпадает соотв.
+    *     с TAL_CRUSH и TAL_PIERCE.
     */
-    impactLiving_t resist;
+    resistPartLiving_t resist;
 
 } aboutOnePartLiving_t;
 
@@ -585,6 +710,7 @@ typedef struct {
     * Аналог уровня особи.
     * Влияет на защиту и атаку особи.
     *
+    * @see Комм. к aboutOnePartLiving_t::attack.
     * @see http://crawl.chaosforge.org/index.php?title=Hit_dice
     */
     cl_float hitDice;
@@ -595,14 +721,17 @@ typedef struct {
     * Определяет базовые значения защиты частей тела (органов).
     *
     *   # Творческая компиляция значений AC и MR из http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
-    *   # Если особь уязвима к опред. виду воздействия, значение защиты = -1.0.
+    *   # Общая магическая защита от атаки записывается
+    *     парой TAL_MAGIC + FAL_ANY и значением MR из http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
+    *   # Если особь уязвима к опред. виду воздействия, значение защиты <= -1.0.
     *
-    * @see aboutOnePartLiving_t::resist
+    * @see Соглашение о защите в aboutOnePartLiving_t::resist.
+    * @see Комм. к aboutOnePartLiving_t::attack и aboutOnePartLiving_t::resist.
     * @see Armour class > http://crawl.chaosforge.org/index.php?title=AC
     * @see Magic resistance > http://crawl.chaosforge.org/index.php?title=MR
     * @see Вычисление > http://crawl.chaosforge.org/index.php?title=AC_calculations
     */
-    impactLiving_t resist;
+    resistPartLiving_t resist;
 
 
     /**
@@ -715,7 +844,6 @@ typedef struct {
     cl_float immunity;
 
 
-
     /**
     * *Разные* компоненты, которые необходимы особи для жизни.
     * кг / день
@@ -787,7 +915,6 @@ typedef struct {
     } metabolism_t;
 
     metabolism_t metabolism;
-
 
 
     /**

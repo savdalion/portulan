@@ -101,6 +101,20 @@ static const size_t PART_LIVING_COUNT = 20;
 
 
 /**
+* ћаксимальное кол-во *разных* атак, известных органу особи.
+*/
+static const size_t ATTACK_PART_LIVING_COUNT = 30;
+
+
+
+/**
+* ћаксимальное кол-во *разных* защит, известных органу особи.
+*/
+static const size_t RESIST_PART_LIVING_COUNT = ATTACK_PART_LIVING_COUNT;
+
+
+
+/**
 * ћаксимальное кол-во наборов сред обитани€, в которых может
 * жить особь.
 */

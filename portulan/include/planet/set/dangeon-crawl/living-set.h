@@ -54,26 +54,37 @@ static const aboutLiving_t aboutLiving = {
 
     // resist
     {
-        // crush, cutting, thrust
-        4.0f, 5.0f, 6.0f,
-        // acid
-        4.0f,
-        // cold
-        4.0f,
-        // electricity
-        4.0f,
-        // fire
-        4.0f,
-        // helfire
-        //   # Особый вид магии, у этой особи нет от него защиты.
-        0.0f,
-        // holyword
+        // общая защита от физ. атаки
+        { TAL_CRUSH,     FAL_PLAIN,  4.0f },
+        { TAL_CUTTING,   FAL_PLAIN,  5.0f },
+        { TAL_CLAW,      FAL_PLAIN,  3.0f },
+        { TAL_CONSTRICT, FAL_PLAIN,  4.0f },
+        { TAL_ENGULF,    FAL_PLAIN,  4.0f },
+        { TAL_PIERCE,    FAL_PLAIN,  6.0f },
+        { TAL_SHOOT_CRUSH,  FAL_PLAIN,  4.0f },
+        { TAL_SHOOT_GAS,    FAL_PLAIN,  0.0f },
+        { TAL_SHOOT_LIQUID, FAL_PLAIN,  0.0f },
+        { TAL_SHOOT_PIERCE, FAL_PLAIN,  6.0f },
+        { TAL_TOUCH,     FAL_PLAIN,  0.0f },
+        { TAL_TRAMPLE,    FAL_PLAIN,  0.0f },
+        // общая защита от маг. атаки
+        { TAL_MAGIC,     FAL_ANY,    12.0f },
+        // общая защита от вкуса атаки
+        { TAL_ANY,       FAL_ACID,               4.0f },
+        { TAL_ANY,       FAL_BLINK,              0.0f },
+        { TAL_ANY,       FAL_COLD,               0.0f },
+        { TAL_ANY,       FAL_CONFUSE,            0.0f },
+        { TAL_ANY,       FAL_ELECTRICITY,        2.0f },
+        { TAL_ANY,       FAL_FIRE,               2.0f },
+        { TAL_ANY,       FAL_HELLFIRE,           0.0f },
         // муравей неуязвим для этой магии, т.к. не является нежитью
-        IMMUNE,
-        // negative
-        4.0f,
-        // poison
-        -1.0f
+        { TAL_ANY,       FAL_HOLYWORD,           IMMUNE },
+        { TAL_ANY,       FAL_NEGATIVE,           0.0f },
+        { TAL_ANY,       FAL_PARALYZE,           0.0f },
+        { TAL_ANY,       FAL_POISON,            -1.0f },
+        { TAL_ANY,       FAL_VAMPIRIC_DRAINING,  0.0f },
+        // признак завершения списка
+        { TAL_NONE,  FAL_NONE,  0.0f }
     },
 
     // evasion
@@ -146,48 +157,12 @@ static const aboutLiving_t aboutLiving = {
             // attack
             // голова не атакует (это делают мандибулы)
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // голова защищена от некоторых видов воздействий
+            // @todo Голова лучше защищена от некоторых видов воздействий.
             {
-                // crush, cutting, thrust
-                2.0f, 2.0f, 2.0f,
-                // acid
-                // от воздействия кислоты защищает хитин
-                3.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                // яд быстрее повреждает голову
-                -2.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 0 - голова
 
@@ -237,46 +212,11 @@ static const aboutLiving_t aboutLiving = {
             // attack
             // грудь не атакует (это делают мандибулы)
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
             {
-                // crush, cutting, thrust
-                1.0f, 1.0f, 1.0f,
-                // acid
-                // от воздействия кислоты защищает хитин
-                2.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                -1.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 1 - грудь (средняя часть тела)
 
@@ -328,47 +268,11 @@ static const aboutLiving_t aboutLiving = {
             // attack
             // брюшко не атакует (это делают мандибулы)
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                // от воздействия кислоты немного защищает тонкий хитин
-                1.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                // брюшко уязвимо для яда
-                -1.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 2 - брюшко (задняя часть тела)
 
@@ -417,48 +321,13 @@ static const aboutLiving_t aboutLiving = {
             // attack
             // мозг муравья не атакует (это делают мандибулы)
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // мозг очень уязвим, но защиту даёт голова (мозг
-            // находится внутри головы)
+            // @todo Мозг очень уязвим, но защиту даёт голова (мозг
+            // находится внутри головы).
             {
-                // crush, cutting, thrust
-                -10.0f, -20.0f, -30.0f,
-                // acid
-                -10.0f,
-                // cold
-                -10.0f,
-                // electricity
-                -10.0f,
-                // fire
-                -10.0f,
-                // helfire
-                -10.0f,
-                // holyword
-                0.0f,
-                // negative
-                -20.0f,
-                // poison
-                // мозг неплохо переносит яд
-                5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 3 - мозг (находится внутри головы)
 
@@ -507,51 +376,20 @@ static const aboutLiving_t aboutLiving = {
             { { pc::CE_NONE } },
             // attack
             {
-                // crush, cutting, thrust
-                // не может жвалами проколоть, но раздробить / разрезать - вполне
+                // не может жвалами пронзить, но раздробить / разрезать - вполне
                 // @see http://crawl.chaosforge.org/index.php?title=Worker_ant
-                4.0f, 8.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
+                { TAL_CRUSH,     FAL_PLAIN,  4.0f },
+                { TAL_CUTTING,   FAL_PLAIN,  8.0f },
                 // впрыскивает отраву
                 // @see http://crawl.chaosforge.org/index.php?title=Poison
-                10.0f
+                { TAL_ANY,       FAL_POISON,            -1.0f },
+                // .
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
+            // @todo Жвалы защищены лучше.
             {
-                // crush, cutting, thrust
-                3.0f, 2.0f, 1.0f,
-                // acid
-                // от воздействия кислоты защищает хитин
-                5.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                // неплохо защищены от яда
-                10.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 4 - жвалы (прикреплены к голове)
 
@@ -598,46 +436,12 @@ static const aboutLiving_t aboutLiving = {
             { { pc::CE_NONE } },
             // attack
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // глаз уязвим для многих видов аттак
+            // @todo Глаза очень уязвимы.
             {
-                // crush, cutting, thrust
-                -10.0f, -15.0f, -30.0f,
-                // acid
-                -50.0f,
-                // cold
-                -10.0f,
-                // electricity
-                -10.0f,
-                // fire
-                -10.0f,
-                // helfire
-                -10.0f,
-                // holyword
-                0.0f,
-                // negative
-                -10.0f,
-                // poison
-                -5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 5 - левый глаз (прикреплён к голове)
 
@@ -684,46 +488,12 @@ static const aboutLiving_t aboutLiving = {
             { { pc::CE_NONE } },
             // attack
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // глаз уязвим для многих видов аттак
+            // @todo Глаза очень уязвимы.
             {
-                // crush, cutting, thrust
-                -10.0f, -15.0f, -30.0f,
-                // acid
-                -50.0f,
-                // cold
-                -10.0f,
-                // electricity
-                -10.0f,
-                // fire
-                -10.0f,
-                // helfire
-                -10.0f,
-                // holyword
-                0.0f,
-                // negative
-                -10.0f,
-                // poison
-                -5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 6 - правый глаз (прикреплён к голове)
 
@@ -773,46 +543,12 @@ static const aboutLiving_t aboutLiving = {
             { { pc::CE_NONE } },
             // attack
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // усик хорошо защищён от многих видов аттак
+            // @todo Усик хорошо защищён от многих видов аттак.
             {
-                // crush, cutting, thrust
-                50.0f, 10.0f, 20.0f,
-                // acid
-                30.0f,
-                // cold
-                10.0f,
-                // electricity
-                10.0f,
-                // fire
-                10.0f,
-                // helfire
-                10.0f,
-                // holyword
-                0.0f,
-                // negative
-                10.0f,
-                // poison
-                10.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 7 - левый усик (прикреплён к голове)
 
@@ -862,46 +598,12 @@ static const aboutLiving_t aboutLiving = {
             { { pc::CE_NONE } },
             // attack
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // усик хорошо защищён от аттак
+            // @todo Усик хорошо защищён от многих видов аттак.
             {
-                // crush, cutting, thrust
-                50.0f, 10.0f, 20.0f,
-                // acid
-                30.0f,
-                // cold
-                10.0f,
-                // electricity
-                10.0f,
-                // fire
-                10.0f,
-                // helfire
-                10.0f,
-                // holyword
-                0.0f,
-                // negative
-                10.0f,
-                // poison
-                10.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 8 - правый усик (прикреплён к голове)
 
@@ -952,48 +654,12 @@ static const aboutLiving_t aboutLiving = {
             // excretionEnergy
             { { pc::CE_NONE } },
             // attack
-            // муравей не может что-либо повредить лапкой
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // лапка неплохо защищена от аттак
             {
-                // crush, cutting, thrust
-                20.0f, 5.0f, 10.0f,
-                // acid
-                10.0f,
-                // cold
-                5.0f,
-                // electricity
-                5.0f,
-                // fire
-                5.0f,
-                // helfire
-                5.0f,
-                // holyword
-                0.0f,
-                // negative
-                5.0f,
-                // poison
-                5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 9 - левая передняя лапка (прикреплена к груди)
 
@@ -1041,48 +707,12 @@ static const aboutLiving_t aboutLiving = {
             // excretionEnergy
             { { pc::CE_NONE } },
             // attack
-            // муравей не может что-либо повредить лапкой
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // лапка неплохо защищена от аттак
             {
-                // crush, cutting, thrust
-                20.0f, 5.0f, 10.0f,
-                // acid
-                10.0f,
-                // cold
-                5.0f,
-                // electricity
-                5.0f,
-                // fire
-                5.0f,
-                // helfire
-                5.0f,
-                // holyword
-                0.0f,
-                // negative
-                5.0f,
-                // poison
-                5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 10 - левая средняя лапка (прикреплена к груди)
 
@@ -1130,48 +760,12 @@ static const aboutLiving_t aboutLiving = {
             // excretionEnergy
             { { pc::CE_NONE } },
             // attack
-            // муравей не может что-либо повредить лапкой
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // лапка неплохо защищена от аттак
             {
-                // crush, cutting, thrust
-                20.0f, 5.0f, 10.0f,
-                // acid
-                10.0f,
-                // cold
-                5.0f,
-                // electricity
-                5.0f,
-                // fire
-                5.0f,
-                // helfire
-                5.0f,
-                // holyword
-                0.0f,
-                // negative
-                5.0f,
-                // poison
-                5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 11 - левая задняя лапка (прикреплена к груди)
 
@@ -1222,48 +816,12 @@ static const aboutLiving_t aboutLiving = {
             // excretionEnergy
             { { pc::CE_NONE } },
             // attack
-            // муравей не может что-либо повредить лапкой
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // лапка неплохо защищена от аттак
             {
-                // crush, cutting, thrust
-                20.0f, 5.0f, 10.0f,
-                // acid
-                10.0f,
-                // cold
-                5.0f,
-                // electricity
-                5.0f,
-                // fire
-                5.0f,
-                // helfire
-                5.0f,
-                // holyword
-                0.0f,
-                // negative
-                5.0f,
-                // poison
-                5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 12 - правая передняя лапка (прикреплена к груди)
 
@@ -1311,48 +869,12 @@ static const aboutLiving_t aboutLiving = {
             // excretionEnergy
             { { pc::CE_NONE } },
             // attack
-            // муравей не может что-либо повредить лапкой
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // лапка неплохо защищена от аттак
             {
-                // crush, cutting, thrust
-                20.0f, 5.0f, 10.0f,
-                // acid
-                10.0f,
-                // cold
-                5.0f,
-                // electricity
-                5.0f,
-                // fire
-                5.0f,
-                // helfire
-                5.0f,
-                // holyword
-                0.0f,
-                // negative
-                5.0f,
-                // poison
-                5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 13 - правая средняя лапка (прикреплена к груди)
 
@@ -1400,48 +922,12 @@ static const aboutLiving_t aboutLiving = {
             // excretionEnergy
             { { pc::CE_NONE } },
             // attack
-            // муравей не может что-либо повредить лапкой
             {
-                // crush, cutting, thrust
-                0.0f, 0.0f, 0.0f,
-                // acid
-                0.0f,
-                // cold
-                0.0f,
-                // electricity
-                0.0f,
-                // fire
-                0.0f,
-                // helfire
-                0.0f,
-                // holyword
-                0.0f,
-                // negative
-                0.0f,
-                // poison
-                0.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             },
             // resist
-            // лапка неплохо защищена от аттак
             {
-                // crush, cutting, thrust
-                20.0f, 5.0f, 10.0f,
-                // acid
-                10.0f,
-                // cold
-                5.0f,
-                // electricity
-                5.0f,
-                // fire
-                5.0f,
-                // helfire
-                5.0f,
-                // holyword
-                0.0f,
-                // negative
-                5.0f,
-                // poison
-                5.0f
+                { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 14 - правая задняя лапка (прикреплена к груди)
     },
