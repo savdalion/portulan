@@ -22,16 +22,18 @@ namespace portulan {
 * GROUP_ELEMENT::GE_LIVING.
 *
 *   # ∆ивотные, насекомые, растени€ и др. подобные группы именуютс€ "особ€ми".
+*   #! Ќумераци€ особей должна соотв. индексу в списке aboutLiving_t.
 *
 * @see http://koti.welho.com/jarmoki/crawl/crawl_ss_monsters_by_name.html
 */
 enum CODE_LIVING {
-    // код отсутствует или неопределЄн
+    // код отсутствует или не определЄн
     CL_NONE = 0,
 
     // @see http://koti.welho.com/jarmoki/crawl/monsters/worker_ant.html
-    CL_ANT_WORKER,
+    CL_WORKER_ANT = 1
 
+    /* - @todo ...
     // цветы (абстракци€)
     CL_FLOWER,
 
@@ -42,6 +44,7 @@ enum CODE_LIVING {
     CL_TREE_TINY,
     CL_TREE_AVERAGE,
     CL_TREE_HIGH
+    */
 };
 
 
@@ -69,7 +72,7 @@ typedef struct {
 * ѕеречисление общих частей тела живых существ.
 */
 enum COMMON_PART_LIVING {
-    // пуста€ часть или часть неопределена
+    // пуста€ часть или часть не определена
     // используетс€ как признак, что орган не прикреплЄн ни к какому
     // другому органу
     CPL_NONE = 0,
@@ -93,7 +96,8 @@ enum COMMON_PART_LIVING {
     // лапа животного
     CPL_LEG
     /* - @todo extend ƒобавление железы повлечЄт за собой усложнение структуры.
-         —ейчас €д будет создаватьс€ в органе, который воздействует на окр. среду.
+         —ейчас €д будет создаватьс€ в том же органе, который воздействует
+         на окр. среду.
     // €довита€ железа
     CPL_VENOM_GLAND
     */
@@ -981,6 +985,7 @@ typedef struct {
 
 /**
 * »нформаци€ об особ€х.
+*   #! ¬ этом списке индекс особи соотв. коду особи.
 */
 typedef aboutOneLiving_t  aboutLiving_t[ LIVING_COUNT ];
 
@@ -991,15 +996,47 @@ typedef aboutOneLiving_t  aboutLiving_t[ LIVING_COUNT ];
 * в области планеты (в портулане). Ёти данные используютс€ дл€ формировани€
 * ареалов обитани€ в области планеты.
 */
-typedef portionLiving_t  livingAll_t[ LIVING_COUNT ];
+typedef struct {
+    CODE_LIVING code;
+    // всего особей в области планеты
+    cl_float count;
+    // мин. и макс. кол-во особей в группе;
+    // это кол-во определ€ет густоту заселени€ планеты особ€ми
+    cl_float minGroup;
+    cl_float maxGroup;
+} portionLivingWithQtyGroup_t;
+typedef portionLivingWithQtyGroup_t  livingAll_t[ LIVING_COUNT ];
 
 
 
 /**
 * ћакс. кол-во особей с указанием количества, которые могут
 * *одновременно* находитьс€ в 1-й €чейке портулана.
+*   # –аботаем с кол-вами особей по всему жизн. циклу LIFE_CYCLE.
 */
-typedef portionLiving_t  livingCell_t[ LIVING_COUNT ];
+typedef portionLiving_t  livingCount_t[ LIFE_CYCLE ];
+typedef livingCount_t    livingCell_t[ LIVING_CELL ];
+
+
+
+/**
+* ∆ивой мир (растени€, животные и пр.; далее - особи).
+*  ол-во особей по ареалам обитани€; область планеты разбиваетс€ на объЄм
+* 27х27х27 и кажда€ полученна€ €чейка считаетс€ ареалом обитани€ групп
+* особей; т.о. *каждой* группе живого мира сопоставл€етс€ 19683 ареалов
+* обитани€.
+*/
+typedef struct {
+    /**
+    *  ол-во особей в €чейке.
+    *  ол-во больных особей определ€етс€ @todo очагами болезней и
+    * иммунитетом особей.
+    * ќсоби собраны по группам.
+    */
+    typedef livingCell_t content_t[ LIVING_GRID * LIVING_GRID * LIVING_GRID ];
+    content_t content;
+
+} living_t;
 
 
 

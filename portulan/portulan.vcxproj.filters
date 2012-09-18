@@ -72,6 +72,18 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\topology.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\planet.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\component-set.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\display.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\display.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\io\VolumeVTKVisual.inl">

@@ -2,7 +2,10 @@
 
 #include "structure.h"
 #include "component.h"
+#include "component-set.h"
 #include "living.h"
+#include "living-set.h"
+#include "planet.h"
 
 
 namespace portulan {
@@ -23,13 +26,13 @@ namespace portulan {
 *     избежать создания booster-структуры (см. porte::Booster).
 */
 typedef struct {
-    //aboutPlanet_t       aboutPlanet;
+    dungeoncrawl::aboutPlanet_t                aboutPlanet;
 
-    dungeoncrawl::component::aboutComponent_t    aboutComponent;
-    //dungeoncrawl::component::component_t         component;
+    dungeoncrawl::component::aboutComponent_t  aboutComponent;
+    dungeoncrawl::component::component_t       component;
 
-    dungeoncrawl::living::aboutLiving_t          aboutLiving;
-    //dungeoncrawl::living::living_t            living;
+    dungeoncrawl::living::aboutLiving_t        aboutLiving;
+    dungeoncrawl::living::living_t             living;
 
     //pressure_t          pressure;
     //temperature_t       temperature;

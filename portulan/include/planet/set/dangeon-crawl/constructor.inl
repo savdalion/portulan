@@ -632,7 +632,7 @@ inline void copyFill(
 		itrDst->count = static_cast< cl_float >( itrSrc->second * k );
     }
 
-    // дозаполняем хвост неопределёнными элементами и нулями
+    // дозаполняем хвост не определёнными элементами и нулями
 	for (size_t i = 0; i < n; ++i, ++itrDst) {
         itrDst->code = static_cast< codeLiving_t >( 0 );
 		itrDst->count = static_cast< cl_float >( 0.0 );
@@ -663,7 +663,7 @@ inline void copyFill(
         *itrDst = static_cast< D >( (*itrSrc) * k );
     }
 
-    // дозаполняем хвост неопределёнными элементами и нулями
+    // дозаполняем хвост не определёнными элементами и нулями
 	for (size_t i = 0; i < n; ++i, ++itrDst) {
         *itrDst = static_cast< D >( 0 );
     }

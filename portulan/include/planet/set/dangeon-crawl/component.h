@@ -19,30 +19,32 @@ namespace portulan {
 /**
 * Перечисление кодов в группе компонентов
 * GROUP_ELEMENT::GE_COMPONENT.
+*
+*   #! Нумерация компонентов должна соотв. индексу в списке aboutComponent_t.
 */
 #undef CC_NONE
 enum CODE_COMPONENT {
-    // компонент отсутствует или неопределён
+    // компонент отсутствует или не определён
     CC_NONE = 0,
 
     // пустота
     CC_VACUUM = 1,
 
-    // воздух (кислород + азот)
+    // воздух (кислород + азот + CO2)
     CC_AIR,
 
     // почвы
     //   - бесплодная почва
-    CC_BAREN_SOIL,
-    //   - валун
-    CC_BOULDER,
+    CC_BARREN_SOIL,
     //   - плодородная почва
     CC_RICH_SOIL,
-    //   - каменная галька
-    CC_PEBBLE,
-    //   - цельный камень
+
+    // валун
+    CC_BOULDER,
+    // цельный камень
     CC_ROCK,
-    //   - песок
+
+    // песок
     CC_SAND,
 
     // питательные вещества для углеродных особей
@@ -93,24 +95,24 @@ typedef struct {
 
 
 /**
-* Перечисление кодов в группе компонентов
+* Перечисление кодов в группе энергий
 * GROUP_ELEMENT::GE_ENERGY.
 */
 enum CODE_ENERGY {
     // энергия отсутствует или неопределена
     CE_NONE = 0,
 
-    // радиация (излучения высокой частоты)
-    CE_RADIATION,
-
-    // видимый свет (излучения в видимом человеческому глазу диапазоне)
-    CE_NORMAL_LIGHT,
+    // электричество
+    CE_ELECTRICITY,
 
     // тепло окруж. среды
     CE_HEAT,
 
-    // электричество
-    CE_ELECTRICITY
+    // видимый свет (излучения в видимом человеческому глазу диапазоне)
+    CE_NORMAL_LIGHT,
+
+    // радиация (излучения высокой частоты)
+    CE_RADIATION
 };
 
 
@@ -139,6 +141,11 @@ typedef struct {
 */
 typedef struct {
     /**
+    * Код компонента.
+    */
+    CODE_COMPONENT code;
+
+    /**
     * Плотность, кг / м3.
     */
     cl_float density;
@@ -160,6 +167,7 @@ typedef struct {
 
     /**
     * Теплота испарения или парообразования, Дж / кг.
+    * Дж / кг = Дж / моль разделить на Молярную массу
     */
     cl_float enthalpyVaporization;
 
@@ -178,6 +186,7 @@ typedef struct {
 
 /**
 * Информация о компонентах.
+*   #! В этом списке индекс компонента соотв. коду компонента.
 */
 typedef aboutOneComponent_t  aboutComponent_t[ COMPONENT_COUNT ];
 
@@ -198,6 +207,25 @@ typedef portionComponent_t  componentAll_t[ COMPONENT_COUNT ];
 */
 typedef portionComponent_t  componentCell_t[ COMPONENT_CELL ];
 
+
+
+/**
+* Компоненты планеты. Какую часть объёма занимают в 1-й ячейке портулана.
+*
+*   # Ячейка области планеты всегда заполнена компонентами на 100%.
+*
+* Например: воздух 0.1, плодородная почва 0.7, вода 0.05, камень 0.15.
+*/
+typedef struct {
+    /**
+    * Содержание в ячейке (по объёму).
+    * Реализовано в виде частей (% / 100) концентрации компонентов.
+    * Сумма всех = 1.0.
+    */
+    typedef componentCell_t content_t[ COMPONENT_GRID * COMPONENT_GRID * COMPONENT_GRID ];
+    content_t content;
+
+} component_t;
 
 
 

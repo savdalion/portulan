@@ -24,9 +24,11 @@
 #include "include/planet/set/dangeon-crawl/component.h"
 #include "include/planet/set/dangeon-crawl/constructor.h"
 #include "include/planet/set/dangeon-crawl/living.h"
+#include "include/planet/set/dangeon-crawl/living-set.h"
 #include "include/planet/set/dangeon-crawl/structure.h"
 */
-#include "include/planet/set/dangeon-crawl/living-set.h"
+#include "include/planet/set/dangeon-crawl/display.h"
+
 
 #else
 #pragma message( "File configure.h don't include any set of portulan. Build of portulan is not complete." )

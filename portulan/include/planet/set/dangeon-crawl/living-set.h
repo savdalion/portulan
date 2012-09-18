@@ -24,13 +24,178 @@ namespace tc = typelib::constant::physics;
 
 static const aboutLiving_t aboutLiving = {
 /**
+* ѕуста€ особь дл€ выравнивани€ индексов списка по CODE_LIVING.
+*/
+{
+    // code
+    CL_NONE,
+
+    // size
+    SL_ATOMIC,
+
+    // mass[ LIFE_CYCLE ]
+    // # ÷икл обрисован группами:
+    //     0    Ёмбрионы особей, семена.
+    //     1    ƒети, ростки.
+    //     2    ¬зрослые.
+    //     3    —тарики.
+    //     4    ћЄртвые особи - тела, скелеты.
+    //     5    Ѕессмертные особи.
+    { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+
+    // maxGroupSize
+    0,
+
+    // hitDice
+    0.0f,
+
+    // resist
+    {
+        { TAL_NONE,  FAL_NONE,  0.0f }
+    },
+
+    // evasion
+    0.0f,
+
+    // vitality
+    0.0f,
+
+    // noise
+    { 0.0f, 0.0f },
+
+    // перемещение
+    // moveSolidSurface
+    { 0.0f },
+    // moveLiquidSurface
+    { 0.0f },
+    // moveSolidInside
+    { 0.0f, 0.0f },
+    // moveLiquidInside
+    { 0.0f },
+    // moveGasInside
+    { 0.0f },
+
+    // part[ PART_LIVING_COUNT ]
+    //   # ”казываем только имеющиес€ у особи части: остальные будут
+    //     заполнены нул€ми компил€тором.
+    //     @todo ѕроверить соглашение дл€ Release-версии.
+    {
+        // 0 - часть тела, орган
+        {
+            // code
+            { CL_NONE, CPL_NONE,  LXL_CENTER, LYL_CENTER, LZL_CENTER,  CPL_NONE, CPL_NONE },
+            // mass
+            0.0f,
+            // composition
+            // 0 .. COMPONENT_COMPOSITION_LIVING
+            {
+                { pc::CC_NONE,         0.0f },
+            },
+            // function
+            FPL_LIVE |
+            // ...
+            0ULL,
+            // усвоение
+            // uptakeSolid
+            { { pc::CC_NONE },  0.0f },
+            // uptakeLiquid
+            { { pc::CC_NONE },  0.0f },
+            // uptakeGas
+            { { pc::CC_NONE },  0.0f },
+            // uptakeNormalLight
+            { 0.0f },
+            // выделение
+            // excretionSolid
+            { { pc::CC_NONE } },
+            // excretionLiquid
+            { { pc::CC_NONE } },
+            // excretionGas
+            { { pc::CC_NONE }},
+            // энергии
+            // uptakeEnergy
+            { { pc::CE_NONE } },
+            // excretionEnergy
+            { { pc::CE_NONE } },
+            // attack
+            {
+                { TAL_NONE,  FAL_NONE,  0.0f }
+            },
+            // resist
+            {
+                { TAL_NONE,  FAL_NONE,  0.0f }
+            }
+        },
+
+        // ...
+    },
+
+    // tag
+    TL_DAMAGE_REGENERATION,
+
+    // lifetime, дни
+    0.0f,
+
+    // immunity
+    0.0f,
+
+    // metabolism
+    {
+        // componentNeed_t[ COMPONENT_NEED_LIVING ]
+        // кг / день
+        {
+            { pc::CC_NONE,         0.0f },
+        },
+
+        // componentWaste_t[ COMPONENT_WASTE_LIVING ]
+        // кг / день
+        {
+            { pc::CC_NONE,         0.0f },
+        },
+
+        // energyNeed
+        {
+            { pc::CE_NONE,  0.0f },
+        },
+
+        // energyWaste
+        {
+            { pc::CE_NONE,  0.0f },
+        },
+    },
+
+    // survivor
+    {
+        // habitat
+        {
+            //HL_* [ | HL_* ]
+            0U,
+            0U,
+            0U,
+            0U,
+            0U
+        },
+
+        // temperatureRange
+        {
+            // comfort
+            { 0.0f - tc::CK,  0.0f - tc::CK },
+            // limit
+            { 0.0f - tc::CK,  0.0f - tc::CK },
+        }
+    }
+},
+
+
+
+/**
 * –абочий муравей.
+*
 * @see http://crawl.chaosforge.org/index.php?title=Worker_ant
 * @see http://koti.welho.com/jarmoki/crawl/crawl_ss_monsters_by_name.html#MONS_WORKER_ANT
 */
 {
     // code
-    CL_ANT_WORKER,
+    CL_WORKER_ANT,
 
     // size
     SL_SMALL,
@@ -116,7 +281,7 @@ static const aboutLiving_t aboutLiving = {
         // 0 - голова
         {
             // code
-            { CL_ANT_WORKER, CPL_HEAD,  LXL_CENTER, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_HEAD,  LXL_CENTER, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             0.2f,
             // composition
@@ -169,7 +334,7 @@ static const aboutLiving_t aboutLiving = {
         // 1 - грудь (средн€€ часть тела)
         {
             // code
-            { CL_ANT_WORKER, CPL_BREAST,  LXL_CENTER, LYL_CENTER, LZL_CENTER,  CPL_NONE, CPL_NONE },
+            { CL_WORKER_ANT, CPL_BREAST,  LXL_CENTER, LYL_CENTER, LZL_CENTER,  CPL_NONE, CPL_NONE },
             // mass
             0.3f,
             // composition
@@ -223,7 +388,7 @@ static const aboutLiving_t aboutLiving = {
         // 2 - брюшко (задн€€ часть тела)
         {
             // code
-            { CL_ANT_WORKER, CPL_BELLY,  LXL_CENTER, LYL_BOTTOM, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_BELLY,  LXL_CENTER, LYL_BOTTOM, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             0.3f,
             // composition
@@ -279,7 +444,7 @@ static const aboutLiving_t aboutLiving = {
         // 3 - мозг (находитс€ внутри головы)
         {
             // code
-            { CL_ANT_WORKER, CPL_BRAIN,  LXL_CENTER, LYL_TOP, LZL_CENTER,  CPL_HEAD, CPL_NONE },
+            { CL_WORKER_ANT, CPL_BRAIN,  LXL_CENTER, LYL_TOP, LZL_CENTER,  CPL_HEAD, CPL_NONE },
             // mass
             0.02f,
             // composition
@@ -334,7 +499,7 @@ static const aboutLiving_t aboutLiving = {
         // 4 - жвалы или мандибулы (прикреплены к голове)
         {
             // code
-            { CL_ANT_WORKER, CPL_MANDIBLE,  LXL_CENTER, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
+            { CL_WORKER_ANT, CPL_MANDIBLE,  LXL_CENTER, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
             // mass
             0.1f,
             // composition
@@ -396,7 +561,7 @@ static const aboutLiving_t aboutLiving = {
         // 5 - левый глаз (прикреплЄн к голове)
         {
             // code
-            { CL_ANT_WORKER, CPL_EYE,  LXL_LEFT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
+            { CL_WORKER_ANT, CPL_EYE,  LXL_LEFT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
             // mass
             0.05f,
             // composition
@@ -448,7 +613,7 @@ static const aboutLiving_t aboutLiving = {
         // 6 - правый глаз (прикреплЄн к голове)
         {
             // code
-            { CL_ANT_WORKER, CPL_EYE,  LXL_RIGHT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
+            { CL_WORKER_ANT, CPL_EYE,  LXL_RIGHT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
             // mass
             0.05f,
             // composition
@@ -500,7 +665,7 @@ static const aboutLiving_t aboutLiving = {
         // 7 - левый усик (прикреплЄн к голове)
         {
             // code
-            { CL_ANT_WORKER, CPL_FEELER,  LXL_LEFT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
+            { CL_WORKER_ANT, CPL_FEELER,  LXL_LEFT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
             // mass
             0.01f,
             // composition
@@ -555,7 +720,7 @@ static const aboutLiving_t aboutLiving = {
         // 8 - правый усик (прикреплЄн к голове)
         {
             // code
-            { CL_ANT_WORKER, CPL_FEELER,  LXL_RIGHT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
+            { CL_WORKER_ANT, CPL_FEELER,  LXL_RIGHT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_HEAD },
             // mass
             0.01f,
             // composition
@@ -610,7 +775,7 @@ static const aboutLiving_t aboutLiving = {
         // 9 - лева€ передн€€ лапка (прикреплена к груди)
         {
             // code
-            { CL_ANT_WORKER, CPL_TARSUS,  LXL_LEFT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_TARSUS,  LXL_LEFT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             // остаток массы распределим между лапками (см. соглашение дл€ "mass" особи)
             0.0f,
@@ -666,7 +831,7 @@ static const aboutLiving_t aboutLiving = {
         // 10 - лева€ средн€€ лапка (прикреплена к груди)
         {
             // code
-            { CL_ANT_WORKER, CPL_TARSUS,  LXL_LEFT, LYL_CENTER, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_TARSUS,  LXL_LEFT, LYL_CENTER, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             0.0f,
             // composition
@@ -719,7 +884,7 @@ static const aboutLiving_t aboutLiving = {
         // 11 - лева€ задн€€ лапка (прикреплена к груди)
         {
             // code
-            { CL_ANT_WORKER, CPL_TARSUS,  LXL_LEFT, LYL_BOTTOM, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_TARSUS,  LXL_LEFT, LYL_BOTTOM, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             0.0f,
             // composition
@@ -773,7 +938,7 @@ static const aboutLiving_t aboutLiving = {
         // 12 - права€ передн€€ лапка (прикреплена к груди)
         {
             // code
-            { CL_ANT_WORKER, CPL_TARSUS,  LXL_RIGHT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_TARSUS,  LXL_RIGHT, LYL_TOP, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             0.0f,
             // composition
@@ -828,7 +993,7 @@ static const aboutLiving_t aboutLiving = {
         // 13 - права€ средн€€ лапка (прикреплена к груди)
         {
             // code
-            { CL_ANT_WORKER, CPL_TARSUS,  LXL_RIGHT, LYL_CENTER, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_TARSUS,  LXL_RIGHT, LYL_CENTER, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             0.0f,
             // composition
@@ -881,7 +1046,7 @@ static const aboutLiving_t aboutLiving = {
         // 14 - права€ задн€€ лапка (прикреплена к груди)
         {
             // code
-            { CL_ANT_WORKER, CPL_TARSUS,  LXL_RIGHT, LYL_BOTTOM, LZL_CENTER,  CPL_NONE, CPL_BREAST },
+            { CL_WORKER_ANT, CPL_TARSUS,  LXL_RIGHT, LYL_BOTTOM, LZL_CENTER,  CPL_NONE, CPL_BREAST },
             // mass
             0.0f,
             // composition
@@ -993,9 +1158,9 @@ static const aboutLiving_t aboutLiving = {
         {
             HL_GAS | HL_SOLID,
             HL_SOLID,
-            0.0f,
-            0.0f,
-            0.0f
+            0U,
+            0U,
+            0U,
         },
 
         // temperatureRange
@@ -1006,7 +1171,7 @@ static const aboutLiving_t aboutLiving = {
             { 0.0f - tc::CK,  50.0f - tc::CK },
         }
     }
-} // муравей
+}
 
 };
 
