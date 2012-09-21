@@ -60,9 +60,6 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\living.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\constructor.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\planet\set\dangeon-crawl\structure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -78,10 +75,16 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\component-set.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\display.h">
+    <ClInclude Include="include\io\planet\set\dangeon-crawl\TextVisual.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\display.inl">
+    <ClInclude Include="include\planet\set\dangeon-crawl\-constructor.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\temperature.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\io\planet\set\dangeon-crawl\SnapshotVTK.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,7 +107,13 @@
     <None Include="include\command\common.inl">
       <Filter>Заголовочные файлы\command\common</Filter>
     </None>
-    <None Include="include\planet\set\dangeon-crawl\constructor.inl">
+    <None Include="include\io\planet\set\dangeon-crawl\TextVisual.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\planet\set\dangeon-crawl\-constructor.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\io\planet\set\dangeon-crawl\SnapshotVTK.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
   </ItemGroup>

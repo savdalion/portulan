@@ -1,3 +1,5 @@
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
+
 #pragma once
 
 #include "structure.h"
@@ -15,6 +17,8 @@ namespace portulan {
         namespace set {
             namespace dungeoncrawl {
                 namespace component {
+#endif
+
 
 /**
 * Перечисление кодов в группе компонентов
@@ -85,8 +89,8 @@ enum CODE_COMPONENT {
 * Например: белки = 0.2, жиры = 0.1, углеводы = 0.7.
 * Например: белки = 6e6, жиры = 3e3, углеводы = 4e4.
 */
-typedef struct {
-    CODE_COMPONENT code;
+typedef struct __attribute__ ((packed)) {
+    enum CODE_COMPONENT code;
     cl_float count;
 } portionComponent_t;
 
@@ -123,8 +127,8 @@ enum CODE_ENERGY {
 * количество энергии.
 * Аналог portionComponent_t.
 */
-typedef struct {
-    CODE_ENERGY code;
+typedef struct __attribute__ ((packed)) {
+    enum CODE_ENERGY code;
     cl_float count;
 } portionEnergy_t;
 
@@ -139,11 +143,11 @@ typedef struct {
 *
 * @see portulan::command::planet::aoc()
 */
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     /**
     * Код компонента.
     */
-    CODE_COMPONENT code;
+    enum CODE_COMPONENT code;
 
     /**
     * Плотность, кг / м3.
@@ -193,11 +197,29 @@ typedef aboutOneComponent_t  aboutComponent_t[ COMPONENT_COUNT ];
 
 
 /**
-* Макс. кол-во компонентов с указанием частей от целого, которые находятся
-* в области планеты (в портулане). Эти данные используются для формирования
-* составов атмосферы и планеты.
+* Эти структуры содержат общую информацию о компонентах для формирования
+* зон атмосферы, планетарной коры, ядра и пр..
 */
-typedef portionComponent_t  componentAll_t[ COMPONENT_COUNT ];
+
+typedef struct __attribute__ ((packed)) {
+    enum CODE_COMPONENT code;
+
+    /**
+    * Массовая доля компонента в задаваемой зоне.
+    */
+    cl_float count;
+
+    /**
+    * Количество месторождений, определяющих наибольшие скопления этого
+    * компонента. Компонента на планете не становится больше, просто
+    * его запасы "стягиваются" ("намываются") из планеты ближе к этой зоне.
+    *//* - Нет. Начальное состояние планеты не должно отличаться от
+           однородного. Задействуем силы природы, чтобы скуку равновесия.
+    cl_uint minefield;
+    */
+} zoneComponent_t;
+
+typedef zoneComponent_t  componentAll_t[ COMPONENT_COUNT ];
 
 
 
@@ -216,21 +238,27 @@ typedef portionComponent_t  componentCell_t[ COMPONENT_CELL ];
 *
 * Например: воздух 0.1, плодородная почва 0.7, вода 0.05, камень 0.15.
 */
-typedef struct {
+typedef componentCell_t*  componentContent_t;
+typedef struct __attribute__ ((packed)) {
     /**
     * Содержание в ячейке (по объёму).
     * Реализовано в виде частей (% / 100) концентрации компонентов.
     * Сумма всех = 1.0.
     */
+    /* - Заменено на выделение памяти в куче, т.к. OpenCL при большом размере
+         стека не инициализируется.
     typedef componentCell_t content_t[ COMPONENT_GRID * COMPONENT_GRID * COMPONENT_GRID ];
-    content_t content;
+    */
+    componentContent_t content;
 
 } component_t;
 
 
 
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
                 } // component
             } // dungeoncrawl
         } // set
     } // planet
 } // portulan
+#endif

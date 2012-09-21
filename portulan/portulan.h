@@ -27,7 +27,8 @@
 #include "include/planet/set/dangeon-crawl/living-set.h"
 #include "include/planet/set/dangeon-crawl/structure.h"
 */
-#include "include/planet/set/dangeon-crawl/display.h"
+#include "include/io/planet/set/dangeon-crawl/SnapshotVTK.h"
+#include "include/io/planet/set/dangeon-crawl/TextVisual.h"
 
 
 #else

@@ -10,11 +10,34 @@ inline Topology::Topology() {
     static_assert( ((GRID_SY % 3) == 0), "–азмер стороны по Y должен быть кратен 3." );
     static_assert( ((GRID_SZ % 3) == 0), "–азмер стороны по Z должен быть кратен 3." );
     */
+
+    namespace pd = set::dungeoncrawl;
+    namespace pc = set::dungeoncrawl::component;
+    namespace pl = set::dungeoncrawl::living;
+    namespace pt = set::dungeoncrawl::temperature;
+
+    static const size_t CG = pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID;
+    mTopology.component.content = new pc::componentCell_t[ CG ];
+
+    static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
+    mTopology.living.content = new pl::livingCell_t[ LG ];
+
+    static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
+    mTopology.temperature.content = new pt::temperatureCell_t[ TG ];
+
+    /* @test
+    const size_t c = sizeof( pc::componentCell_t ) * CG;
+    const size_t l = sizeof( pl::livingCell_t ) * LG;
+    std::cout << c << " " << l << std::endl;
+    */
 }
 
 
 
-inline Topology::~Topology() {    
+inline Topology::~Topology() {
+    delete[] mTopology.component.content;
+    delete[] mTopology.living.content;
+    delete[] mTopology.temperature.content;
 }
 
 
@@ -30,6 +53,12 @@ inline set::topology_t const& Topology::topology() const {
 inline set::topology_t& Topology::topology() {
     return mTopology;
 }
+
+
+
+/**
+*
+*/
 
 
     } // planet

@@ -40,15 +40,6 @@ namespace portulan {
 /**
 * Визуализация средствами VTK в виде облака точек.
 *
-* @template sizeWindowT Размер окна визуализации, пкс. Окно - квадратное.
-* @template sizePointT Размер точки, пкс.
-* @template showCornerT Отмечать углы визуализируемого элемента.
-* @template showAxesT Показывать оси декартовых координат.
-* @template rgb Первые 4 байта задают цвет по умолчанию для визуализируемых
-*           данных. Если 0, данные раскрашиваются в цвета диапазона
-*           [ синий (минимум); красный (максимум) ].
-*           Пример для красного цвета: 0xFF0000FF
-*
 * @source http://vtk.org
 */
 class VolumeVTKVisual {
@@ -63,7 +54,7 @@ public:
     /**
     * Открывает окно для визуализации.
     */
-    VolumeVTKVisual( const option_t& option );
+    VolumeVTKVisual( const option_t& );
 
 
 

@@ -1,7 +1,11 @@
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
+
 #pragma once
 
 #include "structure.h"
 #include "component.h"
+#include "living.h"
+#include "temperature.h"
 
 
 /**
@@ -11,57 +15,94 @@ namespace portulan {
     namespace planet {
         namespace set {
             namespace dungeoncrawl {
+#endif
+
 
 /**
 * Общая информация о планете.
 */
-typedef struct {
-    /**
-    * Радиус планеты, м.
-    */
-    cl_float radiusPlanet;
 
+typedef struct __attribute__ ((packed)) {
+    cl_float atmosphere;
+    cl_float crust;
+    cl_float mantle;
+    cl_float core;
+} radiusPlanet_t;
+
+typedef struct __attribute__ ((packed)) {
+    cl_float atmosphere;
+    cl_float crust;
+    cl_float mantle;
+    cl_float core;
+} massPlanet_t;
+
+typedef struct __attribute__ ((packed)) {
+    __structTemperatureAll_t space;
+    __structComponentAll_t atmosphere;
+    __structComponentAll_t crust;
+    __structComponentAll_t mantle;
+    __structComponentAll_t core;
+} componentPlanet_t;
+
+typedef struct __attribute__ ((packed)) {
+    __structTemperatureAll_t space;
+    __structLivingAll_t atmosphere;
+    __structLivingAll_t crust;
+    __structLivingAll_t mantle;
+    __structLivingAll_t core;
+} livingPlanet_t;
+
+typedef struct __attribute__ ((packed)) {
+    __structTemperatureAll_t space;
+    __structTemperatureAll_t atmosphere;
+    __structTemperatureAll_t crust;
+    __structTemperatureAll_t mantle;
+    __structTemperatureAll_t core;
+} temperaturePlanet_t;
+
+typedef struct __attribute__ ((packed)) {
     /**
     * Размер области планеты, м.
-    * Радиус атмосферы = Размер области планеты / 2
-    * Толщина атмосферы = Радиус атмосферы - Радиус планеты
+    *   # Размер области планеты = Радиус атмосферы * 2
+    *   # Толщина атмосферы = Радиус атмосферы - Радиус коры планеты
     */
-    cl_float sizeArea;
+    cl_float size;
 
     /**
-    * Масса планеты, кг.
+    * Внешние радиусы области планеты, части от размера области планеты.
+    *   # Радиус атмосферы = 1.0.
     */
-    cl_float massPlanet;
+    radiusPlanet_t radius;
 
     /**
-    * Состав планеты, перечисление всех компонентов и их массовой части в целом.
-    *
-    *   # Для удобства код компонента соотв. его индексу в componentAll_t.
-    *   # Неиспользуемые компоненты заполняются нулями.
+    * Массы скоплений в области планеты, кг.
     */
-    component::componentAll_t componentPlanet;
+    massPlanet_t mass;
 
     /**
-    * Масса атмосферы, кг.
+    * Состав планеты, перечисление всех компонентов по группам и
+    * массовой части компонентов в целом.
     */
-    cl_float massAtmosphere;
+    componentPlanet_t component;
 
     /**
-    * Состав атмосферы, перечисление всех компонентов и их массовой части в целом.
-    *
-    * @see Соглашения для componentPlanet.
+    * Жизнь на планете, перечисление всех особей и их кол-во в области планеты.
     */
-    component::componentAll_t componentAtmosphere;
+    livingPlanet_t living;
 
     /**
-    * Жизнь на планете, перечисление особей и их кол-во в области планеты.
+    * Температура на планете.
+    *   # Чтобы отсутствовала резкая граница температур между зонами, граничные
+    *     значения температур зон должны совпадать.
     */
-    living::livingAll_t livingPlanet;
+    temperaturePlanet_t temperature;
 
 } aboutPlanet_t;
 
 
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
             } // dungeoncrawl
         } // set
     } // planet
 } // portulan
+#endif

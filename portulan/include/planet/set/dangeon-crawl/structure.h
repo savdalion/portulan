@@ -1,3 +1,5 @@
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
+
 #pragma once
 
 #include <CL/cl_platform.h>
@@ -7,11 +9,53 @@
 *   # Структуры построены так, чтобы не дублировать их при включении
 *     в код OpenCL.
 */
+#define __constant const
+
+// Выравнивание для VC++ не требуется
+#define __attribute__(x) /*nothing*/
+
+
 
 namespace portulan {
     namespace planet {
         namespace set {
             namespace dungeoncrawl {
+#endif
+
+
+
+
+
+
+// Декларируем структуры, используемые с пространством имён (OpenCL 1.0
+// не поддерживает NS)
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
+#define __structComponentAll_t      component::componentAll_t
+#define __structPortionComponent_t  component::portionComponent_t
+#define __structPortionEnergy_t     component::portionEnergy_t
+#define __enumCodeComponent         component::CODE_COMPONENT
+#define __enumCodeEnergy            component::CODE_ENERGY
+
+#define __structLivingAll_t         living::livingAll_t
+
+#define __structTemperatureAll_t    temperature::temperatureAll_t
+
+#else
+#define __structComponentAll_t      componentAll_t
+#define __structPortionComponent_t  portionComponent_t
+#define __structPortionEnergy_t     portionEnergy_t
+#define __enumCodeComponent         enum CODE_COMPONENT
+#define __enumCodeEnergy            enum CODE_ENERGY
+
+#define __structLivingAll_t         livingAll_t
+
+#define __structTemperatureAll_t    temperatureAll_t
+
+#endif
+
+
+
+
 
 /**
 * Значение, задающее неуязвимость, например, органа особи, от
@@ -19,7 +63,7 @@ namespace portulan {
 * Например, лапка муравья никак не реагирует при воздействии на неё
 * магии "святое слово".
 */
-static const cl_float IMMUNE = CL_FLT_MAX;
+static __constant cl_float IMMUNE = CL_FLT_MAX;
 
 
 
@@ -29,28 +73,25 @@ static const cl_float IMMUNE = CL_FLT_MAX;
 * Не задействуем шаблоны, чтобы модель на C++ более органично вписывалась
 * в OpenCL.
 *
+*   # Деление области планеты на ячейки производится индивидуально для
+*     каждого элемента мира.
+*
 * @todo extend Допустимо использовать только кубическую сетку.
 *//* - Используем мн-во сеток. См. ниже.
-static const size_t GRID_SX = 81;
-static const size_t GRID_SY = GRID_SX;
-static const size_t GRID_SZ = GRID_SX;
+static __constant size_t GRID_SX = 81;
+static __constant size_t GRID_SY = GRID_SX;
+static __constant size_t GRID_SZ = GRID_SX;
 */
 
 
-/**
-* Деление области планеты на ячейки.
-* Используется для формирования разных "кратных" портуланов, декларирующих
-* область планеты и её жизнь (статика, динамика задаётся в "porte"). См. ниже.
-*/
-static const size_t GRID = 81;
-
-
-
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
+// В OpenCL передаём константы как define: OpenCL не воспринимает
+// константы должным образом.
 
 /**
 * Размер сетки компонентов в области планеты (в портулане).
 */
-static const size_t COMPONENT_GRID = GRID;
+static __constant size_t COMPONENT_GRID = 81;
 
 
 
@@ -58,7 +99,7 @@ static const size_t COMPONENT_GRID = GRID;
 * Макс. кол-во *разных* компонентов, которые могут использоваться
 * в области планеты (в портулане).
 */
-static const size_t COMPONENT_COUNT = 100;
+static __constant size_t COMPONENT_COUNT = 100;
 
 
 
@@ -66,7 +107,7 @@ static const size_t COMPONENT_COUNT = 100;
 * Макс. кол-во компонентов с указанием частей от целого, которые могут
 * *одновременно* храниться в 1-й ячейке портулана.
 */
-static const size_t COMPONENT_CELL = COMPONENT_COUNT / 10;
+static __constant size_t COMPONENT_CELL = 20;
 
 
 
@@ -81,14 +122,14 @@ static const size_t COMPONENT_CELL = COMPONENT_COUNT / 10;
 *     4    Мёртвые особи - тела, скелеты.
 *     5    Бессмертные особи.
 */
-static const size_t LIFE_CYCLE = 6;
+static __constant size_t LIFE_CYCLE = 6;
 
 
 
 /**
 * Размер сетки ареалов обитания живых организмов в области планеты.
 */
-static const size_t LIVING_GRID = GRID / 3;
+static __constant size_t LIVING_GRID = 81 / 3;
 
 
 
@@ -96,21 +137,25 @@ static const size_t LIVING_GRID = GRID / 3;
 * Максимальное кол-во *разных* частей (органов), из которых может
 * состоять особь.
 */
-static const size_t PART_LIVING_COUNT = 20;
+static __constant size_t PART_LIVING_COUNT = 20;
 
 
 
 /**
 * Максимальное кол-во *разных* атак, известных органу особи.
+*
+* @see RESIST_PART_LIVING_COUNT
 */
-static const size_t ATTACK_PART_LIVING_COUNT = 30;
+static __constant size_t ATTACK_PART_LIVING_COUNT = 30;
 
 
 
 /**
 * Максимальное кол-во *разных* защит, известных органу особи.
+*
+* @see ATTACK_PART_LIVING_COUNT
 */
-static const size_t RESIST_PART_LIVING_COUNT = ATTACK_PART_LIVING_COUNT;
+static __constant size_t RESIST_PART_LIVING_COUNT = 30;
 
 
 
@@ -118,7 +163,7 @@ static const size_t RESIST_PART_LIVING_COUNT = ATTACK_PART_LIVING_COUNT;
 * Максимальное кол-во наборов сред обитания, в которых может
 * жить особь.
 */
-static const size_t HABITAT_LIVING_COUNT = 5;
+static __constant size_t HABITAT_LIVING_COUNT = 5;
 
 
 
@@ -126,23 +171,27 @@ static const size_t HABITAT_LIVING_COUNT = 5;
 * Максимальное кол-во *разных* хим. компонентов, из которых может
 * состоять орган особи.
 */
-static const size_t COMPONENT_COMPOSITION_LIVING = 5;
+static __constant size_t COMPONENT_COMPOSITION_LIVING = 5;
 
 
 
 /**
 * Макисмальное кол-во *разных* хим. компонентов, которые нужны
 * особи для поддержания жизни.
+*
+* @see COMPONENT_WASTE_LIVING
 */
-static const size_t COMPONENT_NEED_LIVING = 10;
+static __constant size_t COMPONENT_NEED_LIVING = 10;
 
 
 
 /**
 * Максимальное кол-во *разных* хим. компонентов, которые выделяет
 * особь при жизнедеятельности.
+*
+* @see COMPONENT_NEED_LIVING
 */
-static const size_t COMPONENT_WASTE_LIVING = COMPONENT_NEED_LIVING;
+static __constant size_t COMPONENT_WASTE_LIVING = 10;
 
 
 
@@ -150,9 +199,10 @@ static const size_t COMPONENT_WASTE_LIVING = COMPONENT_NEED_LIVING;
 * Максимальное кол-во *разных* видов энергии, которая необходима
 * особи для поддержания жизни.
 *
+* @see ENERGY_WASTE_LIVING
 * @see CODE_ENERGY
 */
-static const size_t ENERGY_NEED_LIVING = 5;
+static __constant size_t ENERGY_NEED_LIVING = 5;
 
 
 
@@ -160,23 +210,24 @@ static const size_t ENERGY_NEED_LIVING = 5;
 * Максимальное кол-во *разных* видов энергии, которя излучает
 * особь при жизнедеятельности.
 *
+* @see ENERGY_NEED_LIVING
 * @see CODE_ENERGY
 */
-static const size_t ENERGY_WASTE_LIVING = ENERGY_NEED_LIVING;
+static __constant size_t ENERGY_WASTE_LIVING = 5;
 
 
 
 /**
 * Максимальное количество сред, где может обитать особь.
 */
-static const size_t ENVIRONMENT_SURVIVOR_LIVING = 5;
+static __constant size_t ENVIRONMENT_SURVIVOR_LIVING = 5;
 
 
 
 /**
 * Максимально возможное кол-во *разных* особей в области планеты.
 */
-static const size_t LIVING_COUNT = 100;
+static __constant size_t LIVING_COUNT = 100;
 
 
 
@@ -184,37 +235,41 @@ static const size_t LIVING_COUNT = 100;
 * Макс. кол-во особей, которые могут *одновременно* обитать в 1-й ячейке
 * области планеты.
 */
-static const size_t LIVING_CELL = LIVING_COUNT / 4;
-
-
-
-/**
-* Размер сетки давлений на планете.
-* Указывается для всей планеты.
-* Благодаря разнице давлений в атмосфере возникают ветры, тайфуны.
-*/
-static const size_t PRESSURE_GRID = GRID;
+static __constant size_t LIVING_CELL = 20;
 
 
 
 /**
 * Сетка распределения температуры в области планеты.
 */
-static const size_t TEMPERATURE_GRID = GRID;
+static __constant size_t TEMPERATURE_GRID = 81;
+
+
+
+
+
+#if 0
+// @todo ...
+/**
+* Размер сетки давлений на планете.
+* Указывается для всей планеты.
+* Благодаря разнице давлений в атмосфере возникают ветры, тайфуны.
+*/
+static __constant size_t PRESSURE_GRID = 81;
 
 
 
 /**
 * Сетка распределения осадков в области планеты.
 */
-static const size_t PRECIPITATIONS_GRID = GRID;
+static __constant size_t PRECIPITATIONS_GRID = 81;
 
 
 
 /**
 * Сетка для генерации поверхности / пустот в области планеты.
 */
-static const size_t SURFACE_VOID_GRID = GRID;
+static __constant size_t SURFACE_VOID_GRID = 81;
 
 
 
@@ -222,8 +277,10 @@ static const size_t SURFACE_VOID_GRID = GRID;
 * Количество регистров для генерации поверхности / пустот в
 * области планеты.
 */
-static const size_t SURFACE_VOID_REGISTRY = 5;
+static __constant size_t SURFACE_VOID_REGISTRY = 5;
+#endif
 
+#endif
 
 
 
@@ -270,18 +327,6 @@ typedef cl_ushort code_t;
 // - @todo ...
 
 /**
-* *Разные* особи в области планеты.
-*/
-//typedef aboutOneLiving_t aboutLiving_t[ LIVING_COUNT ];
-typedef struct {
-    aboutOneLiving_t about[ LIVING_COUNT ];
-} aboutLiving_t;
-
-
-
-
-
-/**
 * Сетка давлений жидкостей и газов в области планеты.
 * Для компонентов в состоянии "твёрдое тело" смысла не имеет.
 */
@@ -294,33 +339,6 @@ typedef struct {
 
 } pressure_t;
 
-
-
-
-
-/**
-* Температура области планеты.
-*/
-typedef struct {
-    /**
-    * Среднее значение температуры, К.
-    */
-    typedef cl_float average_t[ TEMPERATURE_GRID * TEMPERATURE_GRID * TEMPERATURE_GRID ];
-    average_t average;
-
-    /**
-    * Отклонение температуры от среднего значения, % / 100.
-    */
-    typedef cl_float dispersion_t[ TEMPERATURE_GRID * TEMPERATURE_GRID * TEMPERATURE_GRID ];
-    dispersion_t dispersion;
-
-    /**
-    * Частота отклонения температуры от среднего значения, раз / пульс.
-    */
-    typedef cl_float rate_t[ TEMPERATURE_GRID * TEMPERATURE_GRID * TEMPERATURE_GRID ];
-    rate_t rate;
-
-} temperature_t;
 
 
 
@@ -404,7 +422,20 @@ typedef struct {
 #endif
 
 
+
+
+/*
+typedef struct __attribute__ ((packed)) {
+    float t[ 100 ];
+} test_t;
+*/
+
+
+
+
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
             } // dungeoncrawl
         } // set
     } // planet
 } // portulan
+#endif

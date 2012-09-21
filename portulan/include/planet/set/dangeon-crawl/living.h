@@ -1,3 +1,5 @@
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
+
 #pragma once
 
 #include "structure.h"
@@ -16,6 +18,8 @@ namespace portulan {
         namespace set {
             namespace dungeoncrawl {
                 namespace living {
+#endif
+
 
 /**
 * Перечисление кодов в группе живого мира
@@ -58,8 +62,8 @@ enum CODE_LIVING {
 * Например: муравьи = 0.2, деревья = 0.1, цветы = 0.7.
 * Например: муравьи = 6e6, деревья = 3e3, цветы = 4e4.
 */
-typedef struct {
-    CODE_LIVING code;
+typedef struct __attribute__ ((packed)) {
+    enum CODE_LIVING code;
     cl_float count;
 } portionLiving_t;
 
@@ -145,12 +149,12 @@ enum LOCUS_Z_PART_LIVING {
 * Код разделён на несколько частей, чтобы обеспечить дополн. динамику
 * без лишнего кодирования.
 */
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     // какой особи принадлежит орган
-    CODE_LIVING specimen;
+    enum CODE_LIVING specimen;
 
     // часть органа
-    COMMON_PART_LIVING part;
+    enum COMMON_PART_LIVING part;
 
     // местоположение органа относительно особи
     //   # Особь разворачивается головой вверх, спиной к наблюдателю и т.о.,
@@ -158,13 +162,13 @@ typedef struct {
     //     максимальной.
     //   # Смотрим на особь сверху: ось Z - навстречу наблюдателю, ось X -
     //     направо, ось Y - вверх.
-    LOCUS_X_PART_LIVING lx;
-    LOCUS_Y_PART_LIVING ly;
-    LOCUS_Z_PART_LIVING lz;
+    enum LOCUS_X_PART_LIVING lx;
+    enum LOCUS_Y_PART_LIVING ly;
+    enum LOCUS_Z_PART_LIVING lz;
 
     // орган находится внутри другого органа
     // Например: мозг, сердце.
-    COMMON_PART_LIVING inner;
+    enum COMMON_PART_LIVING inner;
 
     // орган находится на поверхности или прикреплён к другому органу
     // Например: глаз, рука.
@@ -172,7 +176,7 @@ typedef struct {
     //     факт прикрепления указывается для меньших органов.
     //   # Если скреплены близкие по размеру органы, факт прикрепления
     //     указывается для нижнего органа. См. выше "местоположение органа".
-    COMMON_PART_LIVING outer;
+    enum COMMON_PART_LIVING outer;
 
 } codePartLiving_t;
 
@@ -274,15 +278,16 @@ typedef struct {
 //     несут в себе смысловую информацию и могут быть восприняты другими
 //     особями при наличии соотв. рецептора.
 // общение с помощью вкусовых сигналов
-#define FPL_EMIT_NORMAL_TASTE             (1ULL << 30)
+// @see Трофаллаксис > http://ru.wikipedia.org/wiki/%D0%A2%D1%80%D0%BE%D1%84%D0%B0%D0%BB%D0%BB%D0%B0%D0%BA%D1%81%D0%B8%D1%81
+#define FPL_EMIT_NORMAL_TASTE             (1ULL << 29)
 // общение с помощью запахов
-#define FPL_EMIT_NORMAL_SMELL             (1ULL << 31)
+#define FPL_EMIT_NORMAL_SMELL             (1ULL << 30)
 // общение с помощью прикосновений
-#define FPL_EMIT_NORMAL_TOUCH             (1ULL << 32)
+#define FPL_EMIT_NORMAL_TOUCH             (1ULL << 31)
 // общение с помощью звуков (сигналы, речь)
-#define FPL_EMIT_NORMAL_SOUND             (1ULL << 33)
+#define FPL_EMIT_NORMAL_SOUND             (1ULL << 32)
 // общение с помощью наблюдения (визуальные сигналы)
-#define FPL_EMIT_NORMAL_VISION            (1ULL << 34)
+#define FPL_EMIT_NORMAL_VISION            (1ULL << 33)
 
 
 
@@ -493,10 +498,10 @@ enum FLAVOUR_ATTACK_LIVING {
 *   # Сила атаки - это творческая компиляция значения Damage из
 *     http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
 */
-typedef struct {
-    TYPE_ATTACK_LIVING     type;
-    FLAVOUR_ATTACK_LIVING  flavour;
-    cl_float               force;
+typedef struct __attribute__ ((packed)) {
+    enum TYPE_ATTACK_LIVING     type;
+    enum FLAVOUR_ATTACK_LIVING  flavour;
+    cl_float                    force;
 } aboutOnePartAttack_t;
 
 
@@ -517,10 +522,10 @@ typedef aboutOnePartAttack_t  attackPartLiving_t[ ATTACK_PART_LIVING_COUNT ];
 *   # Сила защиты - это творческая компиляция значений AC и MR из
 *     http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
 */
-typedef struct {
-    TYPE_ATTACK_LIVING     type;
-    FLAVOUR_ATTACK_LIVING  flavour;
-    cl_float               force;
+typedef struct __attribute__ ((packed)) {
+    enum TYPE_ATTACK_LIVING     type;
+    enum FLAVOUR_ATTACK_LIVING  flavour;
+    cl_float                    force;
 } aboutOnePartResist_t;
 
 
@@ -538,7 +543,58 @@ typedef aboutOnePartResist_t  resistPartLiving_t[ RESIST_PART_LIVING_COUNT ];
 * Информация об органе особи.
 *   # Размер органа особи определяется размером самой особи и массой органа.
 */
-typedef struct {
+typedef __structPortionComponent_t  compositionPortionLiving_t[ COMPONENT_COMPOSITION_LIVING ];
+typedef __enumCodeComponent  componentCodeNeedLiving_t[ COMPONENT_NEED_LIVING ];
+
+typedef struct __attribute__ ((packed)) {
+    componentCodeNeedLiving_t componentNeed;
+    cl_float efficiency;
+} uptakeSolidLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    componentCodeNeedLiving_t componentNeed;
+    cl_float efficiency;
+} uptakeLiquidLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    componentCodeNeedLiving_t componentNeed;
+    cl_float efficiency;
+} uptakeGasLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    cl_float efficiency;
+} uptakeNormalLightLiving_t;
+
+
+typedef __enumCodeComponent  componentCodeWasteLiving_t[ COMPONENT_WASTE_LIVING ];
+
+typedef struct __attribute__ ((packed)) {
+    componentCodeWasteLiving_t componentWaste;
+} excretionSolidLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    componentCodeWasteLiving_t componentWaste;
+} excretionLiquidLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    componentCodeWasteLiving_t componentWaste;
+} excretionGasLiving_t;
+
+
+typedef __enumCodeEnergy  energyCodeNeedLiving_t[ ENERGY_NEED_LIVING ];
+
+typedef struct __attribute__ ((packed)) {
+    energyCodeNeedLiving_t energyNeed;
+} uptakeEnergyLiving_t;
+
+// выделение энергий (см. выше - усвоение энергий)
+typedef __enumCodeEnergy  energyCodeWasteLiving_t[ ENERGY_WASTE_LIVING ];
+
+typedef struct __attribute__ ((packed)) {
+    energyCodeWasteLiving_t energyWaste;
+} excretionEnergyLiving_t;
+
+typedef struct __attribute__ ((packed)) {
     /**
     * Код органа особи.
     */
@@ -559,8 +615,7 @@ typedef struct {
     * Массовые доли (от общей массы органа), сумма = 1.0.
     * Например: вода, белки (мясо), жиры, углеводы (скелет, панцирь).
     */
-    typedef component::portionComponent_t  composition_t[ COMPONENT_COMPOSITION_LIVING ];
-    composition_t composition;
+    compositionPortionLiving_t composition;
 
 
     /**
@@ -593,64 +648,23 @@ typedef struct {
     // Орган переводит компоненты (пищу) в энергию.
     // Энергия = количеству энергии, освобождаемой при сгорании компонента.
     // КПД органа усвоения определяет, какая часть комп. усвоится организмом.
-    typedef component::CODE_COMPONENT  componentNeed_t[ COMPONENT_NEED_LIVING ];
-    typedef struct {
-        componentNeed_t componentNeed;
-        cl_float efficiency;
-    } uptakeSolid_t;
-    uptakeSolid_t uptakeSolid;
-    
-    typedef struct {
-        componentNeed_t componentNeed;
-        cl_float efficiency;
-    } uptakeLiquid_t;
-    uptakeLiquid_t uptakeLiquid;
-
-    typedef struct {
-        componentNeed_t componentNeed;
-        cl_float efficiency;
-    } uptakeGas_t;
-    uptakeGas_t uptakeGas;
-
-    typedef struct {
-        cl_float efficiency;
-    } uptakeNormalLight_t;
-    uptakeNormalLight_t uptakeNormalLight;
+    uptakeSolidLiving_t       uptakeSolid;
+    uptakeLiquidLiving_t      uptakeLiquid;
+    uptakeGasLiving_t         uptakeGas;
+    uptakeNormalLightLiving_t uptakeNormalLight;
 
 
     // выделение компонентов (см. выше - поглощение и усвоение компонентов)
-    typedef component::CODE_COMPONENT  componentWaste_t[ COMPONENT_WASTE_LIVING ];
-    typedef struct {
-        componentWaste_t componentWaste;
-    } excretionSolid_t;
-    excretionSolid_t excretionSolid;
-
-    typedef struct {
-        componentWaste_t componentWaste;
-    } excretionLiquid_t;
-    excretionLiquid_t excretionLiquid;
-
-    typedef struct {
-        componentWaste_t componentWaste;
-    } excretionGas_t;
-    excretionGas_t excretionGas;
+    excretionSolidLiving_t  excretionSolid;
+    excretionLiquidLiving_t excretionLiquid;
+    excretionGasLiving_t    excretionGas;
 
 
     // поглощение и усвоение энергий (см. ниже - выделение энергий)
     //   # Для органа указывается только *возможность* усвоения энергии.
     //     Требуемое кол-во энергии указано в информации об особи.
-    typedef component::CODE_ENERGY  energyNeed_t[ ENERGY_NEED_LIVING ];
-    typedef struct {
-        energyNeed_t energyNeed;
-    } uptakeEnergy_t;
-    uptakeEnergy_t uptakeEnergy;
-
-    // выделение энергий (см. выше - усвоение энергий)
-    typedef component::CODE_ENERGY  energyWaste_t[ ENERGY_WASTE_LIVING ];
-    typedef struct {
-        energyWaste_t energyWaste;
-    } excretionEnergy_t;
-    excretionEnergy_t excretionEnergy;
+    uptakeEnergyLiving_t    uptakeEnergy;
+    excretionEnergyLiving_t excretionEnergy;
 
 
     /**
@@ -683,17 +697,186 @@ typedef struct {
 /**
 * Информация об особи.
 */
-typedef struct {
+// издаваемый шум
+typedef struct __attribute__ ((packed)) {
+    // когда стоит неподвижно
+    cl_float immovable;
+    // когда движется с нормальной скоростью
+    cl_float move;
+} noiseLiving_t;
+
+// перемещение в различных средах
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Максимальная скорость перемещения особи по поверхности, которую
+    * даёт этот орган.
+    * м/с
+    * Определяет инициативу при моделировании столкновений.
+    *   # В обычных (не боевых) условиях, скорость перемещения
+    *     считается в 2 раза меньшей.
+    */
+    cl_float speed;
+
+} moveSolidSurfaceLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    cl_float speed;
+} moveLiquidSurfaceLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    // скорость копания норы
+    cl_float speedDigBurrow;
+    // скорость перемещения по готовой норе
+    cl_float speedInBurrow;
+} moveSolidInsideLiving_t;
+
+// плавает
+typedef struct __attribute__ ((packed)) {
+    cl_float speed;
+} moveLiquidInsideLiving_t;
+
+// летает
+typedef struct __attribute__ ((packed)) {
+    cl_float speed;
+} moveGasInsideLiving_t;
+
+/**
+* *Разные* компоненты, которые необходимы особи для жизни.
+* кг / день
+*   # Необходимые компоненты распределяются также, как необходимые энергии.
+*   # Выбран "день" для гибкой аппроксимации необходимого
+*     кол-ва на пульс, на ход (зависит от скорости перемещения).
+*
+* @see Соглашения о распределении энергий по жизненным циклам особи - energyNeed_t.
+*/
+typedef __structPortionComponent_t  componentPortionNeedLiving_t[ COMPONENT_NEED_LIVING ];
+
+
+/**
+* *Разные* компоненты, которые выделяет особь при жизнедеятельности.
+* кг / день
+*   # Выделяемые компоненты распределяются также, как выделяемые энергии.
+*   # Выбран "день" для гибкой аппроксимации выделяемого
+*     кол-ва на пульс, на ход (зависит от скорости перемещения).
+*
+* @see Соглашения о распределении энергий по жизненным циклам особи - energyWaste_t.
+*/
+typedef __structPortionComponent_t  componentPortionWasteLiving_t[ COMPONENT_WASTE_LIVING ];
+
+
+/**
+* Энергии особи.
+*   # Т.к. энергий немного, закрепляем их жёстко по индексам.
+*   # Распределение энергии по жизненному циклу особи (см. LIFE_CYCLE):
+*     0    Эмбрионы, семена.  - прямо пропорционально массе особи в этом жизненном цикле
+*     1    Дети, ростки.      - прямо пропорционально массе особи в этом жизненном цикле
+*     2    Взрослые.          - значение указано при создании особи
+*     3    Старики.           - прямо пропорционально массе особи в этом жизненном цикле
+*     4    Мёртвые особи.     - не требуют энергий
+*     5    Бессмертные особи. - как для взрослых
+*
+* @see CODE_ENERGY
+*/
+
+/**
+* Дополнительная энергия, необходимая особи для поддержания жизни,
+* за исключением энергии, выделяемой от потребления пищи
+* (хим. компонентов). Лишняя энергия может выделяться
+* особью в виде тепла (см. ниже).
+* едениц / день
+*
+* @see CODE_ENERGY
+*/
+typedef __structPortionEnergy_t  energyPortionNeedLiving_t[ ENERGY_NEED_LIVING ];
+
+/**
+* Энергия, выделяемая особью в процессе своей жизнедеятельности.
+* едениц / день
+*
+* @see CODE_ENERGY
+*/
+typedef __structPortionEnergy_t  energyPortionWasteLiving_t[ ENERGY_WASTE_LIVING ];
+
+
+/**
+* Метаболизм особи.
+*/
+typedef struct __attribute__ ((packed)) {
+    componentPortionNeedLiving_t   componentNeed;
+    componentPortionWasteLiving_t  componentWaste_t;
+
+    energyPortionNeedLiving_t      energyNeed;
+    energyPortionWasteLiving_t     energyWaste;
+
+} metabolismLiving_t;
+
+
+/**
+* Условия выживания данной особи.
+*/
+/**
+* Температура комфорта.
+* Вне этого диапазона - повышенная смертность и пониженная
+* рождаемость особей.
+* Для цивилизованных особей диапазон может варьироваться очень
+* широко благодаря использованию ц. о. домов / огня / одежды.
+*/
+typedef struct __attribute__ ((packed)) {
+    cl_float min;
+    cl_float max;
+} temperatureComfortLiving_t;
+
+/**
+* Температура выживания.
+* Существование особи вне этого предела невозможно
+* (100% летальный исход за 1 пульс).
+*/
+typedef struct __attribute__ ((packed)) {
+    cl_float min;
+    cl_float max;
+} temperatureLimitLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    temperatureComfortLiving_t comfort;
+    temperatureLimitLiving_t limit;
+} temperatureRangeLiving_t;
+
+typedef struct __attribute__ ((packed)) {
+    /**
+    * В каких средах может жить особь.
+    *   # Среды обитания задаются комбинацией бит из HL_*.
+    *   # В любых других средах особь погибает.
+    *
+    * Например, если особь может жить на границе газообразной и
+    * твёрдой сред, пишем:
+    *   HL_GAS | HL_SOLID
+    * Если жизнь возможна только в твёрдой среде (кроты):
+    *   HL_SOLID
+    *
+    * @see http://crawl.chaosforge.org/index.php?title=Habitat
+    */
+    cl_uint  habitat[ HABITAT_LIVING_COUNT ];
+
+    /**
+    * Диапазон температур в которых способна жить особь согласно
+    * жизненному циклу "countByAge".
+    */
+    temperatureRangeLiving_t temperatureRange;
+
+} survivorLiving_t;
+
+
+typedef struct __attribute__ ((packed)) {
     /**
     * Код вида особи.
     */
-    CODE_LIVING code;
+    enum CODE_LIVING code;
 
 
     /**
     * Размер особи.
     */
-    SIZE_LIVING size;
+    enum SIZE_LIVING size;
 
 
     /**
@@ -764,13 +947,7 @@ typedef struct {
     *
     * @see http://crawl.chaosforge.org/index.php?title=Noise
     */
-    typedef struct {
-        // когда стоит неподвижно
-        cl_float immovable;
-        // когда движется с нормальной скоростью
-        cl_float move;
-    } noise_t;
-    noise_t noise;
+    noiseLiving_t noise;
 
 
     /**
@@ -779,42 +956,11 @@ typedef struct {
     *   # Скорость перемещения особи вычисляется как равновесовой вклад
     *     каждого органа, отвечающего за перемещение.
     */
-    typedef struct {
-        /**
-        * Максимальная скорость перемещения особи по поверхности, которую
-        * даёт этот орган.
-        * м/с
-        * Определяет инициативу при моделировании столкновений.
-        *   # В обычных (не боевых) условиях, скорость перемещения
-        *     считается в 2 раза меньшей.
-        */
-        cl_float speed;
-
-    } moveSolidSurface_t;
-    moveSolidSurface_t moveSolidSurface;
-
-    typedef struct {
-        cl_float speed;
-    } moveLiquidSurface_t;
-    moveLiquidSurface_t moveLiquidSurface;
-
-    typedef struct {
-        // скорость копания норы
-        cl_float speedDigBurrow;
-        // скорость перемещения по готовой норе
-        cl_float speedInBurrow;
-    } moveSolidInside_t;
-    moveSolidInside_t moveSolidInside;
-
-    typedef struct {
-        cl_float speed;
-    } moveLiquidInside_t;
-    moveLiquidInside_t moveLiquidInside;
-
-    typedef struct {
-        cl_float speed;
-    } moveGasInside_t;
-    moveGasInside_t moveGasInside;
+    moveSolidSurfaceLiving_t moveSolidSurface;
+    moveLiquidSurfaceLiving_t moveLiquidSurface;
+    moveSolidInsideLiving_t moveSolidInside;
+    moveLiquidInsideLiving_t moveLiquidInside;
+    moveGasInsideLiving_t moveGasInside;
 
 
     /**
@@ -849,134 +995,16 @@ typedef struct {
 
 
     /**
-    * *Разные* компоненты, которые необходимы особи для жизни.
-    * кг / день
-    *   # Необходимые компоненты распределяются также, как необходимые энергии.
-    *   # Выбран "день" для гибкой аппроксимации необходимого
-    *     кол-ва на пульс, на ход (зависит от скорости перемещения).
-    *
-    * @see Соглашения о распределении энергий по жизненным циклам особи - energyNeed_t.
-    */
-    typedef component::portionComponent_t  componentNeed_t[ COMPONENT_NEED_LIVING ];
-
-
-    /**
-    * *Разные* компоненты, которые выделяет особь при жизнедеятельности.
-    * кг / день
-    *   # Выделяемые компоненты распределяются также, как выделяемые энергии.
-    *   # Выбран "день" для гибкой аппроксимации выделяемого
-    *     кол-ва на пульс, на ход (зависит от скорости перемещения).
-    *
-    * @see Соглашения о распределении энергий по жизненным циклам особи - energyWaste_t.
-    */
-    typedef component::portionComponent_t  componentWaste_t[ COMPONENT_WASTE_LIVING ];
-
-
-    /**
-    * Энергии особи.
-    *   # Т.к. энергий немного, закрепляем их жёстко по индексам.
-    *   # Распределение энергии по жизненному циклу особи (см. LIFE_CYCLE):
-    *     0    Эмбрионы, семена.  - прямо пропорционально массе особи в этом жизненном цикле
-    *     1    Дети, ростки.      - прямо пропорционально массе особи в этом жизненном цикле
-    *     2    Взрослые.          - значение указано при создании особи
-    *     3    Старики.           - прямо пропорционально массе особи в этом жизненном цикле
-    *     4    Мёртвые особи.     - не требуют энергий
-    *     5    Бессмертные особи. - как для взрослых
-    *
-    * @see CODE_ENERGY
-    */
-
-    /**
-    * Дополнительная энергия, необходимая особи для поддержания жизни,
-    * за исключением энергии, выделяемой от потребления пищи
-    * (хим. компонентов). Лишняя энергия может выделяться
-    * особью в виде тепла (см. ниже).
-    * едениц / день
-    *
-    * @see CODE_ENERGY
-    */
-    typedef component::portionEnergy_t  energyNeed_t[ ENERGY_NEED_LIVING ];
-
-    /**
-    * Энергия, выделяемая особью в процессе своей жизнедеятельности.
-    * едениц / день
-    *
-    * @see CODE_ENERGY
-    */
-    typedef component::portionEnergy_t  energyWaste_t[ ENERGY_WASTE_LIVING ];
-
-
-    /**
     * Метаболизм особи.
     */
-    typedef struct {
-        componentNeed_t   componentNeed;
-        componentWaste_t  componentWaste_t;
-
-        energyNeed_t      energyNeed;
-        energyWaste_t     energyWaste;
-
-    } metabolism_t;
-
-    metabolism_t metabolism;
+    metabolismLiving_t metabolism;
 
 
     /**
     * Условия выживания данной особи.
+    *   # Условия выживания одинаковы для всех жизненных циклов особи.
     */
-    typedef struct {
-        /**
-        * В каких средах может жить особь.
-        *   # Среды обитания задаются комбинацией бит из HL_*.
-        *   # В любых других средах особь погибает.
-        *
-        * Например, если особь может жить на границе газообразной и
-        * твёрдой сред, пишем:
-        *   HL_GAS | HL_SOLID
-        * Если жизнь возможна только в твёрдой среде (кроты):
-        *   HL_SOLID
-        *
-        * @see http://crawl.chaosforge.org/index.php?title=Habitat
-        */
-        cl_uint  habitat[ HABITAT_LIVING_COUNT ];
-
-        /**
-        * Диапазон температур в которых способна жить особь согласно
-        * жизненному циклу "countByAge".
-        */
-        typedef struct {
-            /**
-            * Температура комфорта.
-            * Вне этого диапазона - повышенная смертность и пониженная
-            * рождаемость особей.
-            * Для цивилизованных особей диапазон может варьироваться очень
-            * широко благодаря использованию ц. о. домов / огня / одежды.
-            */
-            typedef struct {
-                cl_float min;
-                cl_float max;
-            } comfort_t;
-            comfort_t comfort;
-
-            /**
-            * Температура выживания.
-            * Существование особи вне этого предела невозможно
-            * (100% летальный исход за 1 пульс).
-            */
-            typedef struct {
-                cl_float min;
-                cl_float max;
-            } limit_t;
-            limit_t limit;
-
-        } temperatureRange_t;
-
-        temperatureRange_t temperatureRange;
-
-    } survivor_t;
-
-    //   # Условия выживания одинаковы для всех жизненных циклов особи.
-    survivor_t survivor;
+    survivorLiving_t survivor;
 
 } aboutOneLiving_t;
 
@@ -996,16 +1024,17 @@ typedef aboutOneLiving_t  aboutLiving_t[ LIVING_COUNT ];
 * в области планеты (в портулане). Эти данные используются для формирования
 * ареалов обитания в области планеты.
 */
-typedef struct {
-    CODE_LIVING code;
+typedef struct __attribute__ ((packed)) {
+    enum CODE_LIVING code;
     // всего особей в области планеты
     cl_float count;
     // мин. и макс. кол-во особей в группе;
     // это кол-во определяет густоту заселения планеты особями
     cl_float minGroup;
     cl_float maxGroup;
-} portionLivingWithQtyGroup_t;
-typedef portionLivingWithQtyGroup_t  livingAll_t[ LIVING_COUNT ];
+} zoneLiving_t;
+
+typedef zoneLiving_t  livingAll_t[ LIVING_COUNT ];
 
 
 
@@ -1026,22 +1055,28 @@ typedef livingCount_t    livingCell_t[ LIVING_CELL ];
 * особей; т.о. *каждой* группе живого мира сопоставляется 19683 ареалов
 * обитания.
 */
-typedef struct {
+typedef livingCell_t*  livingContent_t;
+typedef struct __attribute__ ((packed)) {
     /**
     * Кол-во особей в ячейке.
     * Кол-во больных особей определяется @todo очагами болезней и
     * иммунитетом особей.
     * Особи собраны по группам.
     */
+    /* - Заменено на выделение памяти в куче, т.к. OpenCL при большом размере
+         стека не инициализируется.
     typedef livingCell_t content_t[ LIVING_GRID * LIVING_GRID * LIVING_GRID ];
-    content_t content;
+    */
+    livingContent_t content;
 
 } living_t;
 
 
 
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
                 } // living
             } // dungeoncrawl
         } // set
     } // planet
 } // portulan
+#endif

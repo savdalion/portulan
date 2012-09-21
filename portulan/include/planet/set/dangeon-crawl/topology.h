@@ -6,6 +6,7 @@
 #include "living.h"
 #include "living-set.h"
 #include "planet.h"
+#include "temperature.h"
 
 
 namespace portulan {
@@ -25,7 +26,7 @@ namespace portulan {
 *   # Типы данных топологии сразу готовы к передаче OpenCL: это позволит
 *     избежать создания booster-структуры (см. porte::Booster).
 */
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     dungeoncrawl::aboutPlanet_t                aboutPlanet;
 
     dungeoncrawl::component::aboutComponent_t  aboutComponent;
@@ -34,8 +35,8 @@ typedef struct {
     dungeoncrawl::living::aboutLiving_t        aboutLiving;
     dungeoncrawl::living::living_t             living;
 
+    dungeoncrawl::temperature::temperature_t   temperature;
     //pressure_t          pressure;
-    //temperature_t       temperature;
     //precipitations_t    precipitations;
 
     //aboutSurfaceVoid_t  aboutSurfaceVoid;
