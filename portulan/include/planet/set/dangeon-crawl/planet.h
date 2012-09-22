@@ -37,7 +37,7 @@ typedef struct __attribute__ ((packed)) {
 } massPlanet_t;
 
 typedef struct __attribute__ ((packed)) {
-    __structTemperatureAll_t space;
+    __structComponentAll_t space;
     __structComponentAll_t atmosphere;
     __structComponentAll_t crust;
     __structComponentAll_t mantle;
@@ -45,7 +45,7 @@ typedef struct __attribute__ ((packed)) {
 } componentPlanet_t;
 
 typedef struct __attribute__ ((packed)) {
-    __structTemperatureAll_t space;
+    __structLivingAll_t space;
     __structLivingAll_t atmosphere;
     __structLivingAll_t crust;
     __structLivingAll_t mantle;
@@ -82,11 +82,15 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Состав планеты, перечисление всех компонентов по группам и
     * массовой части компонентов в целом.
+    *   # Список должен заканчиваться на код CC_NONE, если содержит
+    *     менее COMPONENT_CELL элементов.
     */
     componentPlanet_t component;
 
     /**
     * Жизнь на планете, перечисление всех особей и их кол-во в области планеты.
+    *   # Список должен заканчиваться на код CL_NONE, если содержит
+    *     менее LIVING_CELL элементов.
     */
     livingPlanet_t living;
 

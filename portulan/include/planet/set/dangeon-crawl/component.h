@@ -32,10 +32,10 @@ enum CODE_COMPONENT {
     CC_NONE = 0,
 
     // пустота
-    CC_VACUUM = 1,
+    CC_VACUUM = CC_NONE,
 
     // воздух (кислород + азот + CO2)
-    CC_AIR,
+    CC_AIR = 1,
 
     // почвы
     //   - бесплодная почва
@@ -74,7 +74,10 @@ enum CODE_COMPONENT {
     CC_WATER,
 
     // редкие элементы
-    CC_SPARSE
+    CC_SPARSE,
+
+    // последний
+    CC_last
 };
 
 
@@ -116,7 +119,10 @@ enum CODE_ENERGY {
     CE_NORMAL_LIGHT,
 
     // радиация (излучения высокой частоты)
-    CE_RADIATION
+    CE_RADIATION,
+
+    // последний
+    CE_last
 };
 
 
@@ -202,6 +208,7 @@ typedef aboutOneComponent_t  aboutComponent_t[ COMPONENT_COUNT ];
 */
 
 typedef struct __attribute__ ((packed)) {
+
     enum CODE_COMPONENT code;
 
     /**
@@ -219,7 +226,10 @@ typedef struct __attribute__ ((packed)) {
     */
 } zoneComponent_t;
 
-typedef zoneComponent_t  componentAll_t[ COMPONENT_COUNT ];
+// # Берётся COMPONENT_CELL вместо COMPONENT_COUNT, т.к. эта структура
+//   используется лишь при инициализации, а кол-во компонентов в 1-й ячейке
+//   в любом случае не будет превышать COMPONENT_CELL компонентов.
+typedef zoneComponent_t  componentAll_t[ COMPONENT_CELL ];
 
 
 

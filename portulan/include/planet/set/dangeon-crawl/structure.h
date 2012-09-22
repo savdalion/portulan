@@ -303,7 +303,9 @@ enum GROUP_ELEMENT {
     GE_PART_LIVING,
     // @todo осадки, см. precipitations_t
     // GE_PRECIPITATIONS,
-    GE_count
+
+    // последн€€
+    GE_last
 };
 
 

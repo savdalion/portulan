@@ -30,12 +30,13 @@ namespace portulan {
 *
 * @see http://koti.welho.com/jarmoki/crawl/crawl_ss_monsters_by_name.html
 */
+#undef CL_NONE
 enum CODE_LIVING {
     // код отсутствует или не определён
     CL_NONE = 0,
 
     // @see http://koti.welho.com/jarmoki/crawl/monsters/worker_ant.html
-    CL_WORKER_ANT = 1
+    CL_WORKER_ANT = 1,
 
     /* - @todo ...
     // цветы (абстракция)
@@ -49,6 +50,9 @@ enum CODE_LIVING {
     CL_TREE_AVERAGE,
     CL_TREE_HIGH
     */
+
+    // последний
+    CL_last
 };
 
 
@@ -98,13 +102,16 @@ enum COMMON_PART_LIVING {
     // лапка насекомого
     CPL_TARSUS,
     // лапа животного
-    CPL_LEG
+    CPL_LEG,
     /* - @todo extend Добавление железы повлечёт за собой усложнение структуры.
          Сейчас яд будет создаваться в том же органе, который воздействует
          на окр. среду.
     // ядовитая железа
     CPL_VENOM_GLAND
     */
+
+    // последняя
+    CPL_last
 };
 
 
@@ -121,7 +128,10 @@ enum LOCUS_X_PART_LIVING {
     LXL_CENTER,
     LXL_RIGHT,
     // орган расположен по всей особи (например, кровеносные сосуды)
-    LXL_EXTENT
+    LXL_EXTENT,
+
+    // последний
+    LXL_last
 };
 
 enum LOCUS_Y_PART_LIVING {
@@ -129,7 +139,10 @@ enum LOCUS_Y_PART_LIVING {
     LYL_BOTTOM,
     LYL_CENTER,
     LYL_TOP,
-    LYL_EXTENT
+    LYL_EXTENT,
+
+    // последний
+    LYL_last
 };
 
 enum LOCUS_Z_PART_LIVING {
@@ -137,7 +150,10 @@ enum LOCUS_Z_PART_LIVING {
     LZL_FAR,
     LZL_CENTER,
     LZL_NEAR,
-    LZL_EXTENT
+    LZL_EXTENT,
+
+    // последний
+    LZL_last
 };
 
 
@@ -329,7 +345,10 @@ enum SIZE_LIVING {
     // гиганты
     SL_GIANT,
     // драконы
-    SL_HUGE
+    SL_HUGE,
+
+    // последний
+    SL_last
 };
 
 
@@ -349,7 +368,10 @@ enum HOLYNESS_LIVING {
     HL_NATURAL,
     HL_NONLIVING,
     HL_PLANT,
-    HL_UNDEAD
+    HL_UNDEAD,
+
+    // последний
+    HL_last
 };
 
 
@@ -428,7 +450,10 @@ enum TYPE_ATTACK_LIVING {
     //     "магия" - это возможность донести вкус атаки (см. ниже) до цели без
     //     необходимости каким-либо образом касаться цели.
     // @see TAL_SHOOT
-    TAL_MAGIC
+    TAL_MAGIC,
+
+    // последний
+    TAL_last
 };
 
 
@@ -485,7 +510,10 @@ enum FLAVOUR_ATTACK_LIVING {
     FAL_POISON,
 
     // лечит атакующего на 1d(нанесённое повреждение)
-    FAL_VAMPIRIC_DRAINING
+    FAL_VAMPIRIC_DRAINING,
+
+    // последний
+    FAL_last
 };
 
 
