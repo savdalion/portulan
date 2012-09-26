@@ -25,8 +25,6 @@ namespace portulan {
 
 
 
-
-
 // Декларируем структуры, используемые с пространством имён (OpenCL 1.0
 // не поддерживает NS)
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
@@ -64,6 +62,36 @@ namespace portulan {
 * магии "святое слово".
 */
 static __constant cl_float IMMUNE = CL_FLT_MAX;
+
+
+
+
+
+/**
+* Жизненный цикл особи на планете (животного, растения).
+*
+* @see LIFE_CYCLE_COUNT
+*/
+enum LIFE_CYCLE {
+    // Эмбрионы особей, семена
+    LC_EMBRYO   = 0,
+    // Дети, ростки
+    LC_CHILD    = 1,
+    // Взрослые
+    LC_ADULT    = 2,
+    // Старики
+    LC_OLD      = 3,
+    // Мёртвые особи - тела, скелеты
+    LC_DEAD     = 4,
+    // Бессмертные особи
+    LC_IMMORTAL = 5,
+
+    // последний = кол-во циклов
+    LC_last,
+    LC_count = LC_last
+};
+
+
 
 
 
@@ -112,17 +140,13 @@ static __constant size_t COMPONENT_CELL = 20;
 
 
 /**
-* Жизненный цикл особи на планете (животного, растения).
+* Макс. кол-во жизненных циклов особи.
 *
-* # Цикл обрисован группами:
-*     0    Эмбрионы особей, семена.
-*     1    Дети, ростки.
-*     2    Взрослые.
-*     3    Старики.
-*     4    Мёртвые особи - тела, скелеты.
-*     5    Бессмертные особи.
+* @see LIFE_CYCLE
 */
-static __constant size_t LIFE_CYCLE = 6;
+static __constant size_t LIFE_CYCLE_COUNT = LC_last;
+
+
 
 
 
@@ -293,6 +317,8 @@ static __constant size_t SURFACE_VOID_REGISTRY = 5;
 *     перечисления в качестве индекса массивов.
 */
 enum GROUP_ELEMENT {
+    // биомы
+    GE_BIOME,
     // компоненты (воздух, плодородная почва, камень и т.п.)
     GE_COMPONENT,
     // энергии

@@ -53,7 +53,10 @@ public:
     /**
     * Сохраняет в файлы данные о топологии портулана.
     */
+    //void all();
+
     void component(   const std::string& file = "component" );
+    void living(      const std::string& file = "living" );
     void temperature( const std::string& file = "temperature" );
 
 

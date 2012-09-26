@@ -104,6 +104,60 @@ typedef struct __attribute__ ((packed)) {
 } aboutPlanet_t;
 
 
+
+
+/**
+* —труктура дл€ хранени€ количества разных видов особей с группировкой
+* по LIFE_CYCLE и по зонам области планеты.
+*
+* #! »зменени€ этой структуры должны быть согласованы с кодом
+*    в DungeonCrawl::initLiving().
+*/
+typedef struct __attribute__ ((packed)) {
+    float space;
+    float atmosphere;
+    float crust;
+    float mantle;
+    float core;
+    // # ¬сегда сумма всех вышеобозначенных зон.
+    float all;
+} zoneOneLivingCount_t;
+
+typedef zoneOneLivingCount_t  zoneLCOneLivingCount_t[ LIFE_CYCLE_COUNT ];
+
+// индекс соотв. коду особи
+typedef zoneLCOneLivingCount_t  zoneLivingCount_t[ LIVING_COUNT ];
+
+
+
+
+/**
+* —труктура дл€ хранени€ признаков разных видов особей с группировкой
+* по LIFE_CYCLE и по зонам области планеты.
+* »спользуетс€ вместе с zoneOneLivingCount_t.
+*
+* #! »зменени€ этой структуры должны быть согласованы с кодом
+*    в DungeonCrawl::initLiving().
+*/
+typedef struct __attribute__ ((packed)) {
+    bool space;
+    bool atmosphere;
+    bool crust;
+    bool mantle;
+    bool core;
+    // # »тог "»" по всем вышеобозначенным зонам.
+    bool all;
+} zoneOneLivingCountComplete_t;
+
+typedef zoneOneLivingCountComplete_t  zoneLCOneLivingCountComplete_t[ LIFE_CYCLE_COUNT ];
+
+// индекс соотв. коду особи
+typedef zoneLCOneLivingCountComplete_t  zoneLivingCountComplete_t[ LIVING_COUNT ];
+
+
+
+
+
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
             } // dungeoncrawl
         } // set

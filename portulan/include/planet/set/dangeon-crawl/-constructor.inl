@@ -422,7 +422,7 @@ inline void metabolism(
     // @todo optimize bad Можно нулями не заполнять.
     static const std::map< int, double >  CHEMICAL_EMPTY;
     static const std::vector< double >    ENERGY_EMPTY;
-    for (size_t pulse = LIFETIME + 1; pulse < portulan::planet::Topology< SX, SY, SZ >::LIFE_CYCLE; ++pulse) {
+    for (size_t pulse = LIFETIME + 1; pulse < portulan::planet::Topology< SX, SY, SZ >::LC_count; ++pulse) {
         copyFill( metabolism[ pulse ].chemical.need,   CN,  GEC,  CHEMICAL_EMPTY,  1 );
         copyFill( metabolism[ pulse ].chemical.waste,  CW,  GEC,  CHEMICAL_EMPTY,  1 );
         copyFill( metabolism[ pulse ].energy.need,     EN,  ENERGY_EMPTY,  1 );
@@ -491,7 +491,7 @@ inline void specimen(
     specimen.immunity = static_cast< cl_float >( immunity );
 
     const double deltaMass = (massDie - massBurn) / static_cast< double >( LIFETIME );
-    // @copy LIFE_CYCLE
+    // @copy LC_count
     //     0    Эмбрионы особей, семена.
     //     1    Дети, ростки.
     //     2    Взрослые.
@@ -506,7 +506,7 @@ inline void specimen(
 
     copyFill( specimen.chemicalComposition,  CC,  portulan::planet::GE_LIVING,  chemicalComposition, 1 );
 
-    static const size_t LC = portulan::planet::Topology< SX, SY, SZ >::LIFE_CYCLE;
+    static const size_t LC = portulan::planet::Topology< SX, SY, SZ >::LC_count;
     std::copy( metabolism,  metabolism + LC,  specimen.metabolism );
 
     specimen.survivor = survivor;
@@ -544,7 +544,7 @@ inline void living(
             for (int x = sm_t::minCoord().x; x <= sm_t::maxCoord().x; ++x) {
                 const typelib::coordInt_t c( x, y, z );
                 const size_t i = sm_t::ic( x, y, z );
-                for (size_t pulse = 0; pulse < portulan::planet::Topology< SX, SY, SZ >::LIFE_CYCLE; ++pulse) {
+                for (size_t pulse = 0; pulse < portulan::planet::Topology< SX, SY, SZ >::LC_count; ++pulse) {
                     const auto count = fnLiving( pulse, c, specimen );
                     living.content[ i ][ uid.code ][ pulse ] = static_cast< cl_float >( count );
                 }

@@ -60,10 +60,10 @@ enum CODE_LIVING {
 
 
 /**
-* Код элемента (компонента, особи) и массовая доля в целом элементе или
-* количество элемента.
+* Код особи, общее кол-во особей.
+*   # Кол-во групп особей определяется по кол-ву особей и
+*     размеру групп из декларации aboutOneLiving_t.
 *
-* Например: муравьи = 0.2, деревья = 0.1, цветы = 0.7.
 * Например: муравьи = 6e6, деревья = 3e3, цветы = 4e4.
 */
 typedef struct __attribute__ ((packed)) {
@@ -122,6 +122,8 @@ enum COMMON_PART_LIVING {
 * Местоположение органа особи по координатным осям XYZ.
 *   # Наблюдатель смотрит навстречу оси Z, ось X направлена вправо, Y - вверх.
 */
+#if 1
+
 enum LOCUS_X_PART_LIVING {
     LXL_UNDEFINED = 0,
     LXL_LEFT,
@@ -155,6 +157,8 @@ enum LOCUS_Z_PART_LIVING {
     // последний
     LZL_last
 };
+
+#endif
 
 
 
@@ -204,6 +208,8 @@ typedef struct __attribute__ ((packed)) {
 /**
 * Функция части тела особи.
 */
+#if 1
+
 // жизненно важная часть (летальный исход при отсутствии)
 #define FPL_LIVE                          (1ULL << 0)
 
@@ -305,6 +311,7 @@ typedef struct __attribute__ ((packed)) {
 // общение с помощью наблюдения (визуальные сигналы)
 #define FPL_EMIT_NORMAL_VISION            (1ULL << 33)
 
+#endif
 
 
 
@@ -328,23 +335,31 @@ typedef struct __attribute__ ((packed)) {
 * Размер особи.
 */
 enum SIZE_LIVING {
-    // семена растений
+    // ~0.01-0.2 м:  семена, плоды растений
     SL_ATOMIC = 1,
-    // крысы, летучие мыши
+
+    // ~0.2-0.3 м:  крысы, летучие мыши
     SL_TINY,
-    // спригганы
+
+    // ~0.3-0.6 м:  спригганы
     SL_LITTLE,
-    // полурослики, кобольды
+
+    // ~0.6-1.2 м:  муравьи, полурослики, кобольды
     SL_SMALL,
-    // люди, эльфы, дварфы
+
+    // ~1.2-2.0 м:  люди, эльфы, дварфы
     SL_MEDIUM,
-    // троли, огры, кентавры, наги
+
+    // ~2.0-3.0 м:  троли, огры, кентавры, наги
     SL_LARGE,
-    // четвероногие животные
+
+    // ~3.0-4.0 м:  четвероногие животные
     SL_BIG,
-    // гиганты
+
+    // ~4.0-6.0 м:  гиганты
     SL_GIANT,
-    // драконы
+
+    // ~6.0-9.0 м:  драконы
     SL_HUGE,
 
     // последний
@@ -385,6 +400,7 @@ enum HOLYNESS_LIVING {
 *//* - Заменено на define. См. ниже.
 enum TAG_LIVING {
 */
+#if 1
 
 // теплокровная особь
 #define TL_WARM_BLOODED            (0ULL)
@@ -398,6 +414,8 @@ enum TAG_LIVING {
 #define TL_DAMAGE_REGENERATION     (1ULL << 2)
 // восстанавливаются утерянные части тела
 #define TL_LOSE_PART_REGENERATION  (1ULL << 3)
+
+#endif
 
 
 
@@ -455,6 +473,7 @@ enum TYPE_ATTACK_LIVING {
     // последний
     TAL_last
 };
+
 
 
 
@@ -571,6 +590,8 @@ typedef aboutOnePartResist_t  resistPartLiving_t[ RESIST_PART_LIVING_COUNT ];
 * Информация об органе особи.
 *   # Размер органа особи определяется размером самой особи и массой органа.
 */
+#if 1
+
 typedef __structPortionComponent_t  compositionPortionLiving_t[ COMPONENT_COMPOSITION_LIVING ];
 typedef __enumCodeComponent  componentCodeNeedLiving_t[ COMPONENT_NEED_LIVING ];
 
@@ -717,6 +738,7 @@ typedef struct __attribute__ ((packed)) {
 
 } aboutOnePartLiving_t;
 
+#endif
 
 
 
@@ -725,6 +747,8 @@ typedef struct __attribute__ ((packed)) {
 /**
 * Информация об особи.
 */
+#if 1
+
 // издаваемый шум
 typedef struct __attribute__ ((packed)) {
     // когда стоит неподвижно
@@ -910,7 +934,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Масса особи согласно жизненному циклу "countByAge", кг.
     */
-    cl_float mass[ LIFE_CYCLE ];
+    cl_float mass[ LIFE_CYCLE_COUNT ];
 
 
     /**
@@ -1036,6 +1060,9 @@ typedef struct __attribute__ ((packed)) {
 
 } aboutOneLiving_t;
 
+#endif
+
+
 
 
 
@@ -1048,21 +1075,25 @@ typedef aboutOneLiving_t  aboutLiving_t[ LIVING_COUNT ];
 
 
 /**
-* Макс. кол-во особей с указанием количества, которые находятся
-* в области планеты (в портулане). Эти данные используются для формирования
+* Примерное кол-во особей в области планеты (в портулане) с указанием
+* размеров групп. Эти данные используются для формирования
 * ареалов обитания в области планеты.
 */
 typedef struct __attribute__ ((packed)) {
     enum CODE_LIVING code;
-    // всего особей в области планеты
+    // *примерное* кол-во особей в ячейке области планеты
     cl_float count;
     // мин. и макс. кол-во особей в группе;
-    // это кол-во определяет густоту заселения планеты особями
+    // эти кол-ва определяют густоту заселения ячейки особями
     cl_float minGroup;
     cl_float maxGroup;
 } zoneLiving_t;
 
-typedef zoneLiving_t  livingAll_t[ LIVING_COUNT ];
+// # Берётся LIVING_CELL вместо LIVING_COUNT, т.к. эта структура
+//   используется лишь при инициализации, а кол-во особей в 1-й ячейке
+//   в любом случае не будет превышать LIVING_CELL особей.
+typedef zoneLiving_t  livingAll_t[ LIVING_CELL ];
+
 
 
 
@@ -1071,8 +1102,9 @@ typedef zoneLiving_t  livingAll_t[ LIVING_COUNT ];
 * *одновременно* находиться в 1-й ячейке портулана.
 *   # Работаем с кол-вами особей по всему жизн. циклу LIFE_CYCLE.
 */
-typedef portionLiving_t  livingCount_t[ LIFE_CYCLE ];
+typedef portionLiving_t  livingCount_t[ LIFE_CYCLE_COUNT ];
 typedef livingCount_t    livingCell_t[ LIVING_CELL ];
+
 
 
 
@@ -1098,6 +1130,8 @@ typedef struct __attribute__ ((packed)) {
     livingContent_t content;
 
 } living_t;
+
+
 
 
 

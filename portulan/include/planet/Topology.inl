@@ -179,7 +179,7 @@ inline std::ostream& operator<<( std::ostream& out,  const portulan::planet::Top
     out <<
         "lifetime " << sp.lifetime <<
         "\nmass ";
-    static const size_t LC = portulan::planet::Topology< 81, 81, 81 >::LIFE_CYCLE;
+    static const size_t LC = portulan::planet::Topology< 81, 81, 81 >::LC_count;
     typelib::print< cl_float, LC >( std::cout, sp.mass );
 
     out <<
