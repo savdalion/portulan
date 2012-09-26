@@ -37,6 +37,7 @@ namespace portulan {
 #define __structLivingAll_t         living::livingAll_t
 
 #define __structTemperatureAll_t    temperature::temperatureAll_t
+//#define __structTemperatureCell_t   temperature::temperatureCell_t
 
 #else
 #define __structComponentAll_t      componentAll_t
@@ -48,7 +49,26 @@ namespace portulan {
 #define __structLivingAll_t         livingAll_t
 
 #define __structTemperatureAll_t    temperatureAll_t
+//#define __structTemperatureCell_t   temperatureCell_t
 
+#endif
+
+
+
+
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
+/**
+* Величина пульса в области планеты.
+*    # 1 пульс = 1 год = 400 дней
+*    # 1 день = 25 часов
+*/
+static __constant cl_float SECOND_IN_MINUTE = 60.0f;
+static __constant cl_float MINUTE_IN_HOUR   = 60.0f;
+static __constant cl_float HOUR_IN_DAY      = 25.0f;
+static __constant cl_float DAY_IN_YEAR      = 400.0f;
+static __constant cl_float HOUR_IN_YEAR     = DAY_IN_YEAR    * HOUR_IN_DAY;
+static __constant cl_float MINUTE_IN_YEAR   = HOUR_IN_YEAR   * MINUTE_IN_HOUR;
+static __constant cl_float SECOND_IN_YEAR   = MINUTE_IN_YEAR * SECOND_IN_MINUTE;
 #endif
 
 
@@ -136,6 +156,42 @@ static __constant size_t COMPONENT_COUNT = 100;
 * *одновременно* храниться в 1-й ячейке портулана.
 */
 static __constant size_t COMPONENT_CELL = 20;
+
+
+
+/**
+* Сетка распределения температуры в области планеты.
+*/
+static __constant size_t TEMPERATURE_GRID = 81;
+
+
+
+#if 0
+// - Не будем использовать биомы. В основном они нужны, чтобы связать
+//   живой мир с областью планеты. Сделаем это, определив подходящие
+//   условия для жизни особей и расселяя их в комфортных зонах.
+/**
+* Сетка распределения биомов в области планеты.
+*/
+static __constant size_t BIOME_GRID = 81;
+
+
+
+/**
+* Макс. кол-во *разных* компонентов, которые могут использоваться
+* в области планеты (в портулане).
+*/
+static __constant size_t BIOME_COUNT = 100;
+
+
+
+/**
+* Макс. кол-во биомов, которые могут *одновременно* храниться
+* в 1-й ячейке портулана.
+*/
+static __constant size_t BIOME_CELL = 3;
+#endif
+
 
 
 
@@ -263,13 +319,6 @@ static __constant size_t LIVING_CELL = 20;
 
 
 
-/**
-* Сетка распределения температуры в области планеты.
-*/
-static __constant size_t TEMPERATURE_GRID = 81;
-
-
-
 
 
 #if 0
@@ -318,7 +367,7 @@ static __constant size_t SURFACE_VOID_REGISTRY = 5;
 */
 enum GROUP_ELEMENT {
     // биомы
-    GE_BIOME,
+    GE_BIOME = 1,
     // компоненты (воздух, плодородная почва, камень и т.п.)
     GE_COMPONENT,
     // энергии
@@ -344,7 +393,6 @@ enum GROUP_ELEMENT {
 * @see set::Component, set::Living
 */
 typedef cl_ushort code_t;
-
 
 
 
@@ -448,15 +496,6 @@ typedef struct {
     aboutOneSurfaceVoid_t about[ SURFACE_VOID_GRID * SURFACE_VOID_GRID * SURFACE_VOID_GRID ];
 } aboutSurfaceVoid_t;
 #endif
-
-
-
-
-/*
-typedef struct __attribute__ ((packed)) {
-    float t[ 100 ];
-} test_t;
-*/
 
 
 

@@ -84,6 +84,7 @@
     <ClInclude Include="include\command\common.h" />
     <ClInclude Include="include\io\planet\set\dangeon-crawl\TextVisual.h" />
     <ClInclude Include="include\io\planet\set\dangeon-crawl\SnapshotVTK.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\-+biome.h" />
     <ClInclude Include="include\planet\set\dangeon-crawl\temperature.h" />
     <ClInclude Include="include\planet\set\dangeon-crawl\-constructor.h" />
     <ClInclude Include="include\planet\Portulan.h" />

@@ -35,21 +35,13 @@ enum CODE_LIVING {
     // код отсутствует или не определён
     CL_NONE = 0,
 
-    // @see http://koti.welho.com/jarmoki/crawl/monsters/worker_ant.html
-    CL_WORKER_ANT = 1,
+    // @see living-set.h
 
-    /* - @todo ...
-    // цветы (абстракция)
-    CL_FLOWER,
+    // рабочий муравей
+    CL_WORKER_ANT,
 
-    // деревья (абстракция)
-    //  - карликовые
-    //  - средние
-    //  - высокие
-    CL_TREE_TINY,
-    CL_TREE_AVERAGE,
-    CL_TREE_HIGH
-    */
+    // пастбищная трава
+    CL_GRAMA,
 
     // последний
     CL_last
@@ -78,6 +70,7 @@ typedef struct __attribute__ ((packed)) {
 
 /**
 * Перечисление общих частей тела живых существ.
+*   # Деление на группы животных / растений - чисто условное.
 */
 enum COMMON_PART_LIVING {
     // пустая часть или часть не определена
@@ -85,6 +78,7 @@ enum COMMON_PART_LIVING {
     // другому органу
     CPL_NONE = 0,
 
+    /* животные, насекомые */
     // голова
     CPL_HEAD,
     // грудь
@@ -109,6 +103,20 @@ enum COMMON_PART_LIVING {
     // ядовитая железа
     CPL_VENOM_GLAND
     */
+
+    /* растения */
+    // корень
+    CPL_ROOT,
+    // стебель, ствол
+    CPL_STEM,
+    // листва, листья
+    CPL_LEAF,
+    // колосок
+    CPL_SPIKELET,
+    // семя
+    CPL_SEED,
+    // плод, зародыш, эмбрион
+    //CPL_FETUS, - ограничиться семенем?
 
     // последняя
     CPL_last
@@ -227,25 +235,25 @@ typedef struct __attribute__ ((packed)) {
 // перемещение внутри газообразной поверхности (полёт по воздуху)
 #define FPL_MOVE_GAS_INSIDE               (1ULL << 6)
 
+// # Что конкретно поглощает - указано для каждого органа.
 // поглощение твёрдых питательных компонентов (пища, рот)
 #define FPL_EAT_SOLID                     (1ULL << 7)
 // поглощение жидких питательных компонентов (вода, хобот)
 #define FPL_EAT_LIQUID                    (1ULL << 8)
 // поглощение газообразных питательных компонентов (воздух, лёгкие)
 #define FPL_EAT_GAS                       (1ULL << 9)
-// поглощение света (листья)
-// # Делится на диапазоны электромагнитного излучения.
-//   См. ниже "рецепторы особи".
-#define FPL_EAT_NORMAL_LIGHT              (1ULL << 10)
+// поглощение энергий
+#define FPL_EAT_ENERGY                    (1ULL << 10)
 
+// # Что конкретно усваивает - указано для каждого органа.
 // усвоение твёрдых питательных компонентов (пища)
 #define FPL_UPTAKE_SOLID                  (1ULL << 11)
 // усвоение жидких питательных компонентов (вода)
 #define FPL_UPTAKE_LIQUID                 (1ULL << 12)
 // усвоение газообразных питательных компонентов (воздух)
 #define FPL_UPTAKE_GAS                    (1ULL << 13)
-// усвоение света (листья)
-#define FPL_UPTAKE_NORMAL_LIGHT           (1ULL << 14)
+// усвоение энергий
+#define FPL_UPTAKE_ENERGY                 (1ULL << 14)
 
 // выделение твёрдых питательных компонентов (кал)
 #define FPL_EXCRETION_SOLID               (1ULL << 15)
@@ -610,10 +618,6 @@ typedef struct __attribute__ ((packed)) {
     cl_float efficiency;
 } uptakeGasLiving_t;
 
-typedef struct __attribute__ ((packed)) {
-    cl_float efficiency;
-} uptakeNormalLightLiving_t;
-
 
 typedef __enumCodeComponent  componentCodeWasteLiving_t[ COMPONENT_WASTE_LIVING ];
 
@@ -691,8 +695,10 @@ typedef struct __attribute__ ((packed)) {
 
 
     // усвоение компонентов (см. выше - поглощение)
+    // Перечисляется список компонентов, которые орган способен усвоить
+    // из особи.
     //   # Для органа указывается только *возможность* усвоения компонента.
-    //     Требуемое кол-во компонента указано в информации об особи.
+    //     Требуемое кол-во компонента декларировано в информации об особи.
     //   # 1 литр воздуха (CC_AIR) весит 1.2 грамма.
     // Орган переводит компоненты (пищу) в энергию.
     // Энергия = количеству энергии, освобождаемой при сгорании компонента.
@@ -700,7 +706,6 @@ typedef struct __attribute__ ((packed)) {
     uptakeSolidLiving_t       uptakeSolid;
     uptakeLiquidLiving_t      uptakeLiquid;
     uptakeGasLiving_t         uptakeGas;
-    uptakeNormalLightLiving_t uptakeNormalLight;
 
 
     // выделение компонентов (см. выше - поглощение и усвоение компонентов)
@@ -709,7 +714,9 @@ typedef struct __attribute__ ((packed)) {
     excretionGasLiving_t    excretionGas;
 
 
-    // поглощение и усвоение энергий (см. ниже - выделение энергий)
+    // усвоение и выделение энергий
+    // Перечисляется список энергий, которые орган способен усвоить
+    // из окр. среды.
     //   # Для органа указывается только *возможность* усвоения энергии.
     //     Требуемое кол-во энергии указано в информации об особи.
     uptakeEnergyLiving_t    uptakeEnergy;
@@ -1083,10 +1090,7 @@ typedef struct __attribute__ ((packed)) {
     enum CODE_LIVING code;
     // *примерное* кол-во особей в ячейке области планеты
     cl_float count;
-    // мин. и макс. кол-во особей в группе;
-    // эти кол-ва определяют густоту заселения ячейки особями
-    cl_float minGroup;
-    cl_float maxGroup;
+    // # Размер группы декларирован в aboutOneLiving_t::maxGroupSize.
 } zoneLiving_t;
 
 // # Берётся LIVING_CELL вместо LIVING_COUNT, т.к. эта структура

@@ -45,6 +45,14 @@ typedef struct __attribute__ ((packed)) {
 } componentPlanet_t;
 
 typedef struct __attribute__ ((packed)) {
+    __structTemperatureAll_t space;
+    __structTemperatureAll_t atmosphere;
+    __structTemperatureAll_t crust;
+    __structTemperatureAll_t mantle;
+    __structTemperatureAll_t core;
+} temperaturePlanet_t;
+
+typedef struct __attribute__ ((packed)) {
     __structLivingAll_t space;
     __structLivingAll_t atmosphere;
     __structLivingAll_t crust;
@@ -52,13 +60,15 @@ typedef struct __attribute__ ((packed)) {
     __structLivingAll_t core;
 } livingPlanet_t;
 
+/*
 typedef struct __attribute__ ((packed)) {
-    __structTemperatureAll_t space;
-    __structTemperatureAll_t atmosphere;
-    __structTemperatureAll_t crust;
-    __structTemperatureAll_t mantle;
-    __structTemperatureAll_t core;
-} temperaturePlanet_t;
+    __structRainfallAll_t space;
+    __structRainfallAll_t atmosphere;
+    __structRainfallAll_t crust;
+    __structRainfallAll_t mantle;
+    __structRainfallAll_t core;
+} rainfallPlanet_t;
+*/
 
 typedef struct __attribute__ ((packed)) {
     /**
@@ -88,6 +98,13 @@ typedef struct __attribute__ ((packed)) {
     componentPlanet_t component;
 
     /**
+    * Температура на планете.
+    *   # Чтобы отсутствовала резкая граница температур между зонами, граничные
+    *     значения температур зон должны совпадать.
+    */
+    temperaturePlanet_t temperature;
+
+    /**
     * Жизнь на планете, перечисление всех особей и их кол-во в области планеты.
     *   # Список должен заканчиваться на код CL_NONE, если содержит
     *     менее LIVING_CELL элементов.
@@ -95,11 +112,9 @@ typedef struct __attribute__ ((packed)) {
     livingPlanet_t living;
 
     /**
-    * Температура на планете.
-    *   # Чтобы отсутствовала резкая граница температур между зонами, граничные
-    *     значения температур зон должны совпадать.
+    * Атмосферные осадки на планете.
     */
-    temperaturePlanet_t temperature;
+    //rainfallPlanet_t rainfall;
 
 } aboutPlanet_t;
 

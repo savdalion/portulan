@@ -22,7 +22,7 @@ namespace portulan {
 
 
 /**
-* Температура в 1-й ячейке области планеты.
+* Поведение температуры в 1-й ячейке области планеты.
 */
 typedef struct __attribute__ ((packed)) {
     /**
@@ -66,6 +66,14 @@ typedef struct __attribute__ ((packed)) {
 } zoneTemperature_t;
 
 typedef zoneTemperature_t  temperatureAll_t;
+
+
+
+
+/**
+* Ячейка портулана с информацией о температуре.
+*/
+//typedef behaviourTemperature_t  temperatureCell_t;
 
 
 
