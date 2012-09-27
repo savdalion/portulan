@@ -65,16 +65,85 @@ typedef struct __attribute__ ((packed)) {
     *   # Температура меняется линейно.
     *   # Значения температур перечисляются от центра (0.0, самый глубокий слой)
     *     к поверхности (1.0, самый верхний слой).
+    *   # Чтобы отсутствовала резкая граница температур между зонами, граничные
+    *     значения температур зон-соседей должны совпадать.
     */
     cl_float center;
     cl_float surface;
 
-    // # Отклонение температуры, частота - все эти прелести появятся потом:
-    //   силы природы сделают своё дело.
-
 } zoneTemperature_t;
 
 typedef zoneTemperature_t  temperatureAll_t;
+
+
+
+
+/**
+* Информация о температуре на *поверхности* планеты.
+* Выделены в отдельную структуру, чтобы уточнить температуру
+* из zoneTemperature_t.
+* Эти данные используются при начальном формировании планеты.
+*/
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Карта температур, К.
+    */
+    // средняя годовая температура на экваторе и полюсах, К
+    cl_float equator;
+    cl_float pole;
+    // @todo частота колебания температуры, раз / день
+    //cl_float rate;
+
+} zoneSurfaceTemperature_t;
+
+typedef zoneSurfaceTemperature_t  surfaceTemperatureAll_t;
+
+
+
+
+/**
+* Информация об атмосферных осадках в области планеты (в портулане).
+* Эти данные используются при начальном формировании планеты.
+*/
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Карта атмосферных осадков.
+    */
+    // граничное средне дневное количество осадков, мм / день
+    cl_float min;
+    cl_float max;
+    // @todo частота выпадения осадков, раз / день
+    //cl_float rate;
+    // @todo продолжительность выпадения осадков, день
+    //cl_float duration;
+
+} zoneRainfall_t;
+
+typedef zoneRainfall_t  rainfallAll_t;
+
+
+
+
+/**
+* Информация о дренаже в области планеты (в портулане).
+* Эти данные используются при начальном формировании планеты.
+* Дренаж определяет, как быстро атм. осадки будут убраны после выпадения.
+* Показатели атм. осадков и дренажа определяют состав и форму поверхности.
+*
+* @prototype http://dfwk.ru/Biome
+*/
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Карта дренажа.
+    * @see zoneRainfall_t
+    */
+    // минимальный и максимальный дренаж на планете, мм / день
+    cl_float min;
+    cl_float max;
+
+} zoneDrainage_t;
+
+typedef zoneDrainage_t  drainageAll_t;
 
 
 
@@ -121,6 +190,7 @@ typedef struct __attribute__ ((packed)) {
     componentAll_t core;
 } componentPlanet_t;
 
+
 typedef struct __attribute__ ((packed)) {
     temperatureAll_t space;
     temperatureAll_t atmosphere;
@@ -129,15 +199,33 @@ typedef struct __attribute__ ((packed)) {
     temperatureAll_t core;
 } temperaturePlanet_t;
 
-/*
 typedef struct __attribute__ ((packed)) {
-    __structRainfallAll_t space;
-    __structRainfallAll_t atmosphere;
-    __structRainfallAll_t crust;
-    __structRainfallAll_t mantle;
-    __structRainfallAll_t core;
+    // к поверхности планеты - особое внимание
+    surfaceTemperatureAll_t crust;
+} surfaceTemperaturePlanet_t;
+
+typedef struct __attribute__ ((packed)) {
+    rainfallAll_t crust;
+    // # Осадки инициируем только на поверхности планетарной коры.
 } rainfallPlanet_t;
+
+typedef struct __attribute__ ((packed)) {
+    drainageAll_t crust;
+    // # Дренаж инициируем только на поверхности планетарной коры.
+} drainagePlanet_t;
+
+
+/* - Эта абстракция не делает работу с портуланом более простой.
+     Более того, она вынуждает тянуть за собой довольно большую структуру,
+     лишая нас и гибкости, и скорости.
+typedef struct __attribute__ ((packed)) {
+    temperaturePlanet_t      temperature;
+    surfaceTemperatureAll_t  surfaceTemperature;
+    rainfallPlanet_t         rainfall;
+    drainagePlanet_t         drainage;
+} climatePlanet_t;
 */
+
 
 typedef struct __attribute__ ((packed)) {
     livingAll_t space;
@@ -146,6 +234,7 @@ typedef struct __attribute__ ((packed)) {
     livingAll_t mantle;
     livingAll_t core;
 } livingPlanet_t;
+
 
 typedef struct __attribute__ ((packed)) {
     /**
@@ -175,17 +264,37 @@ typedef struct __attribute__ ((packed)) {
     componentPlanet_t component;
 
     /**
-    * Температура на планете.
-    *   # Чтобы отсутствовала резкая граница температур между зонами, граничные
-    *     значения температур зон должны совпадать.
+    * Климат планеты.
+    * Характеризуется параметрами
+    *   - @todo атмосферное давление
+    *   - @todo температура воздуха
+    *   - @todo влажность воздуха
+    *   - @todo скорость и направление ветра
+    * 
+    *   # @todo Климат определяем по всей области планеты. Т.о. сможем
+    *     создавать полости с особой погодой.
+    *   # Не оборачиваем в отдельную структуру, т.к. подобная абстракция
+    *     не делает работу с портуланом более простой, но лишает нас гибкости
+    *     в вопросе "Что влияет на климат планеты?"
+    *
+    * @todo Параметры выше позволяют проявляться атмосферным явлениям
+    *   - атмосферные осадки (дождь, снег, град)
+    *   - туман
+    *   - метель
+    *   - гроза
+    *   - смерч
+    *   - буря
+    *   - ураган
+    *   - метеоритный дождь
+    *   - ...
+    *
+    * @see Климат > http://ru.wikipedia.org/wiki/%D0%9A%D0%BB%D0%B8%D0%BC%D0%B0%D1%82
     */
-    temperaturePlanet_t temperature;
-
-    /**
-    * Атмосферные осадки на планете.
-    *//*
-    rainfallPlanet_t rainfall;
-    */
+    temperaturePlanet_t         temperature;
+    // температура на поверхности уточняет "temperature"
+    surfaceTemperaturePlanet_t  surfaceTemperature;
+    rainfallPlanet_t            rainfall;
+    drainagePlanet_t            drainage;
 
     /**
     * Жизнь на планете, перечисление всех особей и их кол-во в области планеты.

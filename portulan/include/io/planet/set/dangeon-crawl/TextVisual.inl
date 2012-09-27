@@ -104,6 +104,7 @@ inline void TextVisual::drawTopologySizeInMemory(
         }
     );
 
+    /* - @todo
     const auto tsumDispersion = std::accumulate(
         tp.temperature.content,
         tp.temperature.content + TG,
@@ -135,6 +136,7 @@ inline void TextVisual::drawTopologySizeInMemory(
             return (a[0].rate < b[0].rate);
         }
     );
+    */
 
     *out <<
         "ѕам€ть, занимаема€ топологией планеты\n" <<
@@ -164,6 +166,7 @@ inline void TextVisual::drawTopologySizeInMemory(
                         "; " << tminmaxAverage.second[0]->average       << " ]" <<
                         "\t~ " << (tsumAverage / static_cast< float >( TG )) <<
                     "\n" <<
+                    /* - @todo
                     "\t\t\tdispersion [ " << tminmaxDispersion.first[0]->dispersion <<
                         "; " << tminmaxDispersion.second[0]->dispersion << " ]" <<
                         "\t~ " << (tsumDispersion / static_cast< float >( TG )) <<
@@ -172,19 +175,7 @@ inline void TextVisual::drawTopologySizeInMemory(
                         "; " << tminmaxRate.second[0]->rate             << " ]" <<
                         "\t~ " << (tsumRate / static_cast< float >( TG )) <<
                     "\n" <<
-                /*
-                "\t\tpressure " <<
-                    portulan::planet::structure::PRESSURE_GRID << "x " <<
-                    sizeof( pressure ) / 1024 / 1024 << " ћб\n" <<
-                    "\t\t\taverage [ " << *pminmax.first << "; " << *pminmax.second << " ]\n" <<
-                "\t\tprecipitations " <<
-                    portulan::planet::structure::PRECIPITATIONS_GRID << "x " <<
-                    sizeof( precipitations ) / 1024 / 1024 << " ћб\n" <<
-                    "\t\t\trainfall [ " << *rminmax.first << "; " << *rminmax.second << " ]\n" <<
-                "\t\tsurfaceVoid " <<
-                    portulan::planet::structure::SURFACE_VOID_GRID << "x " <<
-                    sizeof( aboutSurfaceVoid ) / 1024 /1024 << " ћб\n" <<
-                */
+                    */
     std::endl;
 }
 

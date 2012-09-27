@@ -335,6 +335,7 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
     averageTemperature->SetNumberOfComponents( 1 );
     averageTemperature->SetNumberOfValues( G3 );
 
+    /* - @todo
     auto dispersionTemperature = vtkSmartPointer< vtkFloatArray >::New();
     dispersionTemperature->Initialize();
     dispersionTemperature->SetName( "dispersion" );
@@ -346,6 +347,7 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
     rateTemperature->SetName( "rate" );
     rateTemperature->SetNumberOfComponents( 1 );
     rateTemperature->SetNumberOfValues( G3 );
+    */
 
     size_t n = 0;
     typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
@@ -362,8 +364,8 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 
         const auto& cell = content[ i ];
         averageTemperature->SetValue(    n,  cell[0].average );
-        dispersionTemperature->SetValue( n,  cell[0].dispersion );
-        rateTemperature->SetValue(       n,  cell[0].rate );
+        //dispersionTemperature->SetValue( n,  cell[0].dispersion );
+        //rateTemperature->SetValue(       n,  cell[0].rate );
 
         ++n;
     } // for (size_t i
@@ -375,8 +377,8 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
     polydata->SetVerts( vertices );
     // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
     polydata->GetPointData()->AddArray( averageTemperature );
-    polydata->GetPointData()->AddArray( dispersionTemperature );
-    polydata->GetPointData()->AddArray( rateTemperature );
+    //polydata->GetPointData()->AddArray( dispersionTemperature );
+    //polydata->GetPointData()->AddArray( rateTemperature );
 
 
     // записываем
