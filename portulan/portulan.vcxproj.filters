@@ -54,9 +54,6 @@
     <ClInclude Include="include\command\common.h">
       <Filter>Заголовочные файлы\command\common</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\component.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\planet\set\dangeon-crawl\living.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -88,6 +85,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="include\planet\set\dangeon-crawl\-+biome.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\component.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

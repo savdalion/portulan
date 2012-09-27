@@ -12,18 +12,15 @@ inline Topology::Topology() {
     */
 
     namespace pd = set::dungeoncrawl;
-    namespace pc = set::dungeoncrawl::component;
-    namespace pt = set::dungeoncrawl::temperature;
-    namespace pl = set::dungeoncrawl::living;
 
     static const size_t CG = pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID;
-    mTopology.component.content = new pc::componentCell_t[ CG ];
+    mTopology.component.content = new pd::componentCell_t[ CG ];
 
     static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
-    mTopology.temperature.content = new pt::temperatureCell_t[ TG ];
+    mTopology.temperature.content = new pd::temperatureCell_t[ TG ];
 
     static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
-    mTopology.living.content = new pl::livingCell_t[ LG ];
+    mTopology.living.content = new pd::livingCell_t[ LG ];
 
     /* @test
     const size_t c = sizeof( pc::componentCell_t ) * CG;
@@ -55,11 +52,6 @@ inline set::topology_t& Topology::topology() {
     return mTopology;
 }
 
-
-
-/**
-*
-*/
 
 
     } // planet

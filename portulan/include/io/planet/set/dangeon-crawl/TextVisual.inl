@@ -80,30 +80,27 @@ inline void TextVisual::drawTopologySizeInMemory(
     const portulan::planet::set::topology_t&  tp
 ) {
     namespace pd = portulan::planet::set::dungeoncrawl;
-    namespace pc = portulan::planet::set::dungeoncrawl::component;
-    namespace pl = portulan::planet::set::dungeoncrawl::living;
-    namespace pt = portulan::planet::set::dungeoncrawl::temperature;
 
     static const size_t CG = pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID;
-    const size_t memsizeComponent = sizeof( pc::componentCell_t ) * CG;
+    const size_t memsizeComponent = sizeof( pd::componentCell_t ) * CG;
     static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
-    const size_t memsizeLiving = sizeof( pl::livingCell_t ) * LG;
+    const size_t memsizeLiving = sizeof( pd::livingCell_t ) * LG;
     static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
-    const size_t memsizeTemperature = sizeof( pt::temperatureCell_t ) * TG;
+    const size_t memsizeTemperature = sizeof( pd::temperatureCell_t ) * TG;
 
     const auto tsumAverage = std::accumulate(
         tp.temperature.content,
         tp.temperature.content + TG,
         0.0f,
-        [] ( float sum, const pt::temperatureCell_t& a ) -> float {
-            return sum + a.average;
+        [] ( float sum, const pd::temperatureCell_t& a ) -> float {
+            return sum + a[0].average;
         }
     );
     const auto tminmaxAverage = std::minmax_element(
         tp.temperature.content,
         tp.temperature.content + TG,
-        [] ( const pt::temperatureCell_t& a, const pt::temperatureCell_t& b ) -> bool {
-            return (a.average < b.average);
+        [] ( const pd::temperatureCell_t& a, const pd::temperatureCell_t& b ) -> bool {
+            return (a[0].average < b[0].average);
         }
     );
 
@@ -111,15 +108,15 @@ inline void TextVisual::drawTopologySizeInMemory(
         tp.temperature.content,
         tp.temperature.content + TG,
         0.0f,
-        [] ( float sum, const pt::temperatureCell_t& a ) -> float {
-            return sum + a.dispersion;
+        [] ( float sum, const pd::temperatureCell_t& a ) -> float {
+            return sum + a[0].dispersion;
         }
     );
     const auto tminmaxDispersion = std::minmax_element(
         tp.temperature.content,
         tp.temperature.content + TG,
-        [] ( const pt::temperatureCell_t& a, const pt::temperatureCell_t& b ) -> bool {
-            return (a.dispersion < b.dispersion);
+        [] ( const pd::temperatureCell_t& a, const pd::temperatureCell_t& b ) -> bool {
+            return (a[0].dispersion < b[0].dispersion);
         }
     );
 
@@ -127,15 +124,15 @@ inline void TextVisual::drawTopologySizeInMemory(
         tp.temperature.content,
         tp.temperature.content + TG,
         0.0f,
-        [] ( float sum, const pt::temperatureCell_t& a ) -> float {
-            return sum + a.rate;
+        [] ( float sum, const pd::temperatureCell_t& a ) -> float {
+            return sum + a[0].rate;
         }
     );
     const auto tminmaxRate = std::minmax_element(
         tp.temperature.content,
         tp.temperature.content + TG,
-        [] ( const pt::temperatureCell_t& a, const pt::temperatureCell_t& b ) -> bool {
-            return (a.rate < b.rate);
+        [] ( const pd::temperatureCell_t& a, const pd::temperatureCell_t& b ) -> bool {
+            return (a[0].rate < b[0].rate);
         }
     );
 
@@ -163,13 +160,16 @@ inline void TextVisual::drawTopologySizeInMemory(
                 "\t\ttemperature " <<
                     pd::TEMPERATURE_GRID << "x " <<
                     memsizeTemperature / 1024 / 1024 << "Ìב\n" <<
-                    "\t\t\taverage    [ " << tminmaxAverage.first->average       << "; " << tminmaxAverage.second->average       << " ]" <<
+                    "\t\t\taverage    [ " << tminmaxAverage.first[0]->average       <<
+                        "; " << tminmaxAverage.second[0]->average       << " ]" <<
                         "\t~ " << (tsumAverage / static_cast< float >( TG )) <<
                     "\n" <<
-                    "\t\t\tdispersion [ " << tminmaxDispersion.first->dispersion << "; " << tminmaxDispersion.second->dispersion << " ]" <<
+                    "\t\t\tdispersion [ " << tminmaxDispersion.first[0]->dispersion <<
+                        "; " << tminmaxDispersion.second[0]->dispersion << " ]" <<
                         "\t~ " << (tsumDispersion / static_cast< float >( TG )) <<
                     "\n" <<
-                    "\t\t\trate       [ " << tminmaxRate.first->rate             << "; " << tminmaxRate.second->rate             << " ]" <<
+                    "\t\t\trate       [ " << tminmaxRate.first[0]->rate             <<
+                        "; " << tminmaxRate.second[0]->rate             << " ]" <<
                         "\t~ " << (tsumRate / static_cast< float >( TG )) <<
                     "\n" <<
                 /*

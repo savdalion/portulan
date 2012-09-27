@@ -15,10 +15,8 @@ namespace portulan {
     namespace planet {
         namespace set {
             namespace dungeoncrawl {
-                namespace living {
 
 
-namespace pc = portulan::planet::set::dungeoncrawl::component;
 namespace tc = typelib::constant::physics;
 
 
@@ -91,7 +89,7 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_NONE,         0.0f },
+                { CC_NONE,         0.0f },
             },
             // function
             FPL_LIVE |
@@ -99,22 +97,22 @@ static const aboutLiving_t aboutLiving = {
             0ULL,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE }},
+            { { CC_NONE }},
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -142,23 +140,23 @@ static const aboutLiving_t aboutLiving = {
         // componentNeed_t[ COMPONENT_NEED_LIVING ]
         // кг / день
         {
-            { pc::CC_NONE,         0.0f },
+            { CC_NONE,         0.0f },
         },
 
         // componentWaste_t[ COMPONENT_WASTE_LIVING ]
         // кг / день
         {
-            { pc::CC_NONE,         0.0f },
+            { CC_NONE,         0.0f },
         },
 
         // energyNeed
         {
-            { pc::CE_NONE,  0.0f },
+            { CE_NONE,  0.0f },
         },
 
         // energyWaste
         {
-            { pc::CE_NONE,  0.0f },
+            { CE_NONE,  0.0f },
         },
     },
 
@@ -291,11 +289,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.5f },
-                { pc::CC_PROTEIN,       0.1f },
-                { pc::CC_FAT,           0.1f },
-                { pc::CC_CARBOHYDRATE,  0.2f },
-                { pc::CC_SPARSE,        0.1f }
+                { CC_WATER,         0.5f },
+                { CC_PROTEIN,       0.1f },
+                { CC_FAT,           0.1f },
+                { CC_CARBOHYDRATE,  0.2f },
+                { CC_SPARSE,        0.1f }
             },
             // function
             FPL_LIVE |
@@ -304,22 +302,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE }},
+            { { CC_NONE }},
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             // голова не атакует (это делают мандибулы)
             {
@@ -341,11 +339,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.4f },
-                { pc::CC_PROTEIN,       0.2f },
-                { pc::CC_FAT,           0.1f },
-                { pc::CC_CARBOHYDRATE,  0.2f },
-                { pc::CC_SPARSE,        0.1f }
+                { CC_WATER,         0.4f },
+                { CC_PROTEIN,       0.2f },
+                { CC_FAT,           0.1f },
+                { CC_CARBOHYDRATE,  0.2f },
+                { CC_SPARSE,        0.1f }
             },
             // function
             FPL_LIVE |
@@ -356,22 +354,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_AIR },  1.0f },
+            { { CC_AIR },  1.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_CARBON_ACID } },
+            { { CC_CARBON_ACID } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             // грудь не атакует (это делают мандибулы)
             {
@@ -392,11 +390,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.4f },
-                { pc::CC_PROTEIN,       0.2f },
-                { pc::CC_FAT,           0.1f },
-                { pc::CC_CARBOHYDRATE,  0.2f },
-                { pc::CC_SPARSE,        0.1f }
+                { CC_WATER,         0.4f },
+                { CC_PROTEIN,       0.2f },
+                { CC_FAT,           0.1f },
+                { CC_CARBOHYDRATE,  0.2f },
+                { CC_SPARSE,        0.1f }
             },
             // function
             FPL_LIVE |
@@ -409,22 +407,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_PROTEIN, pc::CC_FAT, pc::CC_CARBOHYDRATE, pc::CC_SPARSE },  0.0f },
+            { { CC_PROTEIN, CC_FAT, CC_CARBOHYDRATE, CC_SPARSE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_WATER },  0.0f },
+            { { CC_WATER },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_FECES } },
+            { { CC_FECES } },
             // excretionLiquid
-            { { pc::CC_URINE } },
+            { { CC_URINE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             // брюшко не атакует (это делают мандибулы)
             {
@@ -445,11 +443,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.7f },
-                { pc::CC_PROTEIN,       0.2f },
-                { pc::CC_FAT,           0.1f },
-                { pc::CC_CARBOHYDRATE,  0.095f },
-                { pc::CC_SPARSE,        0.005f }
+                { CC_WATER,         0.7f },
+                { CC_PROTEIN,       0.2f },
+                { CC_FAT,           0.1f },
+                { CC_CARBOHYDRATE,  0.095f },
+                { CC_SPARSE,        0.005f }
             },
             // function
             FPL_LIVE |
@@ -459,22 +457,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_INTELLECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             // мозг муравья не атакует (это делают мандибулы)
             {
@@ -497,11 +495,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.2f },
-                { pc::CC_PROTEIN,       0.1f },
-                { pc::CC_FAT,           0.05f },
-                { pc::CC_CARBOHYDRATE,  0.6f },
-                { pc::CC_SPARSE,        0.05f }
+                { CC_WATER,         0.2f },
+                { CC_PROTEIN,       0.1f },
+                { CC_FAT,           0.05f },
+                { CC_CARBOHYDRATE,  0.6f },
+                { CC_SPARSE,        0.05f }
             },
             // function
             // жвалы не являются жизненно необходимым органом (не умирает сразу)
@@ -512,22 +510,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 // не может жвалами пронзить, но раздробить / разрезать - вполне
@@ -556,11 +554,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.80f },
-                { pc::CC_PROTEIN,       0.15f },
-                { pc::CC_FAT,           0.01f },
-                { pc::CC_CARBOHYDRATE,  0.01f },
-                { pc::CC_SPARSE,        0.03f }
+                { CC_WATER,         0.80f },
+                { CC_PROTEIN,       0.15f },
+                { CC_FAT,           0.01f },
+                { CC_CARBOHYDRATE,  0.01f },
+                { CC_SPARSE,        0.03f }
             },
             // function
             // глаз не являются жизненно необходимым органом (не умирает сразу)
@@ -569,22 +567,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -605,11 +603,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.80f },
-                { pc::CC_PROTEIN,       0.15f },
-                { pc::CC_FAT,           0.01f },
-                { pc::CC_CARBOHYDRATE,  0.01f },
-                { pc::CC_SPARSE,        0.03f }
+                { CC_WATER,         0.80f },
+                { CC_PROTEIN,       0.15f },
+                { CC_FAT,           0.01f },
+                { CC_CARBOHYDRATE,  0.01f },
+                { CC_SPARSE,        0.03f }
             },
             // function
             // глаз не являются жизненно необходимым органом (не умирает сразу)
@@ -618,22 +616,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -654,12 +652,12 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.05f },
-                { pc::CC_PROTEIN,       0.15f },
-                { pc::CC_FAT,           0.01f },
-                { pc::CC_CARBOHYDRATE,  0.29f },
+                { CC_WATER,         0.05f },
+                { CC_PROTEIN,       0.15f },
+                { CC_FAT,           0.01f },
+                { CC_CARBOHYDRATE,  0.29f },
                 // усик большей частью состоит из редких элементов
-                { pc::CC_SPARSE,        0.50f }
+                { CC_SPARSE,        0.50f }
             },
             // function
             // усик не является жизненно необходимым органом (не умирает сразу)
@@ -670,22 +668,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_EMIT_NORMAL_VISION,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -706,12 +704,12 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.05f },
-                { pc::CC_PROTEIN,       0.15f },
-                { pc::CC_FAT,           0.01f },
-                { pc::CC_CARBOHYDRATE,  0.29f },
+                { CC_WATER,         0.05f },
+                { CC_PROTEIN,       0.15f },
+                { CC_FAT,           0.01f },
+                { CC_CARBOHYDRATE,  0.29f },
                 // усик большей частью состоит из редких элементов
-                { pc::CC_SPARSE,        0.50f }
+                { CC_SPARSE,        0.50f }
             },
             // function
             // усик не является жизненно необходимым органом (не умирает сразу)
@@ -722,22 +720,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_EMIT_NORMAL_VISION,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -759,11 +757,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.20f },
-                { pc::CC_PROTEIN,       0.20f },
-                { pc::CC_FAT,           0.20f },
-                { pc::CC_CARBOHYDRATE,  0.35f },
-                { pc::CC_SPARSE,        0.05f }
+                { CC_WATER,         0.20f },
+                { CC_PROTEIN,       0.20f },
+                { CC_FAT,           0.20f },
+                { CC_CARBOHYDRATE,  0.35f },
+                { CC_SPARSE,        0.05f }
             },
             // function
             // лапка не является жизненно необходимым органом (не умирает сразу)
@@ -776,22 +774,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -811,11 +809,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.20f },
-                { pc::CC_PROTEIN,       0.20f },
-                { pc::CC_FAT,           0.20f },
-                { pc::CC_CARBOHYDRATE,  0.35f },
-                { pc::CC_SPARSE,        0.05f }
+                { CC_WATER,         0.20f },
+                { CC_PROTEIN,       0.20f },
+                { CC_FAT,           0.20f },
+                { CC_CARBOHYDRATE,  0.35f },
+                { CC_SPARSE,        0.05f }
             },
             // function
             // лапка не является жизненно необходимым органом (не умирает сразу)
@@ -826,22 +824,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -861,11 +859,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.20f },
-                { pc::CC_PROTEIN,       0.20f },
-                { pc::CC_FAT,           0.20f },
-                { pc::CC_CARBOHYDRATE,  0.35f },
-                { pc::CC_SPARSE,        0.05f }
+                { CC_WATER,         0.20f },
+                { CC_PROTEIN,       0.20f },
+                { CC_FAT,           0.20f },
+                { CC_CARBOHYDRATE,  0.35f },
+                { CC_SPARSE,        0.05f }
             },
             // function
             // лапка не является жизненно необходимым органом (не умирает сразу)
@@ -876,22 +874,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -912,11 +910,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.20f },
-                { pc::CC_PROTEIN,       0.20f },
-                { pc::CC_FAT,           0.20f },
-                { pc::CC_CARBOHYDRATE,  0.35f },
-                { pc::CC_SPARSE,        0.05f }
+                { CC_WATER,         0.20f },
+                { CC_PROTEIN,       0.20f },
+                { CC_FAT,           0.20f },
+                { CC_CARBOHYDRATE,  0.35f },
+                { CC_SPARSE,        0.05f }
             },
             // function
             // лапка не является жизненно необходимым органом (не умирает сразу)
@@ -929,22 +927,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -964,11 +962,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.20f },
-                { pc::CC_PROTEIN,       0.20f },
-                { pc::CC_FAT,           0.20f },
-                { pc::CC_CARBOHYDRATE,  0.35f },
-                { pc::CC_SPARSE,        0.05f }
+                { CC_WATER,         0.20f },
+                { CC_PROTEIN,       0.20f },
+                { CC_FAT,           0.20f },
+                { CC_CARBOHYDRATE,  0.35f },
+                { CC_SPARSE,        0.05f }
             },
             // function
             // лапка не является жизненно необходимым органом (не умирает сразу)
@@ -979,22 +977,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -1014,11 +1012,11 @@ static const aboutLiving_t aboutLiving = {
             // composition
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.20f },
-                { pc::CC_PROTEIN,       0.20f },
-                { pc::CC_FAT,           0.20f },
-                { pc::CC_CARBOHYDRATE,  0.35f },
-                { pc::CC_SPARSE,        0.05f }
+                { CC_WATER,         0.20f },
+                { CC_PROTEIN,       0.20f },
+                { CC_FAT,           0.20f },
+                { CC_CARBOHYDRATE,  0.35f },
+                { CC_SPARSE,        0.05f }
             },
             // function
             // лапка не является жизненно необходимым органом (не умирает сразу)
@@ -1029,22 +1027,22 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeGas
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // энергии
             // uptakeEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -1074,36 +1072,36 @@ static const aboutLiving_t aboutLiving = {
         // кг / день
         {
             // ~ 3 л воды / день (1 л = 1 кг)
-            { pc::CC_WATER,         3.0f },
+            { CC_WATER,         3.0f },
             // белки ~ 0.5 г / кг веса / день
-            { pc::CC_PROTEIN,       0.5f * 30.0f / 1000.0f },
+            { CC_PROTEIN,       0.5f * 30.0f / 1000.0f },
             // жиры ~ 10 г / день
-            { pc::CC_FAT,           10.0f / 1000.0f },
+            { CC_FAT,           10.0f / 1000.0f },
             // углеводы ~ ...
-            { pc::CC_CARBOHYDRATE,  100.0f / 1000.0f },
+            { CC_CARBOHYDRATE,  100.0f / 1000.0f },
             // редкие элементы ~ ...
-            { pc::CC_SPARSE,        1.0f / 1000.0f },
+            { CC_SPARSE,        1.0f / 1000.0f },
             // ~ 5 тыс. л воздуха / день ( 1 л = 1.2 г)
-            { pc::CC_AIR,           5000.0f * 1.2f / 1000.0f },
+            { CC_AIR,           5000.0f * 1.2f / 1000.0f },
         },
 
         // componentWaste_t[ COMPONENT_WASTE_LIVING ]
         // кг / день
         {
-            { pc::CC_FECES,        50.0f / 1000.0f },
-            { pc::CC_URINE,        500.0f / 1000.0f },
+            { CC_FECES,        50.0f / 1000.0f },
+            { CC_URINE,        500.0f / 1000.0f },
             // углекислый газ ~ 200 л / день
-            { pc::CC_CARBON_ACID,  200.0f * 1.02f / 1000.0f },
+            { CC_CARBON_ACID,  200.0f * 1.02f / 1000.0f },
         },
 
         // energyNeed
         {
-            { pc::CE_NONE,  0.0f },
+            { CE_NONE,  0.0f },
         },
 
         // energyWaste
         {
-            { pc::CE_NONE,  0.0f },
+            { CE_NONE,  0.0f },
         },
     },
 
@@ -1215,10 +1213,10 @@ static const aboutLiving_t aboutLiving = {
             // @see Питательные вещества > http://big-fermer.ru/zelenyi-korm
             // 0 .. COMPONENT_COMPOSITION_LIVING
             {
-                { pc::CC_WATER,         0.800f },
-                { pc::CC_CARBOHYDRATE,  0.150f },
-                { pc::CC_PROTEIN,       0.049f },
-                { pc::CC_SPARSE,        0.001f },
+                { CC_WATER,         0.800f },
+                { CC_CARBOHYDRATE,  0.150f },
+                { CC_PROTEIN,       0.049f },
+                { CC_SPARSE,        0.001f },
             },
             // function
             // растение продолжает жить без этого органа... пока есть пища
@@ -1229,23 +1227,23 @@ static const aboutLiving_t aboutLiving = {
             FPL_VISION_REFLECT_NORMAL_EFFECT,
             // пища
             // uptakeSolid
-            { { pc::CC_NONE },  0.0f },
+            { { CC_NONE },  0.0f },
             // uptakeLiquid
             // CC_SPARSE здесь растворены в воде, а не жидкие от высокой температуры
-            { { pc::CC_WATER, pc::CC_SPARSE },  0.0f },
+            { { CC_WATER, CC_SPARSE },  0.0f },
             // uptakeGas
-            { { pc::CC_CARBON_ACID },  0.0f },
+            { { CC_CARBON_ACID },  0.0f },
             // excretionSolid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionLiquid
-            { { pc::CC_NONE } },
+            { { CC_NONE } },
             // excretionGas
-            { { pc::CC_AIR }},
+            { { CC_AIR }},
             // энергии
             // uptakeEnergy
-            { { pc::CE_NORMAL_LIGHT } },
+            { { CE_NORMAL_LIGHT } },
             // excretionEnergy
-            { { pc::CE_NONE } },
+            { { CE_NONE } },
             // attack
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
@@ -1285,20 +1283,20 @@ static const aboutLiving_t aboutLiving = {
             // вода: испарённая ~ 0.01 л / кг веса / день (1 л = 1 кг)
             //       необх. для жизни ~ 0.001 л / кг веса / день
             // масса этого растения = 0.010 кг
-            { pc::CC_WATER,        0.001f * 0.010f },
+            { CC_WATER,        0.001f * 0.010f },
             // кислород ~ 120 мл / кг веса / день (1 л = 1.2 г)
             // # Углекислый газ *потребляется* этим растением в тёмное время
             //   суток, кислород - в светлое; поэтому делим на 2.
-            { pc::CC_AIR,          120.0f / 1000.0f * 0.010f * 0.0012f / 2.0f },
+            { CC_AIR,          120.0f / 1000.0f * 0.010f * 0.0012f / 2.0f },
             // углекислый газ
             // ~ 240 мл / кг веса / день (1 л = 1.98 г)
-            { pc::CC_CARBON_ACID,  240.0f / 1000.0f * 0.010f * 0.00198f / 2.0f },
+            { CC_CARBON_ACID,  240.0f / 1000.0f * 0.010f * 0.00198f / 2.0f },
             // редкие элементы ~ меньше самой меньшей потребности
-            { pc::CC_SPARSE,       1.0f / 1000.0f },
+            { CC_SPARSE,       1.0f / 1000.0f },
             // @todo Добавить продукты разложения, экскременты др. особей.
             //       Сделать это в отдельной, не фатальной для жизни
             //       растения структуре.
-            //       { pc::CC_DETRITUS,  ... },
+            //       { CC_DETRITUS,  ... },
         },
 
         // componentWaste_t[ COMPONENT_WASTE_LIVING ]
@@ -1307,22 +1305,22 @@ static const aboutLiving_t aboutLiving = {
             // кислород ~ 240 мл / кг веса / день (см. выше componentNeed_t)
             // # Углекислый газ *выделяется* этим растением в светлое время
             //   суток, кислород - в тёмное; поэтому делим на 2.
-            { pc::CC_AIR,          240.0f / 1000.0f * 0.010f * 0.0012f / 2.0f },
+            { CC_AIR,          240.0f / 1000.0f * 0.010f * 0.0012f / 2.0f },
             // углекислый газ
             // ~ 50 мл / кг веса / день (1 л = 1.98 г)
-            { pc::CC_CARBON_ACID,  50.0f / 1000.0f * 0.010f * 0.00198f / 2.0f },
+            { CC_CARBON_ACID,  50.0f / 1000.0f * 0.010f * 0.00198f / 2.0f },
         },
 
         // energyNeed
         {
             // для жизни требуется световой поток в 1000 люкс / день
             // # Т.к. полдня длится ночь, делим необходимый поток на 2.
-            { pc::CE_NORMAL_LIGHT,  1000.0f / 2.0f },
+            { CE_NORMAL_LIGHT,  1000.0f / 2.0f },
         },
 
         // energyWaste
         {
-            { pc::CE_NONE,  0.0f },
+            { CE_NONE,  0.0f },
         },
     },
 
@@ -1348,7 +1346,6 @@ static const aboutLiving_t aboutLiving = {
 };
 
 
-                } // living
             } // dungeoncrawl
         } // set
     } // planet
