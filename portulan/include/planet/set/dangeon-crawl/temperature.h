@@ -17,7 +17,6 @@ namespace portulan {
     namespace planet {
         namespace set {
             namespace dungeoncrawl {
-                namespace temperature {
 #endif
 
 
@@ -42,30 +41,7 @@ typedef struct __attribute__ ((packed)) {
     */
     cl_float rate;
 
-} temperatureCell_t;
-
-
-
-
-/**
-* Информация о температуре в области планеты (в портулане).
-* Эти данные используются при начальном формировании планеты.
-*/
-typedef struct __attribute__ ((packed)) {
-    /**
-    * Карта температур, К.
-    *   # Температура меняется линейно.
-    *   # Значения температур перечисляются от центра (0.0, самый глубокий слой)
-    *     к поверхности (1.0, самый верхний слой).
-    */
-    cl_float map[2];
-
-    // # Отклонение температуры, частота - все эти прелести появятся потом:
-    //   силы природы сделают своё дело.
-
-} zoneTemperature_t;
-
-typedef zoneTemperature_t  temperatureAll_t;
+} behaviourTemperature_t;
 
 
 
@@ -73,7 +49,8 @@ typedef zoneTemperature_t  temperatureAll_t;
 /**
 * Ячейка портулана с информацией о температуре.
 */
-//typedef behaviourTemperature_t  temperatureCell_t;
+typedef behaviourTemperature_t  temperatureCell_t[ 1 ];
+
 
 
 
@@ -90,7 +67,6 @@ typedef struct __attribute__ ((packed)) {
 
 
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
-                } // temperature
             } // dungeoncrawl
         } // set
     } // planet

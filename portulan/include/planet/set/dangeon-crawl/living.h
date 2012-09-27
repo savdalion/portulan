@@ -17,7 +17,6 @@ namespace portulan {
     namespace planet {
         namespace set {
             namespace dungeoncrawl {
-                namespace living {
 #endif
 
 
@@ -600,8 +599,9 @@ typedef aboutOnePartResist_t  resistPartLiving_t[ RESIST_PART_LIVING_COUNT ];
 */
 #if 1
 
-typedef __structPortionComponent_t  compositionPortionLiving_t[ COMPONENT_COMPOSITION_LIVING ];
-typedef __enumCodeComponent  componentCodeNeedLiving_t[ COMPONENT_NEED_LIVING ];
+typedef portionComponent_t  compositionPortionLiving_t[ COMPONENT_COMPOSITION_LIVING ];
+
+typedef enum CODE_COMPONENT  componentCodeNeedLiving_t[ COMPONENT_NEED_LIVING ];
 
 typedef struct __attribute__ ((packed)) {
     componentCodeNeedLiving_t componentNeed;
@@ -619,7 +619,7 @@ typedef struct __attribute__ ((packed)) {
 } uptakeGasLiving_t;
 
 
-typedef __enumCodeComponent  componentCodeWasteLiving_t[ COMPONENT_WASTE_LIVING ];
+typedef enum CODE_COMPONENT  componentCodeWasteLiving_t[ COMPONENT_WASTE_LIVING ];
 
 typedef struct __attribute__ ((packed)) {
     componentCodeWasteLiving_t componentWaste;
@@ -634,14 +634,14 @@ typedef struct __attribute__ ((packed)) {
 } excretionGasLiving_t;
 
 
-typedef __enumCodeEnergy  energyCodeNeedLiving_t[ ENERGY_NEED_LIVING ];
+typedef enum CODE_ENERGY  energyCodeNeedLiving_t[ ENERGY_NEED_LIVING ];
 
 typedef struct __attribute__ ((packed)) {
     energyCodeNeedLiving_t energyNeed;
 } uptakeEnergyLiving_t;
 
 // выделение энергий (см. выше - усвоение энергий)
-typedef __enumCodeEnergy  energyCodeWasteLiving_t[ ENERGY_WASTE_LIVING ];
+typedef enum CODE_ENERGY  energyCodeWasteLiving_t[ ENERGY_WASTE_LIVING ];
 
 typedef struct __attribute__ ((packed)) {
     energyCodeWasteLiving_t energyWaste;
@@ -703,9 +703,9 @@ typedef struct __attribute__ ((packed)) {
     // Орган переводит компоненты (пищу) в энергию.
     // Энергия = количеству энергии, освобождаемой при сгорании компонента.
     // КПД органа усвоения определяет, какая часть комп. усвоится организмом.
-    uptakeSolidLiving_t       uptakeSolid;
-    uptakeLiquidLiving_t      uptakeLiquid;
-    uptakeGasLiving_t         uptakeGas;
+    uptakeSolidLiving_t     uptakeSolid;
+    uptakeLiquidLiving_t    uptakeLiquid;
+    uptakeGasLiving_t       uptakeGas;
 
 
     // выделение компонентов (см. выше - поглощение и усвоение компонентов)
@@ -808,7 +808,7 @@ typedef struct __attribute__ ((packed)) {
 *
 * @see Соглашения о распределении энергий по жизненным циклам особи - energyNeed_t.
 */
-typedef __structPortionComponent_t  componentPortionNeedLiving_t[ COMPONENT_NEED_LIVING ];
+typedef portionComponent_t  componentPortionNeedLiving_t[ COMPONENT_NEED_LIVING ];
 
 
 /**
@@ -820,7 +820,7 @@ typedef __structPortionComponent_t  componentPortionNeedLiving_t[ COMPONENT_NEED
 *
 * @see Соглашения о распределении энергий по жизненным циклам особи - energyWaste_t.
 */
-typedef __structPortionComponent_t  componentPortionWasteLiving_t[ COMPONENT_WASTE_LIVING ];
+typedef portionComponent_t  componentPortionWasteLiving_t[ COMPONENT_WASTE_LIVING ];
 
 
 /**
@@ -846,7 +846,7 @@ typedef __structPortionComponent_t  componentPortionWasteLiving_t[ COMPONENT_WAS
 *
 * @see CODE_ENERGY
 */
-typedef __structPortionEnergy_t  energyPortionNeedLiving_t[ ENERGY_NEED_LIVING ];
+typedef portionEnergy_t  energyPortionNeedLiving_t[ ENERGY_NEED_LIVING ];
 
 /**
 * Энергия, выделяемая особью в процессе своей жизнедеятельности.
@@ -854,7 +854,7 @@ typedef __structPortionEnergy_t  energyPortionNeedLiving_t[ ENERGY_NEED_LIVING ]
 *
 * @see CODE_ENERGY
 */
-typedef __structPortionEnergy_t  energyPortionWasteLiving_t[ ENERGY_WASTE_LIVING ];
+typedef portionEnergy_t  energyPortionWasteLiving_t[ ENERGY_WASTE_LIVING ];
 
 
 /**
@@ -1081,25 +1081,6 @@ typedef aboutOneLiving_t  aboutLiving_t[ LIVING_COUNT ];
 
 
 
-/**
-* Примерное кол-во особей в области планеты (в портулане) с указанием
-* размеров групп. Эти данные используются для формирования
-* ареалов обитания в области планеты.
-*/
-typedef struct __attribute__ ((packed)) {
-    enum CODE_LIVING code;
-    // *примерное* кол-во особей в ячейке области планеты
-    cl_float count;
-    // # Размер группы декларирован в aboutOneLiving_t::maxGroupSize.
-} zoneLiving_t;
-
-// # Берётся LIVING_CELL вместо LIVING_COUNT, т.к. эта структура
-//   используется лишь при инициализации, а кол-во особей в 1-й ячейке
-//   в любом случае не будет превышать LIVING_CELL особей.
-typedef zoneLiving_t  livingAll_t[ LIVING_CELL ];
-
-
-
 
 /**
 * Макс. кол-во особей с указанием количества, которые могут
@@ -1140,7 +1121,6 @@ typedef struct __attribute__ ((packed)) {
 
 
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
-                } // living
             } // dungeoncrawl
         } // set
     } // planet

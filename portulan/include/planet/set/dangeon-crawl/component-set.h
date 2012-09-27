@@ -14,7 +14,6 @@ namespace portulan {
     namespace planet {
         namespace set {
             namespace dungeoncrawl {
-                namespace component {
 
 
 namespace tc = typelib::constant::physics;
@@ -49,7 +48,8 @@ static const aboutComponent_t aboutComponent = {
 */
 {
     // code
-    CC_VACUUM,
+    //CC_VACUUM,
+    CC_NONE,
     // density
     0.0f,
     // meltingPoint
@@ -194,7 +194,6 @@ static const aboutComponent_t aboutComponent = {
 };
 
 
-                } // component
             } // dungeoncrawl
         } // set
     } // planet

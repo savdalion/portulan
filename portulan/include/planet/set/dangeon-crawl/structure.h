@@ -15,42 +15,10 @@
 #define __attribute__(x) /*nothing*/
 
 
-
 namespace portulan {
     namespace planet {
         namespace set {
             namespace dungeoncrawl {
-#endif
-
-
-
-
-// Декларируем структуры, используемые с пространством имён (OpenCL 1.0
-// не поддерживает NS)
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-#define __structComponentAll_t      component::componentAll_t
-#define __structPortionComponent_t  component::portionComponent_t
-#define __structPortionEnergy_t     component::portionEnergy_t
-#define __enumCodeComponent         component::CODE_COMPONENT
-#define __enumCodeEnergy            component::CODE_ENERGY
-
-#define __structLivingAll_t         living::livingAll_t
-
-#define __structTemperatureAll_t    temperature::temperatureAll_t
-//#define __structTemperatureCell_t   temperature::temperatureCell_t
-
-#else
-#define __structComponentAll_t      componentAll_t
-#define __structPortionComponent_t  portionComponent_t
-#define __structPortionEnergy_t     portionEnergy_t
-#define __enumCodeComponent         enum CODE_COMPONENT
-#define __enumCodeEnergy            enum CODE_ENERGY
-
-#define __structLivingAll_t         livingAll_t
-
-#define __structTemperatureAll_t    temperatureAll_t
-//#define __structTemperatureCell_t   temperatureCell_t
-
 #endif
 
 

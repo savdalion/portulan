@@ -27,15 +27,15 @@ namespace portulan {
 *     избежать создания booster-структуры (см. porte::Booster).
 */
 typedef struct __attribute__ ((packed)) {
-    dungeoncrawl::aboutPlanet_t                aboutPlanet;
+    dungeoncrawl::aboutPlanet_t     aboutPlanet;
 
-    dungeoncrawl::component::aboutComponent_t  aboutComponent;
-    dungeoncrawl::component::component_t       component;
+    dungeoncrawl::aboutComponent_t  aboutComponent;
+    dungeoncrawl::component_t       component;
 
-    dungeoncrawl::living::aboutLiving_t        aboutLiving;
-    dungeoncrawl::living::living_t             living;
+    dungeoncrawl::aboutLiving_t     aboutLiving;
+    dungeoncrawl::living_t          living;
 
-    dungeoncrawl::temperature::temperature_t   temperature;
+    dungeoncrawl::temperature_t     temperature;
     //pressure_t          pressure;
     //precipitations_t    precipitations;
 
