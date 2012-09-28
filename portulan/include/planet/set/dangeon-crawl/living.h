@@ -873,32 +873,31 @@ typedef struct __attribute__ ((packed)) {
 /**
 * Условия выживания данной особи.
 */
-/**
-* Температура комфорта.
-* Вне этого диапазона - повышенная смертность и пониженная
-* рождаемость особей.
-* Для цивилизованных особей диапазон может варьироваться очень
-* широко благодаря использованию ц. о. домов / огня / одежды.
-*/
 typedef struct __attribute__ ((packed)) {
     cl_float min;
     cl_float max;
-} temperatureComfortLiving_t;
-
-/**
-* Температура выживания.
-* Существование особи вне этого предела невозможно
-* (100% летальный исход за 1 пульс).
-*/
-typedef struct __attribute__ ((packed)) {
-    cl_float min;
-    cl_float max;
-} temperatureLimitLiving_t;
-
-typedef struct __attribute__ ((packed)) {
-    temperatureComfortLiving_t comfort;
-    temperatureLimitLiving_t limit;
 } temperatureRangeLiving_t;
+
+
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Температура комфорта.
+    * Вне этого диапазона - повышенная смертность и пониженная
+    * рождаемость особей.
+    * Для цивилизованных особей диапазон может варьироваться очень
+    * широко благодаря использованию ц. о. домов / огня / одежды.
+    */
+    temperatureRangeLiving_t comfort;
+
+    /**
+    * Температура выживания.
+    * Существование особи вне этого предела невозможно
+    * (100% летальный исход за 1 пульс).
+    */
+    temperatureRangeLiving_t limit;
+
+} temperatureLiving_t;
+
 
 typedef struct __attribute__ ((packed)) {
     /**
@@ -917,10 +916,19 @@ typedef struct __attribute__ ((packed)) {
     cl_uint  habitat[ HABITAT_LIVING_COUNT ];
 
     /**
-    * Диапазон температур в которых способна жить особь согласно
-    * жизненному циклу "countByAge".
+    * Температуры, в которых способна жить особь.
     */
-    temperatureRangeLiving_t temperatureRange;
+    temperatureLiving_t temperature;
+
+    /**
+    * Атмосферные осадки, которые способна переносить особь.
+    */
+    //rainfallLiving_t rainfall;
+
+    /**
+    * Дренаж, который способна переносить особь.
+    */
+    //drainageLiving_t drainage;
 
 } survivorLiving_t;
 

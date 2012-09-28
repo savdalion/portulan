@@ -43,7 +43,7 @@ inline void SnapshotVTK::component( const std::string& file ) {
 
     const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок компонентов сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок компонентов сохраняем в \"" << (file + ".vtp") << "\" ... ";
 #endif
 
     static const size_t grid = pd::COMPONENT_GRID;
@@ -137,16 +137,7 @@ inline void SnapshotVTK::component( const std::string& file ) {
 
 
     // записываем
-    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
-    writer->SetFileName( fileName.c_str() );
-#if VTK_MAJOR_VERSION <= 5
-    writer->SetInput( polydata );
-#else
-    writer->SetInputData( polydata );
-#endif
-    writer->SetDataModeToBinary();
-    //writer->SetDataModeToAscii();
-    writer->Write();
+    write( fileName, polydata );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -165,7 +156,7 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 
     const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок температуры сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок температуры сохраняем в \"" << (file + ".vtp") << "\" ... ";
 #endif
 
     static const size_t grid = pd::TEMPERATURE_GRID;
@@ -232,16 +223,7 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 
 
     // записываем
-    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
-    writer->SetFileName( fileName.c_str() );
-#if VTK_MAJOR_VERSION <= 5
-    writer->SetInput( polydata );
-#else
-    writer->SetInputData( polydata );
-#endif
-    writer->SetDataModeToBinary();
-    //writer->SetDataModeToAscii();
-    writer->Write();
+    write( fileName, polydata );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -260,7 +242,7 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
 
     const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок температуры поверхности сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок температуры поверхности сохраняем в \"" << (file + ".vtp") << "\" ... ";
 #endif
 
     static const size_t grid = pd::SURFACE_TEMPERATURE_GRID;
@@ -307,15 +289,7 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
 
 
     // записываем
-    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
-    writer->SetFileName( fileName.c_str() );
-#if VTK_MAJOR_VERSION <= 5
-    writer->SetInput( polydata );
-#else
-    writer->SetInputData( polydata );
-#endif
-    writer->SetDataModeToBinary();
-    writer->Write();
+    write( fileName, polydata );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -334,7 +308,7 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
 
     const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок атмосферных осадков сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок атмосферных осадков сохраняем в \"" << (file + ".vtp") << "\" ... ";
 #endif
 
     static const size_t grid = pd::RAINFALL_GRID;
@@ -381,15 +355,7 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
 
 
     // записываем
-    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
-    writer->SetFileName( fileName.c_str() );
-#if VTK_MAJOR_VERSION <= 5
-    writer->SetInput( polydata );
-#else
-    writer->SetInputData( polydata );
-#endif
-    writer->SetDataModeToBinary();
-    writer->Write();
+    write( fileName, polydata );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -408,7 +374,7 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
 
     const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок дренажа сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок дренажа сохраняем в \"" << (file + ".vtp") << "\" ... ";
 #endif
 
     static const size_t grid = pd::DRAINAGE_GRID;
@@ -455,15 +421,7 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
 
 
     // записываем
-    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
-    writer->SetFileName( fileName.c_str() );
-#if VTK_MAJOR_VERSION <= 5
-    writer->SetInput( polydata );
-#else
-    writer->SetInputData( polydata );
-#endif
-    writer->SetDataModeToBinary();
-    writer->Write();
+    write( fileName, polydata );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -482,7 +440,7 @@ inline void SnapshotVTK::living( const std::string& file ) {
 
     const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок особей сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок особей сохраняем в \"" << (file + ".vtp") << "\" ... ";
 #endif
 
     static const size_t grid = pd::LIVING_GRID;
@@ -592,19 +550,32 @@ inline void SnapshotVTK::living( const std::string& file ) {
 
 
     // записываем
-    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
-    writer->SetFileName( fileName.c_str() );
-#if VTK_MAJOR_VERSION <= 5
-    writer->SetInput( polydata );
-#else
-    writer->SetInputData( polydata );
-#endif
-    writer->SetDataModeToBinary();
-    writer->Write();
+    write( fileName, polydata );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
 #endif
+}
+
+
+
+
+
+
+inline void SnapshotVTK::write(
+    const std::string& fileName,
+    const vtkSmartPointer< vtkPolyData > data
+) {
+    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
+    writer->SetFileName( fileName.c_str() );
+#if VTK_MAJOR_VERSION <= 5
+    writer->SetInput( data );
+#else
+    writer->SetInputData( polydata );
+#endif
+    writer->SetDataModeToBinary();
+    //writer->SetDataModeToAscii();
+    writer->Write();
 }
 
 

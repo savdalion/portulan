@@ -68,6 +68,19 @@ public:
 
 private:
     /**
+    * Записывает данные в указанный файл.
+    */
+    static void write(
+        const std::string& fileName,
+        const vtkSmartPointer< vtkPolyData > data
+    );
+
+
+
+
+
+private:
+    /**
     * Портулан.
     */
     const portulan::planet::Portulan*  mPortulan;

@@ -221,18 +221,17 @@ inline void TextVisual::drawTopologySizeInMemory(
                     pd::LIVING_COUNT << "u " <<
                     sizeof( tp.aboutLiving ) / 1024 / 1024 << "提" <<
                     "\n" <<
-                "        component\n" <<
-                    "            content " <<
-                        pd::COMPONENT_GRID << "x " <<
-                        pd::COMPONENT_CELL << "u " <<
-                        memsizeComponent / 1024 / 1024 << "提" <<
+                "        component " <<
+                    pd::COMPONENT_GRID << "x " <<
+                    pd::COMPONENT_CELL << "u " <<
+                    memsizeComponent / 1024 / 1024 << "提" <<
                     "\n" <<
                 "        temperature " <<
                     pd::TEMPERATURE_GRID << "x " <<
                     memsizeTemperature / 1024 / 1024 << "提\n" <<
-                    "            average    [ " << tminmaxAverage.first[0]->average       <<
+                    "            average  [ " << tminmaxAverage.first[0]->average       <<
                         "; " << tminmaxAverage.second[0]->average       << " ]" <<
-                        "    ~ " << (tsumAverage / static_cast< float >( TG )) <<
+                        "  ~ " << (tsumAverage / static_cast< float >( TG )) <<
                     "\n" <<
                     /* - @todo
                     "            dispersion [ " << tminmaxDispersion.first[0]->dispersion <<
@@ -247,29 +246,28 @@ inline void TextVisual::drawTopologySizeInMemory(
                 "        surfaceTemperature " <<
                     pd::SURFACE_TEMPERATURE_GRID << "x " <<
                     memsizeSurfaceTemperature / 1024 / 1024 << "提\n" <<
-                    "            average    [ " << stminmaxAverage.first[0]->average       <<
+                    "            average  [ " << stminmaxAverage.first[0]->average       <<
                         "; " << stminmaxAverage.second[0]->average       << " ]" <<
-                        "    ~ " << (stsumAverage / static_cast< float >( STG )) <<
+                        "  ~ " << (stsumAverage / static_cast< float >( STG )) <<
                     "\n" <<
                 "        rainfall " <<
                     pd::RAINFALL_GRID << "x " <<
                     memsizeRainfall / 1024 / 1024 << "提\n" <<
-                    "            average    [ " << rminmaxAverage.first[0]->average       <<
+                    "            average  [ " << rminmaxAverage.first[0]->average       <<
                         "; " << rminmaxAverage.second[0]->average       << " ]" <<
-                        "    ~ " << (rsumAverage / static_cast< float >( RG )) <<
+                        "  ~ " << (rsumAverage / static_cast< float >( RG )) <<
                     "\n" <<
                 "        drainage " <<
                     pd::DRAINAGE_GRID << "x " <<
                     memsizeDrainage / 1024 / 1024 << "提\n" <<
-                    "            average    [ " << dminmaxAverage.first[0]->average       <<
+                    "            average  [ " << dminmaxAverage.first[0]->average       <<
                         "; " << dminmaxAverage.second[0]->average       << " ]" <<
-                        "    ~ " << (dsumAverage / static_cast< float >( DG )) <<
+                        "  ~ " << (dsumAverage / static_cast< float >( DG )) <<
                     "\n" <<
-                "        living\n" <<
-                    "            content " <<
-                        pd::LIVING_GRID << "x " <<
-                        pd::LIVING_CELL << "u " <<
-                        memsizeLiving / 1024 / 1024 << "提" <<
+                "        living " <<
+                    pd::LIVING_GRID << "x " <<
+                    pd::LIVING_CELL << "u " <<
+                    memsizeLiving / 1024 / 1024 << "提" <<
                     "\n" <<
     std::endl;
 }
