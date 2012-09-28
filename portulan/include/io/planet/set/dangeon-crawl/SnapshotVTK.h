@@ -56,8 +56,9 @@ public:
     //void all();
 
     void component(   const std::string& file = "component" );
-    void living(      const std::string& file = "living" );
     void temperature( const std::string& file = "temperature" );
+    void surfaceTemperature( const std::string& file = "surface-temperature" );
+    void living(      const std::string& file = "living" );
 
 
 

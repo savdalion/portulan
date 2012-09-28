@@ -35,17 +35,6 @@ inline SnapshotVTK& SnapshotVTK::operator<<( const option_t& json ) {
 
 
 
-/*
-inline void SnapshotVTK::all() {
-    component();
-    living();
-    temperature();
-}
-*/
-
-
-
-
 
 inline void SnapshotVTK::component( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
@@ -60,7 +49,8 @@ inline void SnapshotVTK::component( const std::string& file ) {
     static const size_t grid = pd::COMPONENT_GRID;
     static const size_t G3 = grid * grid * grid;
 
-    const auto& content = mPortulan->topology().topology().component.content;
+    const auto& content =
+        mPortulan->topology().topology().component.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
     auto vertices = vtkSmartPointer< vtkCellArray >::New();
@@ -170,6 +160,182 @@ inline void SnapshotVTK::component( const std::string& file ) {
 
 
 
+inline void SnapshotVTK::temperature( const std::string& file ) {
+    assert( !file.empty() && "Название файла должно быть указано." );
+
+    namespace pd = portulan::planet::set::dungeoncrawl;
+
+    const std::string fileName = file + ".vtp";
+#ifdef _DEBUG
+    std::cout << "Снимок температуры сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+#endif
+
+    static const size_t grid = pd::TEMPERATURE_GRID;
+    static const size_t G3 = grid * grid * grid;
+
+    const auto& content =
+        mPortulan->topology().topology().temperature.content;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
+    // содержимое
+    // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
+    auto averageTemperature = vtkSmartPointer< vtkFloatArray >::New();
+    averageTemperature->Initialize();
+    averageTemperature->SetName( "average" );
+    averageTemperature->SetNumberOfComponents( 1 );
+    averageTemperature->SetNumberOfValues( G3 );
+
+    /* - @todo
+    auto dispersionTemperature = vtkSmartPointer< vtkFloatArray >::New();
+    dispersionTemperature->Initialize();
+    dispersionTemperature->SetName( "dispersion" );
+    dispersionTemperature->SetNumberOfComponents( 1 );
+    dispersionTemperature->SetNumberOfValues( G3 );
+
+    auto rateTemperature = vtkSmartPointer< vtkFloatArray >::New();
+    rateTemperature->Initialize();
+    rateTemperature->SetName( "rate" );
+    rateTemperature->SetNumberOfComponents( 1 );
+    rateTemperature->SetNumberOfValues( G3 );
+    */
+
+    size_t n = 0;
+    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    for (size_t i = 0; i < G3; ++i) {
+        const typelib::coordInt_t c = smc_t::ci( i );
+        const float cf[3] = {
+            static_cast< float >( c.x ),
+            static_cast< float >( c.y ),
+            static_cast< float >( c.z )
+        };
+        vtkIdType pid[ 1 ];
+        pid[ 0 ] = points->InsertNextPoint( cf );
+        vertices->InsertNextCell( 1, pid );
+
+        const auto& cell = content[ i ];
+        averageTemperature->SetValue(    n,  cell[0].average );
+        //dispersionTemperature->SetValue( n,  cell[0].dispersion );
+        //rateTemperature->SetValue(       n,  cell[0].rate );
+
+        ++n;
+    } // for (size_t i
+
+
+    // собираем вместе
+    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
+    polydata->SetPoints( points );
+    polydata->SetVerts( vertices );
+    // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
+    polydata->GetPointData()->AddArray( averageTemperature );
+    //polydata->GetPointData()->AddArray( dispersionTemperature );
+    //polydata->GetPointData()->AddArray( rateTemperature );
+
+
+    // записываем
+    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
+    writer->SetFileName( fileName.c_str() );
+#if VTK_MAJOR_VERSION <= 5
+    writer->SetInput( polydata );
+#else
+    writer->SetInputData( polydata );
+#endif
+
+    writer->SetDataModeToBinary();
+    //writer->SetDataModeToAscii();
+ 
+    writer->Write();
+
+#ifdef _DEBUG
+    std::cout << "ОК" << std::endl;
+#endif
+}
+
+
+
+
+
+
+inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
+    assert( !file.empty() && "Название файла должно быть указано." );
+
+    namespace pd = portulan::planet::set::dungeoncrawl;
+
+    const std::string fileName = file + ".vtp";
+#ifdef _DEBUG
+    std::cout << "Снимок температуры поверхности сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+#endif
+
+    static const size_t grid = pd::SURFACE_TEMPERATURE_GRID;
+    static const size_t G3 = grid * grid * grid;
+
+    const auto& content =
+        mPortulan->topology().topology().surfaceTemperature.content;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
+    // содержимое
+    // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
+    auto averageTemperature = vtkSmartPointer< vtkFloatArray >::New();
+    averageTemperature->Initialize();
+    averageTemperature->SetName( "average" );
+    averageTemperature->SetNumberOfComponents( 1 );
+    averageTemperature->SetNumberOfValues( G3 );
+
+    size_t n = 0;
+    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    for (size_t i = 0; i < G3; ++i) {
+        const typelib::coordInt_t c = smc_t::ci( i );
+        const float cf[3] = {
+            static_cast< float >( c.x ),
+            static_cast< float >( c.y ),
+            static_cast< float >( c.z )
+        };
+        vtkIdType pid[ 1 ];
+        pid[ 0 ] = points->InsertNextPoint( cf );
+        vertices->InsertNextCell( 1, pid );
+
+        const auto& cell = content[ i ];
+        averageTemperature->SetValue(    n,  cell[0].average );
+
+        ++n;
+    } // for (size_t i
+
+
+    // собираем вместе
+    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
+    polydata->SetPoints( points );
+    polydata->SetVerts( vertices );
+    // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
+    polydata->GetPointData()->AddArray( averageTemperature );
+
+
+    // записываем
+    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
+    writer->SetFileName( fileName.c_str() );
+#if VTK_MAJOR_VERSION <= 5
+    writer->SetInput( polydata );
+#else
+    writer->SetInputData( polydata );
+#endif
+
+    writer->SetDataModeToBinary();
+    //writer->SetDataModeToAscii();
+ 
+    writer->Write();
+
+#ifdef _DEBUG
+    std::cout << "ОК" << std::endl;
+#endif
+}
+
+
+
+
+
+
 inline void SnapshotVTK::living( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
@@ -183,7 +349,8 @@ inline void SnapshotVTK::living( const std::string& file ) {
     static const size_t grid = pd::LIVING_GRID;
     static const size_t G3 = grid * grid * grid;
 
-    const auto& content = mPortulan->topology().topology().living.content;
+    const auto& content =
+        mPortulan->topology().topology().living.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
     auto vertices = vtkSmartPointer< vtkCellArray >::New();
@@ -283,102 +450,6 @@ inline void SnapshotVTK::living( const std::string& file ) {
     for (auto itr = livingCount.cbegin(); itr != livingCount.cend(); ++itr) {
         polydata->GetPointData()->AddArray( itr->second );
     }
-
-
-    // записываем
-    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
-    writer->SetFileName( fileName.c_str() );
-#if VTK_MAJOR_VERSION <= 5
-    writer->SetInput( polydata );
-#else
-    writer->SetInputData( polydata );
-#endif
-
-    writer->SetDataModeToBinary();
-    //writer->SetDataModeToAscii();
- 
-    writer->Write();
-
-#ifdef _DEBUG
-    std::cout << "ОК" << std::endl;
-#endif
-}
-
-
-
-
-
-
-inline void SnapshotVTK::temperature( const std::string& file ) {
-    assert( !file.empty() && "Название файла должно быть указано." );
-
-    namespace pd = portulan::planet::set::dungeoncrawl;
-
-    const std::string fileName = file + ".vtp";
-#ifdef _DEBUG
-    std::cout << "Снимок температуры сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
-#endif
-
-    static const size_t grid = pd::TEMPERATURE_GRID;
-    static const size_t G3 = grid * grid * grid;
-
-    const auto& content = mPortulan->topology().topology().temperature.content;
-
-    auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
-
-    // содержимое
-    // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
-    auto averageTemperature = vtkSmartPointer< vtkFloatArray >::New();
-    averageTemperature->Initialize();
-    averageTemperature->SetName( "average" );
-    averageTemperature->SetNumberOfComponents( 1 );
-    averageTemperature->SetNumberOfValues( G3 );
-
-    /* - @todo
-    auto dispersionTemperature = vtkSmartPointer< vtkFloatArray >::New();
-    dispersionTemperature->Initialize();
-    dispersionTemperature->SetName( "dispersion" );
-    dispersionTemperature->SetNumberOfComponents( 1 );
-    dispersionTemperature->SetNumberOfValues( G3 );
-
-    auto rateTemperature = vtkSmartPointer< vtkFloatArray >::New();
-    rateTemperature->Initialize();
-    rateTemperature->SetName( "rate" );
-    rateTemperature->SetNumberOfComponents( 1 );
-    rateTemperature->SetNumberOfValues( G3 );
-    */
-
-    size_t n = 0;
-    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
-    for (size_t i = 0; i < G3; ++i) {
-        const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
-
-        const auto& cell = content[ i ];
-        averageTemperature->SetValue(    n,  cell[0].average );
-        //dispersionTemperature->SetValue( n,  cell[0].dispersion );
-        //rateTemperature->SetValue(       n,  cell[0].rate );
-
-        ++n;
-    } // for (size_t i
-
-
-    // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
-    // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
-    polydata->GetPointData()->AddArray( averageTemperature );
-    //polydata->GetPointData()->AddArray( dispersionTemperature );
-    //polydata->GetPointData()->AddArray( rateTemperature );
 
 
     // записываем

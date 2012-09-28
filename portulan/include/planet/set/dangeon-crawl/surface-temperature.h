@@ -6,12 +6,13 @@
 
 
 /**
-* Информация о температуре в области планеты.
+* Информация о температуре на поверхностях планеты.
 *
-*   # Сохраняем похожесть структуры на "component" и "living".
+*   # Используется только внешний слой планетарной коры. Но @todo можно
+*     задействовать эту же структуру для задания температуры полостей планеты.
+*   # Сохраняем похожесть структуры на "temperature".
 *
-* @see surfaceTemperature_t
-* @see http://crawl.chaosforge.org
+* @see temperature_t
 * @see planet::Topology
 */
 namespace portulan {
@@ -22,7 +23,7 @@ namespace portulan {
 
 
 /**
-* Поведение температуры в 1-й ячейке области планеты.
+* Поведение температуры в 1-й ячейке на поверхности планеты.
 */
 typedef struct __attribute__ ((packed)) {
     /**
@@ -42,27 +43,27 @@ typedef struct __attribute__ ((packed)) {
     */
     //cl_float rate;
 
-} behaviourTemperature_t;
+} behaviourSurfaceTemperature_t;
 
 
 
 
 /**
-* Ячейка портулана с информацией о температуре.
+* Ячейка портулана с информацией о температуре на поверхности.
 */
-typedef behaviourTemperature_t  temperatureCell_t[ 1 ];
+typedef behaviourSurfaceTemperature_t  surfaceTemperatureCell_t[ 1 ];
 
 
 
 
 
 /**
-* Температура в области планеты.
+* Температура на поверхности планеты.
 */
-typedef temperatureCell_t*  temperatureContent_t;
+typedef surfaceTemperatureCell_t*  surfaceTemperatureContent_t;
 typedef struct __attribute__ ((packed)) {
-    temperatureContent_t content;
-} temperature_t;
+    surfaceTemperatureContent_t content;
+} surfaceTemperature_t;
 
 
 

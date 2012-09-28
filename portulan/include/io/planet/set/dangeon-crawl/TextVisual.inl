@@ -83,10 +83,12 @@ inline void TextVisual::drawTopologySizeInMemory(
 
     static const size_t CG = pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID;
     const size_t memsizeComponent = sizeof( pd::componentCell_t ) * CG;
-    static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
-    const size_t memsizeLiving = sizeof( pd::livingCell_t ) * LG;
     static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
     const size_t memsizeTemperature = sizeof( pd::temperatureCell_t ) * TG;
+    static const size_t STG = pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID;
+    const size_t memsizeSurfaceTemperature = sizeof( pd::surfaceTemperatureCell_t ) * STG;
+    static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
+    const size_t memsizeLiving = sizeof( pd::livingCell_t ) * LG;
 
     const auto tsumAverage = std::accumulate(
         tp.temperature.content,
@@ -138,27 +140,42 @@ inline void TextVisual::drawTopologySizeInMemory(
     );
     */
 
+    const auto stsumAverage = std::accumulate(
+        tp.surfaceTemperature.content,
+        tp.surfaceTemperature.content + TG,
+        0.0f,
+        [] ( float sum, const pd::surfaceTemperatureCell_t& a ) -> float {
+            return sum + a[0].average;
+        }
+    );
+    const auto stminmaxAverage = std::minmax_element(
+        tp.surfaceTemperature.content,
+        tp.surfaceTemperature.content + TG,
+        [] ( const pd::surfaceTemperatureCell_t& a, const pd::surfaceTemperatureCell_t& b ) -> bool {
+            return (a[0].average < b[0].average);
+        }
+    );
+
     *out <<
         "Ïàìÿòü, çàíèìàåìàÿ òîïîëîãèåé ïëàíåòû\n" <<
             "\ttopology\n" <<
                 "\t\taboutPlanet " <<
-                    sizeof( tp.aboutPlanet ) / 1024 << "Êá\n" <<
+                    sizeof( tp.aboutPlanet ) / 1024 << "Êá" <<
+                    "\n" <<
                 "\t\taboutComponent " <<
                     pd::COMPONENT_COUNT << "u " <<
-                    sizeof( tp.aboutComponent ) / 1024 << "Êá\n" <<
+                    sizeof( tp.aboutComponent ) / 1024 << "Êá" <<
+                    "\n" <<
+                "\t\taboutLiving " <<
+                    pd::LIVING_COUNT << "u " <<
+                    sizeof( tp.aboutLiving ) / 1024 / 1024 << "Ìá" <<
+                    "\n" <<
                 "\t\tcomponent\n" <<
                     "\t\t\tcontent " <<
                         pd::COMPONENT_GRID << "x " <<
                         pd::COMPONENT_CELL << "u " <<
-                        memsizeComponent / 1024 / 1024 << "Ìá\n" <<
-                "\t\taboutLiving " <<
-                    pd::LIVING_COUNT << "u " <<
-                    sizeof( tp.aboutLiving ) / 1024 / 1024 << "Ìá\n" <<
-                "\t\tliving\n" <<
-                    "\t\t\tcontent " <<
-                        pd::LIVING_GRID << "x " <<
-                        pd::LIVING_CELL << "u " <<
-                        memsizeLiving / 1024 / 1024 << "Ìá\n" <<
+                        memsizeComponent / 1024 / 1024 << "Ìá" <<
+                    "\n" <<
                 "\t\ttemperature " <<
                     pd::TEMPERATURE_GRID << "x " <<
                     memsizeTemperature / 1024 / 1024 << "Ìá\n" <<
@@ -176,6 +193,19 @@ inline void TextVisual::drawTopologySizeInMemory(
                         "\t~ " << (tsumRate / static_cast< float >( TG )) <<
                     "\n" <<
                     */
+                "\t\tsurfaceTemperature " <<
+                    pd::SURFACE_TEMPERATURE_GRID << "x " <<
+                    memsizeSurfaceTemperature / 1024 / 1024 << "Ìá\n" <<
+                    "\t\t\taverage    [ " << stminmaxAverage.first[0]->average       <<
+                        "; " << stminmaxAverage.second[0]->average       << " ]" <<
+                        "\t~ " << (stsumAverage / static_cast< float >( STG )) <<
+                    "\n" <<
+                "\t\tliving\n" <<
+                    "\t\t\tcontent " <<
+                        pd::LIVING_GRID << "x " <<
+                        pd::LIVING_CELL << "u " <<
+                        memsizeLiving / 1024 / 1024 << "Ìá" <<
+                    "\n" <<
     std::endl;
 }
 

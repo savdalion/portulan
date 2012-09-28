@@ -101,8 +101,8 @@ static __constant size_t GRID_SZ = GRID_SX;
 
 
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
-// В OpenCL передаём константы как define: OpenCL не воспринимает
-// константы должным образом.
+// # В OpenCL передаём константы как define: OpenCL не воспринимает
+//   константы должным образом.
 
 /**
 * Размер сетки компонентов в области планеты (в портулане).
@@ -131,6 +131,13 @@ static __constant size_t COMPONENT_CELL = 20;
 * Сетка распределения температуры в области планеты.
 */
 static __constant size_t TEMPERATURE_GRID = 81;
+
+
+
+/**
+* Сетка распределения температуры на поверхности планеты.
+*/
+static __constant size_t SURFACE_TEMPERATURE_GRID = 81;
 
 
 

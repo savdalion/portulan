@@ -90,6 +90,9 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\component.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\surface-temperature.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\io\VolumeVTKVisual.inl">

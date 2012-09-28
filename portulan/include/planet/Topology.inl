@@ -19,6 +19,9 @@ inline Topology::Topology() {
     static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
     mTopology.temperature.content = new pd::temperatureCell_t[ TG ];
 
+    static const size_t STG = pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID;
+    mTopology.surfaceTemperature.content = new pd::surfaceTemperatureCell_t[ STG ];
+
     static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
     mTopology.living.content = new pd::livingCell_t[ LG ];
 
@@ -35,6 +38,7 @@ inline Topology::Topology() {
 inline Topology::~Topology() {
     delete[] mTopology.component.content;
     delete[] mTopology.temperature.content;
+    delete[] mTopology.surfaceTemperature.content;
     delete[] mTopology.living.content;
 }
 
