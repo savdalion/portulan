@@ -96,6 +96,8 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\component-set.h" />
     <ClInclude Include="include\planet\set\dangeon-crawl\component.h" />
     <ClInclude Include="include\planet\set\dangeon-crawl\surface-temperature.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\rainfall.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\drainage.h" />
     <ClInclude Include="include\planet\Topology.h" />
     <ClInclude Include="include\Topology.h" />
     <ClInclude Include="include\configure.h" />

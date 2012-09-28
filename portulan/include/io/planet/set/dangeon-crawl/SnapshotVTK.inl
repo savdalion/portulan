@@ -144,10 +144,8 @@ inline void SnapshotVTK::component( const std::string& file ) {
 #else
     writer->SetInputData( polydata );
 #endif
-
     writer->SetDataModeToBinary();
     //writer->SetDataModeToAscii();
- 
     writer->Write();
 
 #ifdef _DEBUG
@@ -181,24 +179,24 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 
     // содержимое
     // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
-    auto averageTemperature = vtkSmartPointer< vtkFloatArray >::New();
-    averageTemperature->Initialize();
-    averageTemperature->SetName( "average" );
-    averageTemperature->SetNumberOfComponents( 1 );
-    averageTemperature->SetNumberOfValues( G3 );
+    auto average = vtkSmartPointer< vtkFloatArray >::New();
+    average->Initialize();
+    average->SetName( "average" );
+    average->SetNumberOfComponents( 1 );
+    average->SetNumberOfValues( G3 );
 
     /* - @todo
-    auto dispersionTemperature = vtkSmartPointer< vtkFloatArray >::New();
-    dispersionTemperature->Initialize();
-    dispersionTemperature->SetName( "dispersion" );
-    dispersionTemperature->SetNumberOfComponents( 1 );
-    dispersionTemperature->SetNumberOfValues( G3 );
+    auto dispersion = vtkSmartPointer< vtkFloatArray >::New();
+    dispersion->Initialize();
+    dispersion->SetName( "dispersion" );
+    dispersion->SetNumberOfComponents( 1 );
+    dispersion->SetNumberOfValues( G3 );
 
-    auto rateTemperature = vtkSmartPointer< vtkFloatArray >::New();
-    rateTemperature->Initialize();
-    rateTemperature->SetName( "rate" );
-    rateTemperature->SetNumberOfComponents( 1 );
-    rateTemperature->SetNumberOfValues( G3 );
+    auto rate = vtkSmartPointer< vtkFloatArray >::New();
+    rate->Initialize();
+    rate->SetName( "rate" );
+    rate->SetNumberOfComponents( 1 );
+    rate->SetNumberOfValues( G3 );
     */
 
     size_t n = 0;
@@ -215,9 +213,9 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
         vertices->InsertNextCell( 1, pid );
 
         const auto& cell = content[ i ];
-        averageTemperature->SetValue(    n,  cell[0].average );
-        //dispersionTemperature->SetValue( n,  cell[0].dispersion );
-        //rateTemperature->SetValue(       n,  cell[0].rate );
+        average->SetValue(    n,  cell[0].average );
+        //dispersion->SetValue( n,  cell[0].dispersion );
+        //rate->SetValue(       n,  cell[0].rate );
 
         ++n;
     } // for (size_t i
@@ -228,9 +226,9 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
     polydata->SetPoints( points );
     polydata->SetVerts( vertices );
     // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
-    polydata->GetPointData()->AddArray( averageTemperature );
-    //polydata->GetPointData()->AddArray( dispersionTemperature );
-    //polydata->GetPointData()->AddArray( rateTemperature );
+    polydata->GetPointData()->AddArray( average );
+    //polydata->GetPointData()->AddArray( dispersion );
+    //polydata->GetPointData()->AddArray( rate );
 
 
     // записываем
@@ -241,10 +239,8 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 #else
     writer->SetInputData( polydata );
 #endif
-
     writer->SetDataModeToBinary();
     //writer->SetDataModeToAscii();
- 
     writer->Write();
 
 #ifdef _DEBUG
@@ -277,12 +273,11 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
     auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
-    // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
-    auto averageTemperature = vtkSmartPointer< vtkFloatArray >::New();
-    averageTemperature->Initialize();
-    averageTemperature->SetName( "average" );
-    averageTemperature->SetNumberOfComponents( 1 );
-    averageTemperature->SetNumberOfValues( G3 );
+    auto average = vtkSmartPointer< vtkFloatArray >::New();
+    average->Initialize();
+    average->SetName( "average" );
+    average->SetNumberOfComponents( 1 );
+    average->SetNumberOfValues( G3 );
 
     size_t n = 0;
     typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
@@ -298,7 +293,7 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
         vertices->InsertNextCell( 1, pid );
 
         const auto& cell = content[ i ];
-        averageTemperature->SetValue(    n,  cell[0].average );
+        average->SetValue(    n,  cell[0].average );
 
         ++n;
     } // for (size_t i
@@ -308,8 +303,7 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
     auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
     polydata->SetPoints( points );
     polydata->SetVerts( vertices );
-    // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
-    polydata->GetPointData()->AddArray( averageTemperature );
+    polydata->GetPointData()->AddArray( average );
 
 
     // записываем
@@ -320,10 +314,155 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
 #else
     writer->SetInputData( polydata );
 #endif
-
     writer->SetDataModeToBinary();
-    //writer->SetDataModeToAscii();
- 
+    writer->Write();
+
+#ifdef _DEBUG
+    std::cout << "ОК" << std::endl;
+#endif
+}
+
+
+
+
+
+
+inline void SnapshotVTK::rainfall( const std::string& file ) {
+    assert( !file.empty() && "Название файла должно быть указано." );
+
+    namespace pd = portulan::planet::set::dungeoncrawl;
+
+    const std::string fileName = file + ".vtp";
+#ifdef _DEBUG
+    std::cout << "Снимок атмосферных осадков сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+#endif
+
+    static const size_t grid = pd::RAINFALL_GRID;
+    static const size_t G3 = grid * grid * grid;
+
+    const auto& content =
+        mPortulan->topology().topology().rainfall.content;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
+    // содержимое
+    auto average = vtkSmartPointer< vtkFloatArray >::New();
+    average->Initialize();
+    average->SetName( "average" );
+    average->SetNumberOfComponents( 1 );
+    average->SetNumberOfValues( G3 );
+
+    size_t n = 0;
+    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    for (size_t i = 0; i < G3; ++i) {
+        const typelib::coordInt_t c = smc_t::ci( i );
+        const float cf[3] = {
+            static_cast< float >( c.x ),
+            static_cast< float >( c.y ),
+            static_cast< float >( c.z )
+        };
+        vtkIdType pid[ 1 ];
+        pid[ 0 ] = points->InsertNextPoint( cf );
+        vertices->InsertNextCell( 1, pid );
+
+        const auto& cell = content[ i ];
+        average->SetValue(    n,  cell[0].average );
+
+        ++n;
+    } // for (size_t i
+
+
+    // собираем вместе
+    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
+    polydata->SetPoints( points );
+    polydata->SetVerts( vertices );
+    polydata->GetPointData()->AddArray( average );
+
+
+    // записываем
+    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
+    writer->SetFileName( fileName.c_str() );
+#if VTK_MAJOR_VERSION <= 5
+    writer->SetInput( polydata );
+#else
+    writer->SetInputData( polydata );
+#endif
+    writer->SetDataModeToBinary();
+    writer->Write();
+
+#ifdef _DEBUG
+    std::cout << "ОК" << std::endl;
+#endif
+}
+
+
+
+
+
+
+inline void SnapshotVTK::drainage( const std::string& file ) {
+    assert( !file.empty() && "Название файла должно быть указано." );
+
+    namespace pd = portulan::planet::set::dungeoncrawl;
+
+    const std::string fileName = file + ".vtp";
+#ifdef _DEBUG
+    std::cout << "Снимок дренажа сохраняем в файл \"" << (file + ".vtp") << "\" ... ";
+#endif
+
+    static const size_t grid = pd::DRAINAGE_GRID;
+    static const size_t G3 = grid * grid * grid;
+
+    const auto& content =
+        mPortulan->topology().topology().drainage.content;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
+    // содержимое
+    auto average = vtkSmartPointer< vtkFloatArray >::New();
+    average->Initialize();
+    average->SetName( "average" );
+    average->SetNumberOfComponents( 1 );
+    average->SetNumberOfValues( G3 );
+
+    size_t n = 0;
+    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    for (size_t i = 0; i < G3; ++i) {
+        const typelib::coordInt_t c = smc_t::ci( i );
+        const float cf[3] = {
+            static_cast< float >( c.x ),
+            static_cast< float >( c.y ),
+            static_cast< float >( c.z )
+        };
+        vtkIdType pid[ 1 ];
+        pid[ 0 ] = points->InsertNextPoint( cf );
+        vertices->InsertNextCell( 1, pid );
+
+        const auto& cell = content[ i ];
+        average->SetValue(    n,  cell[0].average );
+
+        ++n;
+    } // for (size_t i
+
+
+    // собираем вместе
+    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
+    polydata->SetPoints( points );
+    polydata->SetVerts( vertices );
+    polydata->GetPointData()->AddArray( average );
+
+
+    // записываем
+    auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
+    writer->SetFileName( fileName.c_str() );
+#if VTK_MAJOR_VERSION <= 5
+    writer->SetInput( polydata );
+#else
+    writer->SetInputData( polydata );
+#endif
+    writer->SetDataModeToBinary();
     writer->Write();
 
 #ifdef _DEBUG
@@ -460,10 +599,7 @@ inline void SnapshotVTK::living( const std::string& file ) {
 #else
     writer->SetInputData( polydata );
 #endif
-
     writer->SetDataModeToBinary();
-    //writer->SetDataModeToAscii();
- 
     writer->Write();
 
 #ifdef _DEBUG

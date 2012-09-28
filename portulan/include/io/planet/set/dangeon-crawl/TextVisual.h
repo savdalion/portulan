@@ -35,6 +35,7 @@ public:
     * Печатает в текущий поток.
     */
     TextVisual& operator<<( const portulan::planet::Portulan& );
+    TextVisual& operator<<( const std::string& );
 
 
 

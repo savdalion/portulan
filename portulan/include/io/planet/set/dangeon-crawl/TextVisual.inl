@@ -54,6 +54,16 @@ inline TextVisual& TextVisual::operator<<(
 
 
 
+inline TextVisual& TextVisual::operator<<( const std::string& s ) {
+    *out << s;
+    return *this;
+}
+
+
+
+
+
+
 inline TextVisual& TextVisual::operator<<( const option_t& json ) {
     mOption = json;
     return *this;
@@ -83,10 +93,19 @@ inline void TextVisual::drawTopologySizeInMemory(
 
     static const size_t CG = pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID;
     const size_t memsizeComponent = sizeof( pd::componentCell_t ) * CG;
+
     static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
     const size_t memsizeTemperature = sizeof( pd::temperatureCell_t ) * TG;
+
     static const size_t STG = pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID;
     const size_t memsizeSurfaceTemperature = sizeof( pd::surfaceTemperatureCell_t ) * STG;
+
+    static const size_t RG = pd::RAINFALL_GRID * pd::RAINFALL_GRID * pd::RAINFALL_GRID;
+    const size_t memsizeRainfall = sizeof( pd::rainfallCell_t ) * RG;
+
+    static const size_t DG = pd::DRAINAGE_GRID * pd::DRAINAGE_GRID * pd::DRAINAGE_GRID;
+    const size_t memsizeDrainage = sizeof( pd::temperatureCell_t ) * DG;
+
     static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
     const size_t memsizeLiving = sizeof( pd::livingCell_t ) * LG;
 
@@ -156,52 +175,98 @@ inline void TextVisual::drawTopologySizeInMemory(
         }
     );
 
+    const auto rsumAverage = std::accumulate(
+        tp.rainfall.content,
+        tp.rainfall.content + TG,
+        0.0f,
+        [] ( float sum, const pd::rainfallCell_t& a ) -> float {
+            return sum + a[0].average;
+        }
+    );
+    const auto rminmaxAverage = std::minmax_element(
+        tp.rainfall.content,
+        tp.rainfall.content + TG,
+        [] ( const pd::rainfallCell_t& a, const pd::rainfallCell_t& b ) -> bool {
+            return (a[0].average < b[0].average);
+        }
+    );
+
+    const auto dsumAverage = std::accumulate(
+        tp.drainage.content,
+        tp.drainage.content + TG,
+        0.0f,
+        [] ( float sum, const pd::drainageCell_t& a ) -> float {
+            return sum + a[0].average;
+        }
+    );
+    const auto dminmaxAverage = std::minmax_element(
+        tp.drainage.content,
+        tp.drainage.content + TG,
+        [] ( const pd::drainageCell_t& a, const pd::drainageCell_t& b ) -> bool {
+            return (a[0].average < b[0].average);
+        }
+    );
+
     *out <<
         "ѕам€ть, занимаема€ топологией планеты\n" <<
-            "\ttopology\n" <<
-                "\t\taboutPlanet " <<
+            "    topology\n" <<
+                "        aboutPlanet " <<
                     sizeof( tp.aboutPlanet ) / 1024 << " б" <<
                     "\n" <<
-                "\t\taboutComponent " <<
+                "        aboutComponent " <<
                     pd::COMPONENT_COUNT << "u " <<
                     sizeof( tp.aboutComponent ) / 1024 << " б" <<
                     "\n" <<
-                "\t\taboutLiving " <<
+                "        aboutLiving " <<
                     pd::LIVING_COUNT << "u " <<
                     sizeof( tp.aboutLiving ) / 1024 / 1024 << "ћб" <<
                     "\n" <<
-                "\t\tcomponent\n" <<
-                    "\t\t\tcontent " <<
+                "        component\n" <<
+                    "            content " <<
                         pd::COMPONENT_GRID << "x " <<
                         pd::COMPONENT_CELL << "u " <<
                         memsizeComponent / 1024 / 1024 << "ћб" <<
                     "\n" <<
-                "\t\ttemperature " <<
+                "        temperature " <<
                     pd::TEMPERATURE_GRID << "x " <<
                     memsizeTemperature / 1024 / 1024 << "ћб\n" <<
-                    "\t\t\taverage    [ " << tminmaxAverage.first[0]->average       <<
+                    "            average    [ " << tminmaxAverage.first[0]->average       <<
                         "; " << tminmaxAverage.second[0]->average       << " ]" <<
-                        "\t~ " << (tsumAverage / static_cast< float >( TG )) <<
+                        "    ~ " << (tsumAverage / static_cast< float >( TG )) <<
                     "\n" <<
                     /* - @todo
-                    "\t\t\tdispersion [ " << tminmaxDispersion.first[0]->dispersion <<
+                    "            dispersion [ " << tminmaxDispersion.first[0]->dispersion <<
                         "; " << tminmaxDispersion.second[0]->dispersion << " ]" <<
-                        "\t~ " << (tsumDispersion / static_cast< float >( TG )) <<
+                        "    ~ " << (tsumDispersion / static_cast< float >( TG )) <<
                     "\n" <<
-                    "\t\t\trate       [ " << tminmaxRate.first[0]->rate             <<
+                    "            rate       [ " << tminmaxRate.first[0]->rate             <<
                         "; " << tminmaxRate.second[0]->rate             << " ]" <<
-                        "\t~ " << (tsumRate / static_cast< float >( TG )) <<
+                        "    ~ " << (tsumRate / static_cast< float >( TG )) <<
                     "\n" <<
                     */
-                "\t\tsurfaceTemperature " <<
+                "        surfaceTemperature " <<
                     pd::SURFACE_TEMPERATURE_GRID << "x " <<
                     memsizeSurfaceTemperature / 1024 / 1024 << "ћб\n" <<
-                    "\t\t\taverage    [ " << stminmaxAverage.first[0]->average       <<
+                    "            average    [ " << stminmaxAverage.first[0]->average       <<
                         "; " << stminmaxAverage.second[0]->average       << " ]" <<
-                        "\t~ " << (stsumAverage / static_cast< float >( STG )) <<
+                        "    ~ " << (stsumAverage / static_cast< float >( STG )) <<
                     "\n" <<
-                "\t\tliving\n" <<
-                    "\t\t\tcontent " <<
+                "        rainfall " <<
+                    pd::RAINFALL_GRID << "x " <<
+                    memsizeRainfall / 1024 / 1024 << "ћб\n" <<
+                    "            average    [ " << rminmaxAverage.first[0]->average       <<
+                        "; " << rminmaxAverage.second[0]->average       << " ]" <<
+                        "    ~ " << (rsumAverage / static_cast< float >( RG )) <<
+                    "\n" <<
+                "        drainage " <<
+                    pd::DRAINAGE_GRID << "x " <<
+                    memsizeDrainage / 1024 / 1024 << "ћб\n" <<
+                    "            average    [ " << dminmaxAverage.first[0]->average       <<
+                        "; " << dminmaxAverage.second[0]->average       << " ]" <<
+                        "    ~ " << (dsumAverage / static_cast< float >( DG )) <<
+                    "\n" <<
+                "        living\n" <<
+                    "            content " <<
                         pd::LIVING_GRID << "x " <<
                         pd::LIVING_CELL << "u " <<
                         memsizeLiving / 1024 / 1024 << "ћб" <<

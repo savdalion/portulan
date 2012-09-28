@@ -6,13 +6,13 @@
 
 
 /**
-* Информация о температуре на поверхностях планеты.
+* Информация о дренаже на поверхностях планеты.
 *
 *   # Используется только внешний слой планетарной коры. Но @todo можно
-*     задействовать эту же структуру для задания температуры полостей планеты.
-*   # Сохраняем похожесть структуры на "temperature".
+*     задействовать эту же структуру для задания дренажа в полостях планеты.
+*   # Сохраняем похожесть структуры на "rainfall".
 *
-* @see temperature_t
+* @see rainfall_t
 * @see planet::Topology
 */
 namespace portulan {
@@ -23,15 +23,15 @@ namespace portulan {
 
 
 /**
-* Поведение температуры в 1-й ячейке на поверхности планеты.
+* Поведение дренажа в 1-й ячейке на поверхности планеты.
 */
 typedef struct __attribute__ ((packed)) {
     /**
-    * Среднее значение температуры, К.
+    * Среднее значение дренажа, мм / день.
     */
     cl_float average;
 
-} behaviourSurfaceTemperature_t;
+} behaviourDrainage_t;
 
 
 
@@ -39,7 +39,7 @@ typedef struct __attribute__ ((packed)) {
 /**
 * Ячейка портулана с информацией о температуре на поверхности.
 */
-typedef behaviourSurfaceTemperature_t  surfaceTemperatureCell_t[ 1 ];
+typedef behaviourDrainage_t  drainageCell_t[ 1 ];
 
 
 
@@ -48,10 +48,10 @@ typedef behaviourSurfaceTemperature_t  surfaceTemperatureCell_t[ 1 ];
 /**
 * Температура на поверхности планеты.
 */
-typedef surfaceTemperatureCell_t*  surfaceTemperatureContent_t;
+typedef drainageCell_t*  drainageContent_t;
 typedef struct __attribute__ ((packed)) {
-    surfaceTemperatureContent_t content;
-} surfaceTemperature_t;
+    drainageContent_t content;
+} drainage_t;
 
 
 

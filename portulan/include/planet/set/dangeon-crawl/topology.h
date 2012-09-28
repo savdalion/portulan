@@ -8,6 +8,8 @@
 #include "planet.h"
 #include "temperature.h"
 #include "surface-temperature.h"
+#include "rainfall.h"
+#include "drainage.h"
 
 
 namespace portulan {
@@ -35,6 +37,8 @@ typedef struct __attribute__ ((packed)) {
     dungeoncrawl::component_t           component;
     dungeoncrawl::temperature_t         temperature;
     dungeoncrawl::surfaceTemperature_t  surfaceTemperature;
+    dungeoncrawl::rainfall_t            rainfall;
+    dungeoncrawl::drainage_t            drainage;
     dungeoncrawl::living_t              living;
 
 } topology_t;

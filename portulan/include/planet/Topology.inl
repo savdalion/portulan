@@ -13,24 +13,23 @@ inline Topology::Topology() {
 
     namespace pd = set::dungeoncrawl;
 
-    static const size_t CG = pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID;
-    mTopology.component.content = new pd::componentCell_t[ CG ];
+    mTopology.component.content =
+        new pd::componentCell_t[ pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID ];
 
-    static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
-    mTopology.temperature.content = new pd::temperatureCell_t[ TG ];
+    mTopology.temperature.content =
+        new pd::temperatureCell_t[ pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID ];
 
-    static const size_t STG = pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID;
-    mTopology.surfaceTemperature.content = new pd::surfaceTemperatureCell_t[ STG ];
+    mTopology.surfaceTemperature.content =
+        new pd::surfaceTemperatureCell_t[ pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID ];
 
-    static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
-    mTopology.living.content = new pd::livingCell_t[ LG ];
+    mTopology.rainfall.content =
+        new pd::rainfallCell_t[ pd::RAINFALL_GRID * pd::RAINFALL_GRID * pd::RAINFALL_GRID ];
 
-    /* @test
-    const size_t c = sizeof( pc::componentCell_t ) * CG;
-    const size_t t = sizeof( pt::temperatureCell_t ) * TG;
-    const size_t l = sizeof( pl::livingCell_t ) * LG;
-    std::cout << c << " " << t << " " << l << std::endl;
-    */
+    mTopology.drainage.content =
+        new pd::drainageCell_t[ pd::DRAINAGE_GRID * pd::DRAINAGE_GRID * pd::DRAINAGE_GRID ];
+
+    mTopology.living.content =
+        new pd::livingCell_t[ pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID ];
 }
 
 
@@ -39,6 +38,8 @@ inline Topology::~Topology() {
     delete[] mTopology.component.content;
     delete[] mTopology.temperature.content;
     delete[] mTopology.surfaceTemperature.content;
+    delete[] mTopology.rainfall.content;
+    delete[] mTopology.drainage.content;
     delete[] mTopology.living.content;
 }
 

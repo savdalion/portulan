@@ -141,6 +141,22 @@ static __constant size_t SURFACE_TEMPERATURE_GRID = 81;
 
 
 
+/**
+* Сетка атмосферных осадков на поверхности планеты.
+*/
+static __constant size_t RAINFALL_GRID = 81;
+
+
+
+/**
+* Сетка дренажа на поверхности планеты.
+*/
+static __constant size_t DRAINAGE_GRID = 81;
+
+
+
+
+
 #if 0
 // - Не будем использовать биомы. В основном они нужны, чтобы связать
 //   живой мир с областью планеты. Сделаем это, определив подходящие
@@ -166,6 +182,7 @@ static __constant size_t BIOME_COUNT = 100;
 */
 static __constant size_t BIOME_CELL = 3;
 #endif
+
 
 
 

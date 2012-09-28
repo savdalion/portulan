@@ -93,6 +93,12 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\surface-temperature.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\drainage.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\rainfall.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\io\VolumeVTKVisual.inl">

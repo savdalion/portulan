@@ -58,6 +58,8 @@ public:
     void component(   const std::string& file = "component" );
     void temperature( const std::string& file = "temperature" );
     void surfaceTemperature( const std::string& file = "surface-temperature" );
+    void rainfall(    const std::string& file = "rainfall" );
+    void drainage(    const std::string& file = "drainage" );
     void living(      const std::string& file = "living" );
 
 

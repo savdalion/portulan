@@ -6,13 +6,12 @@
 
 
 /**
-* Информация о температуре на поверхностях планеты.
+* Информация об атмосферных осадках на поверхностях планеты.
 *
 *   # Используется только внешний слой планетарной коры. Но @todo можно
-*     задействовать эту же структуру для задания температуры полостей планеты.
+*     задействовать эту же структуру для задания осадков в полостях планеты.
 *   # Сохраняем похожесть структуры на "temperature".
 *
-* @see temperature_t
 * @see planet::Topology
 */
 namespace portulan {
@@ -23,35 +22,35 @@ namespace portulan {
 
 
 /**
-* Поведение температуры в 1-й ячейке на поверхности планеты.
+* Поведение атм. осадков в 1-й ячейке на поверхности планеты.
 */
 typedef struct __attribute__ ((packed)) {
     /**
-    * Среднее значение температуры, К.
+    * Среднее значение атм. осадков, мм / день.
     */
     cl_float average;
 
-} behaviourSurfaceTemperature_t;
+} behaviourRainfall_t;
 
 
 
 
 /**
-* Ячейка портулана с информацией о температуре на поверхности.
+* Ячейка портулана с информацией об атм. осадках на поверхности.
 */
-typedef behaviourSurfaceTemperature_t  surfaceTemperatureCell_t[ 1 ];
+typedef behaviourRainfall_t  rainfallCell_t[ 1 ];
 
 
 
 
 
 /**
-* Температура на поверхности планеты.
+* Атм. осадки на поверхности планеты.
 */
-typedef surfaceTemperatureCell_t*  surfaceTemperatureContent_t;
+typedef rainfallCell_t*  rainfallContent_t;
 typedef struct __attribute__ ((packed)) {
-    surfaceTemperatureContent_t content;
-} surfaceTemperature_t;
+    rainfallContent_t content;
+} rainfall_t;
 
 
 
