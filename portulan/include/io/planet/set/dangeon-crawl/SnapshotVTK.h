@@ -5,6 +5,8 @@
 
 #include <vtkVersion.h>
 #include <vtkCellArray.h>
+#include <vtkFloatArray.h>
+#include <vtkCharArray.h>
 #include <vtkPoints.h>
 #include <vtkXMLPolyDataWriter.h>
 #include <vtkPolyData.h>
@@ -60,6 +62,7 @@ public:
     void surfaceTemperature( const std::string& file = "surface-temperature" );
     void rainfall(    const std::string& file = "rainfall" );
     void drainage(    const std::string& file = "drainage" );
+    void biome(       const std::string& file = "biome" );
     void living(      const std::string& file = "living" );
 
 

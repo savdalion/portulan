@@ -28,6 +28,9 @@ inline Topology::Topology() {
     mTopology.drainage.content =
         new pd::drainageCell_t[ pd::DRAINAGE_GRID * pd::DRAINAGE_GRID * pd::DRAINAGE_GRID ];
 
+    mTopology.biome.content =
+        new pd::biomeCell_t[ pd::BIOME_GRID * pd::BIOME_GRID * pd::BIOME_GRID ];
+
     mTopology.living.content =
         new pd::livingCell_t[ pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID ];
 }
@@ -40,6 +43,7 @@ inline Topology::~Topology() {
     delete[] mTopology.surfaceTemperature.content;
     delete[] mTopology.rainfall.content;
     delete[] mTopology.drainage.content;
+    delete[] mTopology.biome.content;
     delete[] mTopology.living.content;
 }
 

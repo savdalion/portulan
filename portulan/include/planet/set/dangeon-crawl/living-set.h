@@ -75,11 +75,12 @@ static const aboutLiving_t aboutLiving = {
     // moveGasInside
     { 0.0f },
 
-    // part[ PART_LIVING_COUNT ]
+    // part[ PART_LIVING ]
     //   # Указываем только имеющиеся у особи части: остальные будут
     //     заполнены нулями компилятором.
     //     @todo Проверить соглашение для Release-версии.
     {
+#if 1
         // 0 - часть тела, орган
         {
             // code
@@ -122,8 +123,7 @@ static const aboutLiving_t aboutLiving = {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
         },
-
-        // ...
+#endif
     },
 
     // tag
@@ -137,6 +137,7 @@ static const aboutLiving_t aboutLiving = {
 
     // metabolism
     {
+#if 1
         // componentNeed_t[ COMPONENT_NEED_LIVING ]
         // кг / день
         {
@@ -158,27 +159,31 @@ static const aboutLiving_t aboutLiving = {
         {
             { CE_NONE,  0.0f },
         },
+#endif
     },
 
     // survivor
     {
+#if 1
         // habitat
         {
-            //HL_* [ | HL_* ]
             0U,
             0U,
             0U,
             0U,
             0U
         },
-
-        // temperatureRange
+        // comfort
         {
-            // comfort
-            { 0.0f - tc::CK,  0.0f - tc::CK },
-            // limit
-            { 0.0f - tc::CK,  0.0f - tc::CK },
-        }
+            // temperature
+            0.0f - tc::CK,
+            // biome
+            {
+            },
+        },
+        //adaptability
+        0.0f
+#endif
     }
 },
 #endif
@@ -275,11 +280,12 @@ static const aboutLiving_t aboutLiving = {
     // moveGasInside
     { 0.0f },
 
-    // part[ PART_LIVING_COUNT ]
+    // part[ PART_LIVING ]
     //   # Указываем только имеющиеся у особи части: остальные будут
     //     заполнены нулями компилятором.
     //     @todo Проверить соглашение выше для Release-версии.
     {
+#if 1
         // 0 - голова
         {
             // code
@@ -328,7 +334,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 0 - голова
+        },
 
         // 1 - грудь (средняя часть тела)
         {
@@ -379,7 +385,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 1 - грудь (средняя часть тела)
+        },
 
         // 2 - брюшко (задняя часть тела)
         {
@@ -432,7 +438,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 2 - брюшко (задняя часть тела)
+        },
 
         // 3 - мозг (находится внутри головы)
         {
@@ -484,7 +490,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 3 - мозг (находится внутри головы)
+        },
 
         // 4 - жвалы или мандибулы (прикреплены к голове)
         {
@@ -543,7 +549,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 4 - жвалы (прикреплены к голове)
+        },
 
         // 5 - левый глаз (прикреплён к голове)
         {
@@ -592,7 +598,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 5 - левый глаз (прикреплён к голове)
+        },
 
         // 6 - правый глаз (прикреплён к голове)
         {
@@ -641,7 +647,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 6 - правый глаз (прикреплён к голове)
+        },
 
         // 7 - левый усик (прикреплён к голове)
         {
@@ -693,7 +699,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 7 - левый усик (прикреплён к голове)
+        },
 
         // 8 - правый усик (прикреплён к голове)
         {
@@ -745,7 +751,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 8 - правый усик (прикреплён к голове)
+        },
 
         // 9 - левая передняя лапка (прикреплена к груди)
         {
@@ -798,7 +804,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 9 - левая передняя лапка (прикреплена к груди)
+        },
 
         // 10 - левая средняя лапка (прикреплена к груди)
         {
@@ -848,7 +854,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 10 - левая средняя лапка (прикреплена к груди)
+        },
 
         // 11 - левая задняя лапка (прикреплена к груди)
         {
@@ -898,7 +904,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 11 - левая задняя лапка (прикреплена к груди)
+        },
 
 
         // 12 - правая передняя лапка (прикреплена к груди)
@@ -951,7 +957,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 12 - правая передняя лапка (прикреплена к груди)
+        },
 
         // 13 - правая средняя лапка (прикреплена к груди)
         {
@@ -1001,7 +1007,7 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 13 - правая средняя лапка (прикреплена к груди)
+        },
 
         // 14 - правая задняя лапка (прикреплена к груди)
         {
@@ -1051,7 +1057,8 @@ static const aboutLiving_t aboutLiving = {
             {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
-        }, // 14 - правая задняя лапка (прикреплена к груди)
+        },
+#endif
     },
 
     // tag
@@ -1068,6 +1075,7 @@ static const aboutLiving_t aboutLiving = {
 
     // metabolism
     {
+#if 1
         // componentNeed_t[ COMPONENT_NEED_LIVING ]
         // кг / день
         {
@@ -1103,10 +1111,12 @@ static const aboutLiving_t aboutLiving = {
         {
             { CE_NONE,  0.0f },
         },
+#endif
     },
 
     // survivor
     {
+#if 1
         // habitat
         // муравей может жить на границе твёрдой и газообразной сред, а также
         // внутри твёрдой среды (норы, муравейники)
@@ -1117,14 +1127,19 @@ static const aboutLiving_t aboutLiving = {
             0U,
             0U,
         },
-
-        // temperatureRange
+        // comfort
         {
-            // comfort
-            { 15.0f - tc::CK,  30.0f - tc::CK },
-            // limit
-            { 0.0f - tc::CK,  50.0f - tc::CK },
-        }
+            // temperature
+            30.0f - tc::CK,
+            // biome
+            // Муравей не любит когда слишком много осадков.
+            {
+
+            }
+        },
+        // adaptability
+        0.5f
+#endif
     }
 },
 #endif
@@ -1198,11 +1213,12 @@ static const aboutLiving_t aboutLiving = {
     // moveGasInside
     { 0.0f },
 
-    // part[ PART_LIVING_COUNT ]
+    // part[ PART_LIVING ]
     //   # Указываем только имеющиеся у особи части: остальные будут
     //     заполнены нулями компилятором.
     //     @todo Проверить соглашение выше для Release-версии.
     {
+#if 1
         // 0 - листья
         {
             // code
@@ -1253,6 +1269,7 @@ static const aboutLiving_t aboutLiving = {
                 { TAL_NONE,  FAL_NONE,  0.0f }
             }
         }, // 0 - листья
+#endif
     },
 
     // tag
@@ -1271,6 +1288,7 @@ static const aboutLiving_t aboutLiving = {
     // @see Потребность в кислороде > http://www.dissercat.com/content/pogloshchenie-kisloroda-sistemoi-pochva-rastenii-pri-raznykh-urovnyakh-pitaniya-rastenii
     // @see Питание растений > http://floragrow.ru/blog/pischa/13.html
     {
+#if 1
         // componentNeed_t[ COMPONENT_NEED_LIVING ]
         // кг / день
         {
@@ -1322,7 +1340,8 @@ static const aboutLiving_t aboutLiving = {
         {
             { CE_NONE,  0.0f },
         },
-    },
+#endif
+},
 
     // survivor
     // #i Как правило, для растений родиной которых являются влажные
@@ -1331,19 +1350,25 @@ static const aboutLiving_t aboutLiving = {
     //    растений тёплых субтропиков — 75-80 %, холодных субтропиков —
     //    50-75 % (левкои, цикламены, цинерарии и др.).
     {
+#if 1
         // habitat
         // это растение может жить на границе твёрдой и газообразной сред
         {
             HL_GAS | HL_SOLID,
         },
-
-        // temperatureRange
+        // comfort
         {
-            // comfort
-            { 10.0f - tc::CK,  30.0f - tc::CK },
-            // limit
-            { -5.0f - tc::CK,  55.0f - tc::CK },
-        }
+            // temperature
+            30.0f - tc::CK,
+            // biome
+            // Пастбищная трава не любит чрезмерную влажность и жару.
+            {
+
+            }
+        },
+        // adaptability
+        0.5f
+#endif
     }
 },
 #endif

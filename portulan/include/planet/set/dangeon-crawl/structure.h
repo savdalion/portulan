@@ -6,7 +6,7 @@
 
 
 /**
-*   # Структуры построены так, чтобы не дублировать их при включении
+*   # Структуры организованы т. о., чтобы не дублировать их при включении
 *     в код OpenCL.
 */
 #define __constant const
@@ -44,12 +44,65 @@ static __constant cl_float SECOND_IN_YEAR   = MINUTE_IN_YEAR * SECOND_IN_MINUTE;
 
 
 /**
-* Значение, задающее неуязвимость, например, органа особи, от
-* конкретного внешнего воздействия.
-* Например, лапка муравья никак не реагирует при воздействии на неё
-* магии "святое слово".
+* Критерии для оценки.
 */
-static __constant cl_float IMMUNE = CL_FLT_MAX;
+enum CRITERIA {
+    // абсолютно не важно / ничего нет / не определено
+    CRITERIA_A = 0,
+    // ниже среднего / мало
+    CRITERIA_B,
+    // средняя важность / много
+    CRITERIA_C,
+    // выше среднего / очень много
+    CRITERIA_D,
+    // жизненная необходимость / предостаточно
+    CRITERIA_E,
+
+    // последний = кол-во критериев
+    CRITERIA_last,
+    CRITERIA_count = CRITERIA_last
+};
+
+
+
+
+
+/**
+* Местность.
+*
+* @prototype http://dfwk.ru/Biome
+* @prototype http://dwarffortresswiki.org/index.php/DF2012:Biome
+* @prototype WWF System > http://en.wikipedia.org/wiki/Biome#WWF_system
+* @see Карта биомов для Земли > http://wolfweb.unr.edu/~ldyer/classes/396/olsonetal.pdf
+*//*
+enum TERRAIN {
+    // отсутствует или не определена
+    TERRAIN_NONE = 0,
+
+    TERRAIN_FOREST,
+    TERRAIN_GRASSLAND,
+    TERRAIN_HILL,
+    TERRAIN_MARSH,
+
+    TERRAIN_LOW_MOUNTAIN,
+    TERRAIN_MOUNTAIN,
+    TERRAIN_HIGHT_MOUNTAIN,
+
+    TERRAIN_BADLAND_DESERT,
+    TERRAIN_ROCK_DESERT,
+    TERRAIN_SAND_DESERT,
+
+    TERRAIN_SAVANNA,
+    TERRAIN_SHRUBLAND,
+    TERRAIN_SWAMP,
+    TERRAIN_TAIGA,
+    TERRAIN_TUNDRA,
+
+    // последний = кол-во местностей
+    TERRAIN_last,
+    TERRAIN_count = TERRAIN_last
+};
+*/
 
 
 
@@ -105,6 +158,34 @@ static __constant size_t GRID_SZ = GRID_SX;
 //   константы должным образом.
 
 /**
+* Значение, задающее неуязвимость, например, органа особи, от
+* конкретного внешнего воздействия.
+* Например, лапка муравья никак не реагирует при воздействии на неё
+* магии "святое слово".
+*/
+// #? При передаче в OpenCL в параметре "-D" можем потерять точность.
+static __constant cl_float IMMUNE = CL_FLT_MAX;
+//#define IMMUNE  CL_FLT_MAX
+
+
+/**
+* Бесконечно большое значение.
+*/
+static __constant cl_float INFINITYf = CL_FLT_MAX;
+//#define INFINITYf  CL_FLT_MAX
+
+
+
+/**
+* Любое значение (для чисел с плавающей точкой).
+*/
+static __constant cl_float ANYf = -CL_FLT_MAX;
+//#define ANYf  -CL_FLT_MAX
+
+
+
+
+/**
 * Размер сетки компонентов в области планеты (в портулане).
 */
 static __constant size_t COMPONENT_GRID = 81;
@@ -114,6 +195,9 @@ static __constant size_t COMPONENT_GRID = 81;
 /**
 * Макс. кол-во *разных* компонентов, которые могут использоваться
 * в области планеты (в портулане).
+* >= CC_last
+*
+* @see CODE_COMPONENT
 */
 static __constant size_t COMPONENT_COUNT = 100;
 
@@ -157,10 +241,6 @@ static __constant size_t DRAINAGE_GRID = 81;
 
 
 
-#if 0
-// - Не будем использовать биомы. В основном они нужны, чтобы связать
-//   живой мир с областью планеты. Сделаем это, определив подходящие
-//   условия для жизни особей и расселяя их в комфортных зонах.
 /**
 * Сетка распределения биомов в области планеты.
 */
@@ -169,10 +249,12 @@ static __constant size_t BIOME_GRID = 81;
 
 
 /**
-* Макс. кол-во *разных* компонентов, которые могут использоваться
-* в области планеты (в портулане).
+* Максимально возможное кол-во *разных* биомов в области планеты.
+* >= CB_last
+*
+* @see CODE_BIOME
 */
-static __constant size_t BIOME_COUNT = 100;
+static __constant size_t BIOME_COUNT = 50;
 
 
 
@@ -181,7 +263,6 @@ static __constant size_t BIOME_COUNT = 100;
 * в 1-й ячейке портулана.
 */
 static __constant size_t BIOME_CELL = 3;
-#endif
 
 
 
@@ -209,33 +290,25 @@ static __constant size_t LIVING_GRID = 81 / 3;
 * Максимальное кол-во *разных* частей (органов), из которых может
 * состоять особь.
 */
-static __constant size_t PART_LIVING_COUNT = 20;
+static __constant size_t PART_LIVING = 20;
 
 
 
 /**
 * Максимальное кол-во *разных* атак, известных органу особи.
 *
-* @see RESIST_PART_LIVING_COUNT
+* @see RESIST_PART_LIVING
 */
-static __constant size_t ATTACK_PART_LIVING_COUNT = 30;
+static __constant size_t ATTACK_PART_LIVING = 30;
 
 
 
 /**
 * Максимальное кол-во *разных* защит, известных органу особи.
 *
-* @see ATTACK_PART_LIVING_COUNT
+* @see ATTACK_PART_LIVING
 */
-static __constant size_t RESIST_PART_LIVING_COUNT = 30;
-
-
-
-/**
-* Максимальное кол-во наборов сред обитания, в которых может
-* жить особь.
-*/
-static __constant size_t HABITAT_LIVING_COUNT = 5;
+static __constant size_t RESIST_PART_LIVING = 30;
 
 
 
@@ -290,14 +363,24 @@ static __constant size_t ENERGY_WASTE_LIVING = 5;
 
 
 /**
-* Максимальное количество сред, где может обитать особь.
+* Максимальное кол-во сред обитания, в которых может жить особь.
 */
-static __constant size_t ENVIRONMENT_SURVIVOR_LIVING = 5;
+static __constant size_t HABITAT_SURVIVOR_LIVING = 5;
+
+
+
+/**
+* Максимальное кол-во *разных* биомов, где особь чувствует себя комфортно.
+*/
+static __constant size_t BIOME_COMFORT_SURVIVOR_LIVING = BIOME_COUNT;
 
 
 
 /**
 * Максимально возможное кол-во *разных* особей в области планеты.
+* >= CC_last
+*
+* @see CODE_LIVING
 */
 static __constant size_t LIVING_COUNT = 100;
 
@@ -354,25 +437,52 @@ static __constant size_t SURFACE_VOID_REGISTRY = 5;
 /**
 * Группы элементов.
 *
-*   # Перечисления не имеют элемента UNDEFINED, т.к. планируется использовать
-*     перечисления в качестве индекса массивов.
+*   # Перечисления не имеют элемента NONE, если их предполагается
+*     использовать в качестве индекса массивов.
 */
 enum GROUP_ELEMENT {
+    // пустая группа или отсутствует
+    GE_NONE = 0,
+
+    /* - Не используем. Вместо них - местность (TERRAIN).
     // биомы
-    GE_BIOME = 1,
+    GE_BIOME,
+    */
+
     // компоненты (воздух, плодородная почва, камень и т.п.)
+    // @see component_t
     GE_COMPONENT,
+
+    // @see temperature_t
+    GE_TEMPERATURE,
+
+    // @see surfaceTemperature_t
+    GE_SURFACE_TEMPERATURE,
+
+    // @see rainfall_t
+    GE_RAINFALL,
+
+    // @see drainage_t
+    GE_DRAINAGE,
+
+    // @see TERRAIN
+    GE_TERRAIN,
+
     // энергии
     GE_ENERGY,
-    // живые существа, растения
+
+    // любые формы жизни
+    // @see aboutOneLiving_t
     GE_LIVING,
+
     // части живых существ, растений
+    // @see aboutOnePartLiving_t
     GE_PART_LIVING,
-    // @todo осадки, см. precipitations_t
-    // GE_PRECIPITATIONS,
 
     // последняя
     GE_last
+
+    // @todo fine Перечислить здесь все элементы мира.
 };
 
 

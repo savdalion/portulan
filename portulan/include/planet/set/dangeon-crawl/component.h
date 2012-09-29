@@ -31,6 +31,11 @@ enum CODE_COMPONENT {
     // компонент отсутствует или не определён
     CC_NONE = 0,
 
+    // любой компонент
+    CC_ANY = CC_NONE,
+
+    // @see component-set.h
+
     // пустота
     CC_VACUUM = CC_NONE,
 

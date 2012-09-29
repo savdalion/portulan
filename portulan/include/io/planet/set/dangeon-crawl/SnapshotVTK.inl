@@ -95,7 +95,7 @@ inline void SnapshotVTK::component( const std::string& file ) {
     }
 
     size_t n = 0;
-    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         // координата €чейки
         const typelib::coordInt_t c = smc_t::ci( i );
@@ -191,7 +191,7 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
     */
 
     size_t n = 0;
-    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
         const float cf[3] = {
@@ -262,7 +262,7 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
     average->SetNumberOfValues( G3 );
 
     size_t n = 0;
-    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
         const float cf[3] = {
@@ -328,7 +328,7 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
     average->SetNumberOfValues( G3 );
 
     size_t n = 0;
-    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
         const float cf[3] = {
@@ -394,7 +394,7 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
     average->SetNumberOfValues( G3 );
 
     size_t n = 0;
-    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
         const float cf[3] = {
@@ -418,6 +418,114 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
     polydata->SetPoints( points );
     polydata->SetVerts( vertices );
     polydata->GetPointData()->AddArray( average );
+
+
+    // записываем
+    write( fileName, polydata );
+
+#ifdef _DEBUG
+    std::cout << "ќ " << std::endl;
+#endif
+}
+
+
+
+
+
+
+inline void SnapshotVTK::biome( const std::string& file ) {
+    assert( !file.empty() && "Ќазвание файла должно быть указано." );
+
+    namespace pd = portulan::planet::set::dungeoncrawl;
+
+    const std::string fileName = file + ".vtp";
+#ifdef _DEBUG
+    std::cout << "—нимок биома сохран€ем в \"" << (file + ".vtp") << "\" ... ";
+#endif
+
+    static const size_t grid = pd::BIOME_GRID;
+    static const size_t G3 = grid * grid * grid;
+
+    const auto& content =
+        mPortulan->topology().topology().biome.content;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
+    // содержимое
+    // сохраним биомы из presentBiome_t
+    // формируем все названи€ известных в "content" биомов; если
+    // формировать названи€ в цикле по мере их по€влени€, получим частично
+    // заполненные структуры, которые не удобно анализировать из-за мусорных
+    // значений (которые, к тому же, отличаютс€ в Debug и Release)
+    // #i vtkBitArray здесь был бы лучшей альтернативой, но с ним
+    //    не работает write() ниже.
+    typedef vtkSmartPointer< vtkCharArray >  biomePresentArray_t;
+    std::map< pd::CODE_BIOME, biomePresentArray_t >  biome;
+    std::set< pd::CODE_BIOME >  uniqueBiome;
+    for (size_t i = 0; i < G3; ++i) {
+        // содержимое €чейки
+        const auto& cell = content[ i ];
+        for (size_t k = 0; k < pd::BIOME_CELL; ++k) {
+            const auto code = cell[ k ].code;
+            // не рассматриваем пустые €чейки
+            if (code != pd::CB_NONE) {
+                uniqueBiome.insert( code );
+            }
+        }
+    }
+    for (auto itr = uniqueBiome.cbegin(); itr != uniqueBiome.cend(); ++itr) {
+        const pd::CODE_BIOME code = *itr;
+        auto ftr = biome.emplace( std::make_pair( code, vtkSmartPointer< vtkCharArray >::New() ) ).first;
+        ftr->second->Initialize();
+        std::ostringstream ss;
+        ss << "code " << std::setw( 2 ) << std::setfill( '0' ) << code;
+        ftr->second->SetName( ss.str().c_str() );
+        ftr->second->SetNumberOfComponents( 1 );
+        ftr->second->SetNumberOfValues( G3 );
+        // наборы заполн€ем пустотой
+        ftr->second->FillComponent( 0, 0 );
+    }
+
+    size_t n = 0;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
+    for (size_t i = 0; i < G3; ++i) {
+        // координата €чейки
+        const typelib::coordInt_t c = smc_t::ci( i );
+        const float cf[3] = {
+            static_cast< float >( c.x ),
+            static_cast< float >( c.y ),
+            static_cast< float >( c.z )
+        };
+        vtkIdType pid[ 1 ];
+        pid[ 0 ] = points->InsertNextPoint( cf );
+        vertices->InsertNextCell( 1, pid );
+
+        // содержимое €чейки
+        const auto& cell = content[ i ];
+        for (size_t k = 0; k < pd::BIOME_CELL; ++k) {
+            const pd::CODE_BIOME code = cell[k].code;
+            // работаем только с не пустыми биомами
+            if (code != pd::CB_NONE) {
+                // все наборы сформированы и проинициализированы нул€ми выше
+                auto ftr = biome.find( code );
+                assert( (ftr != biome.cend())
+                    && "Ќе обнаружен набор дл€ компонента." );
+                ftr->second->SetValue( n,  1 );
+            }
+        }
+
+        ++n;
+    } // for (size_t i
+
+
+    // собираем вместе
+    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
+    polydata->SetPoints( points );
+    polydata->SetVerts( vertices );
+    for (auto itr = biome.cbegin(); itr != biome.cend(); ++itr) {
+        polydata->GetPointData()->AddArray( itr->second );
+    }
 
 
     // записываем
@@ -498,7 +606,7 @@ inline void SnapshotVTK::living( const std::string& file ) {
     }
 
     size_t n = 0;
-    typedef typelib::StaticMapContent3D< grid, grid, grid >  smc_t;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         // координата €чейки
         const typelib::coordInt_t c = smc_t::ci( i );

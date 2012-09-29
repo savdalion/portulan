@@ -4,6 +4,7 @@
 
 #include "structure.h"
 #include "component.h"
+#include "biome.h"
 
 
 /**
@@ -33,6 +34,9 @@ namespace portulan {
 enum CODE_LIVING {
     // код отсутствует или не определён
     CL_NONE = 0,
+
+    // любая особь
+    CL_ANY = CL_NONE,
 
     // @see living-set.h
 
@@ -563,7 +567,7 @@ typedef struct __attribute__ ((packed)) {
 /**
 * Атаки, известные органу особи.
 */
-typedef aboutOnePartAttack_t  attackPartLiving_t[ ATTACK_PART_LIVING_COUNT ];
+typedef aboutOnePartAttack_t  attackPartLiving_t[ ATTACK_PART_LIVING ];
 
 
 
@@ -587,7 +591,7 @@ typedef struct __attribute__ ((packed)) {
 /**
 * Защиты от известных атак.
 */
-typedef aboutOnePartResist_t  resistPartLiving_t[ RESIST_PART_LIVING_COUNT ];
+typedef aboutOnePartResist_t  resistPartLiving_t[ RESIST_PART_LIVING ];
 
 
 
@@ -873,30 +877,35 @@ typedef struct __attribute__ ((packed)) {
 /**
 * Условия выживания данной особи.
 */
+
 typedef struct __attribute__ ((packed)) {
-    cl_float min;
-    cl_float max;
-} temperatureRangeLiving_t;
+
+    enum CODE_COMPONENT code;
+    
+    /**
+    * Важность компонента для особи.
+    */
+    enum CRITERIA importance;
+
+} preferComponentLiving_t;
 
 
 typedef struct __attribute__ ((packed)) {
     /**
-    * Температура комфорта.
-    * Вне этого диапазона - повышенная смертность и пониженная
-    * рождаемость особей.
-    * Для цивилизованных особей диапазон может варьироваться очень
-    * широко благодаря использованию ц. о. домов / огня / одежды.
+    * Комфортная температура, Цельсий.
+    * [ K0; + ]
     */
-    temperatureRangeLiving_t comfort;
+    float temperature;
 
     /**
-    * Температура выживания.
-    * Существование особи вне этого предела невозможно
-    * (100% летальный исход за 1 пульс).
+    * Перечисление биомов, в которых особь чувствует себя комфортно.
+    * Помним и используем: биомы строятся на основе температуры,
+    * атм. осадков, дренажа - всё это можно проверять при расселении
+    * особей.
     */
-    temperatureRangeLiving_t limit;
+    enum CODE_BIOME  biome[ BIOME_COMFORT_SURVIVOR_LIVING ];
 
-} temperatureLiving_t;
+} comfortLiving_t;
 
 
 typedef struct __attribute__ ((packed)) {
@@ -913,22 +922,36 @@ typedef struct __attribute__ ((packed)) {
     *
     * @see http://crawl.chaosforge.org/index.php?title=Habitat
     */
-    cl_uint  habitat[ HABITAT_LIVING_COUNT ];
+    cl_uint  habitat[ HABITAT_SURVIVOR_LIVING ];
 
     /**
-    * Температуры, в которых способна жить особь.
+    * Состояние комфорта для особи.
     */
-    temperatureLiving_t temperature;
+    comfortLiving_t comfort;
 
     /**
-    * Атмосферные осадки, которые способна переносить особь.
+    * Приспосабливаемость особи.
+    * Для цивилизованных особей диапазон может варьироваться очень
+    * широко благодаря использованию ц. о. домов / огня / одежды.
+    *
+    * От этой хар-ки зависит "диапазон комфорта".
+    * Например, когда приспосабливаемость == 0.3, это означает,
+    * что особь способна нормально жить в диапазоне температур
+    * [ t + t * 0.3 * k); t - t * 0.3 * k ], где t - температура комфорта
+    * особи, k - спец. коэф. характеристики.
+    * Другие виды диапазонов выживания - влажность, дренаж и пр. -
+    * определяются тем же образом.
+    *
+    * ( 0.0; + ]
     */
-    //rainfallLiving_t rainfall;
+    float adaptability;
 
     /**
-    * Дренаж, который способна переносить особь.
+    * Предпочитаемые / необходимые компоненты для жизни особи.
+    * Например, некоторые особи лучше себя чувствуют в песке, кто-то -
+    * на камнях, кому-то для жизни необходима вода.
     */
-    //drainageLiving_t drainage;
+    // @todo preferComponentLiving_t  component[ PREFER_COMPONENT_SURVIVOR_LIVING ];
 
 } survivorLiving_t;
 
@@ -1033,7 +1056,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Из каких частей (органов) состоит особь.
     */
-    aboutOnePartLiving_t  part[ PART_LIVING_COUNT ];
+    aboutOnePartLiving_t  part[ PART_LIVING ];
 
 
     /**

@@ -84,9 +84,6 @@
     <ClInclude Include="include\io\planet\set\dangeon-crawl\SnapshotVTK.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\-+biome.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\planet\set\dangeon-crawl\component.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -97,6 +94,15 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="include\planet\set\dangeon-crawl\rainfall.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\biome.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\biome-set.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\-biome-method.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

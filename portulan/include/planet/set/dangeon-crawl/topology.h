@@ -3,13 +3,15 @@
 #include "structure.h"
 #include "component.h"
 #include "component-set.h"
-#include "living.h"
-#include "living-set.h"
-#include "planet.h"
 #include "temperature.h"
 #include "surface-temperature.h"
 #include "rainfall.h"
 #include "drainage.h"
+#include "biome.h"
+#include "biome-set.h"
+#include "living.h"
+#include "living-set.h"
+#include "planet.h"
 
 
 namespace portulan {
@@ -39,7 +41,12 @@ typedef struct __attribute__ ((packed)) {
     dungeoncrawl::surfaceTemperature_t  surfaceTemperature;
     dungeoncrawl::rainfall_t            rainfall;
     dungeoncrawl::drainage_t            drainage;
+    dungeoncrawl::biome_t               biome;
     dungeoncrawl::living_t              living;
+
+    // @todo extend Ветры.
+    // @todo extend Облака.
+    // @todo extend Карта пожаров > http://gis-lab.info/blog/2012-09/fires-wfa/
 
 } topology_t;
 
