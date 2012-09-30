@@ -68,47 +68,6 @@ enum CRITERIA {
 
 
 /**
-* Местность.
-*
-* @prototype http://dfwk.ru/Biome
-* @prototype http://dwarffortresswiki.org/index.php/DF2012:Biome
-* @prototype WWF System > http://en.wikipedia.org/wiki/Biome#WWF_system
-* @see Карта биомов для Земли > http://wolfweb.unr.edu/~ldyer/classes/396/olsonetal.pdf
-*//*
-enum TERRAIN {
-    // отсутствует или не определена
-    TERRAIN_NONE = 0,
-
-    TERRAIN_FOREST,
-    TERRAIN_GRASSLAND,
-    TERRAIN_HILL,
-    TERRAIN_MARSH,
-
-    TERRAIN_LOW_MOUNTAIN,
-    TERRAIN_MOUNTAIN,
-    TERRAIN_HIGHT_MOUNTAIN,
-
-    TERRAIN_BADLAND_DESERT,
-    TERRAIN_ROCK_DESERT,
-    TERRAIN_SAND_DESERT,
-
-    TERRAIN_SAVANNA,
-    TERRAIN_SHRUBLAND,
-    TERRAIN_SWAMP,
-    TERRAIN_TAIGA,
-    TERRAIN_TUNDRA,
-
-    // последний = кол-во местностей
-    TERRAIN_last,
-    TERRAIN_count = TERRAIN_last
-};
-*/
-
-
-
-
-
-/**
 * Жизненный цикл особи на планете (животного, растения).
 *
 * @see LIFE_CYCLE_COUNT

@@ -105,6 +105,9 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\-biome-method.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\landscape.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\io\VolumeVTKVisual.inl">

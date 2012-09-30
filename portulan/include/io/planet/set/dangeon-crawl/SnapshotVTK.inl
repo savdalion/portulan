@@ -97,7 +97,8 @@ inline void SnapshotVTK::component( const std::string& file ) {
     for (size_t i = 0; i < G3; ++i) {
         // координата €чейки
         const typelib::coordInt_t c = smc_t::ci( i );
-        points->InsertNextPoint( c.x, c.y, c.z );
+        //const vtkIdType id =
+            points->InsertNextPoint( c.x, c.y, c.z );
 
         // содержимое €чейки
         const auto& cell = content[ i ];
@@ -121,11 +122,18 @@ inline void SnapshotVTK::component( const std::string& file ) {
     // собираем вместе
     auto data = vtkSmartPointer< vtkStructuredGrid >::New();
     data->SetDimensions( grid, grid, grid );
-    data->Modified();
     data->SetPoints( points );
     for (auto itr = component.cbegin(); itr != component.cend(); ++itr) {
         data->GetPointData()->AddArray( itr->second );
     }
+    /* - @todo fine √асить пустые точки?
+                    »ли не добавл€ть точки без значений (выше)?
+    if (blankID != -1) {
+        data->BlankPoint( blankID );
+        auto t = (*data).GetBlanking();
+        data->Modified();
+    }
+    */
 
 
     // записываем

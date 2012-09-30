@@ -41,6 +41,7 @@ typedef struct __attribute__ ((packed)) {
     dungeoncrawl::surfaceTemperature_t  surfaceTemperature;
     dungeoncrawl::rainfall_t            rainfall;
     dungeoncrawl::drainage_t            drainage;
+    dungeoncrawl::landscape_t           landscape;
     dungeoncrawl::biome_t               biome;
     dungeoncrawl::living_t              living;
 
