@@ -106,6 +106,9 @@ inline void TextVisual::drawTopologySizeInMemory(
     static const size_t DG = pd::DRAINAGE_GRID * pd::DRAINAGE_GRID * pd::DRAINAGE_GRID;
     const size_t memsizeDrainage = sizeof( pd::temperatureCell_t ) * DG;
 
+    static const size_t BG = pd::BIOME_GRID * pd::BIOME_GRID * pd::BIOME_GRID;
+    const size_t memsizeBiome = sizeof( pd::biomeCell_t ) * BG;
+
     static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
     const size_t memsizeLiving = sizeof( pd::livingCell_t ) * LG;
 
@@ -264,6 +267,9 @@ inline void TextVisual::drawTopologySizeInMemory(
                         "; " << dminmaxAverage.second[0]->average       << " ]" <<
                         "  ~ " << (dsumAverage / static_cast< float >( DG )) <<
                     "\n" <<
+                "        biome " <<
+                    pd::BIOME_GRID << "x " <<
+                    memsizeBiome / 1024 / 1024 << "Ìב\n" <<
                 "        living " <<
                     pd::LIVING_GRID << "x " <<
                     pd::LIVING_CELL << "u " <<
