@@ -41,9 +41,8 @@ inline void SnapshotVTK::component( const std::string& file ) {
 
     namespace pd = portulan::planet::set::dungeoncrawl;
 
-    const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок компонентов сохраняем в \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок компонентов сохраняем в \"" << file << "\" ... ";
 #endif
 
     static const size_t grid = pd::COMPONENT_GRID;
@@ -53,7 +52,6 @@ inline void SnapshotVTK::component( const std::string& file ) {
         mPortulan->topology().topology().component.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
     // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
@@ -99,14 +97,7 @@ inline void SnapshotVTK::component( const std::string& file ) {
     for (size_t i = 0; i < G3; ++i) {
         // координата ячейки
         const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
+        points->InsertNextPoint( c.x, c.y, c.z );
 
         // содержимое ячейки
         const auto& cell = content[ i ];
@@ -128,16 +119,17 @@ inline void SnapshotVTK::component( const std::string& file ) {
 
 
     // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
     for (auto itr = component.cbegin(); itr != component.cend(); ++itr) {
-        polydata->GetPointData()->AddArray( itr->second );
+        data->GetPointData()->AddArray( itr->second );
     }
 
 
     // записываем
-    write( fileName, polydata );
+    write( file, data );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -154,9 +146,8 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 
     namespace pd = portulan::planet::set::dungeoncrawl;
 
-    const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок температуры сохраняем в \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок температуры сохраняем в \"" << file << "\" ... ";
 #endif
 
     static const size_t grid = pd::TEMPERATURE_GRID;
@@ -166,7 +157,6 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
         mPortulan->topology().topology().temperature.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
     // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
@@ -194,17 +184,10 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
     typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
+        points->InsertNextPoint( c.x, c.y, c.z );
 
         const auto& cell = content[ i ];
-        average->SetValue(    n,  cell[0].average );
+        average->SetValue( n,  cell[0].average );
         //dispersion->SetValue( n,  cell[0].dispersion );
         //rate->SetValue(       n,  cell[0].rate );
 
@@ -213,17 +196,18 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 
 
     // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
     // @source http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ColorLookupTable
-    polydata->GetPointData()->AddArray( average );
-    //polydata->GetPointData()->AddArray( dispersion );
-    //polydata->GetPointData()->AddArray( rate );
+    data->GetPointData()->AddArray( average );
+    //data->GetPointData()->AddArray( dispersion );
+    //data->GetPointData()->AddArray( rate );
 
 
     // записываем
-    write( fileName, polydata );
+    write( file, data );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -240,9 +224,8 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
 
     namespace pd = portulan::planet::set::dungeoncrawl;
 
-    const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок температуры поверхности сохраняем в \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок температуры поверхности сохраняем в \"" << file << "\" ... ";
 #endif
 
     static const size_t grid = pd::SURFACE_TEMPERATURE_GRID;
@@ -252,7 +235,6 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
         mPortulan->topology().topology().surfaceTemperature.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
     auto average = vtkSmartPointer< vtkFloatArray >::New();
@@ -265,31 +247,25 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
     typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
+        points->InsertNextPoint( c.x, c.y, c.z );
 
         const auto& cell = content[ i ];
-        average->SetValue(    n,  cell[0].average );
+        average->SetValue( n,  cell[0].average );
 
         ++n;
     } // for (size_t i
 
 
     // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
-    polydata->GetPointData()->AddArray( average );
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
+    data->GetPointData()->AddArray( average );
 
 
     // записываем
-    write( fileName, polydata );
+    write( file, data );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -306,9 +282,8 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
 
     namespace pd = portulan::planet::set::dungeoncrawl;
 
-    const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок атмосферных осадков сохраняем в \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок атмосферных осадков сохраняем в \"" << file << "\" ... ";
 #endif
 
     static const size_t grid = pd::RAINFALL_GRID;
@@ -318,7 +293,6 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
         mPortulan->topology().topology().rainfall.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
     auto average = vtkSmartPointer< vtkFloatArray >::New();
@@ -331,31 +305,25 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
     typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
+        points->InsertNextPoint( c.x, c.y, c.z );
 
         const auto& cell = content[ i ];
-        average->SetValue(    n,  cell[0].average );
+        average->SetValue( n,  cell[0].average );
 
         ++n;
     } // for (size_t i
 
 
     // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
-    polydata->GetPointData()->AddArray( average );
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
+    data->GetPointData()->AddArray( average );
 
 
     // записываем
-    write( fileName, polydata );
+    write( file, data );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -372,9 +340,8 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
 
     namespace pd = portulan::planet::set::dungeoncrawl;
 
-    const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок дренажа сохраняем в \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок дренажа сохраняем в \"" << file << "\" ... ";
 #endif
 
     static const size_t grid = pd::DRAINAGE_GRID;
@@ -384,7 +351,6 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
         mPortulan->topology().topology().drainage.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
     auto average = vtkSmartPointer< vtkFloatArray >::New();
@@ -397,31 +363,25 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
     typedef typelib::CubeSMC3D< grid >  smc_t;
     for (size_t i = 0; i < G3; ++i) {
         const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
+        points->InsertNextPoint( c.x, c.y, c.z );
 
         const auto& cell = content[ i ];
-        average->SetValue(    n,  cell[0].average );
+        average->SetValue( n,  cell[0].average );
 
         ++n;
     } // for (size_t i
 
 
     // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
-    polydata->GetPointData()->AddArray( average );
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
+    data->GetPointData()->AddArray( average );
 
 
     // записываем
-    write( fileName, polydata );
+    write( file, data );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -438,9 +398,8 @@ inline void SnapshotVTK::biome( const std::string& file ) {
 
     namespace pd = portulan::planet::set::dungeoncrawl;
 
-    const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок биома сохраняем в \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок биома сохраняем в \"" << file << "\" ... ";
 #endif
 
     static const size_t grid = pd::BIOME_GRID;
@@ -450,7 +409,6 @@ inline void SnapshotVTK::biome( const std::string& file ) {
         mPortulan->topology().topology().biome.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
     // сохраним биомы из presentBiome_t
@@ -492,14 +450,7 @@ inline void SnapshotVTK::biome( const std::string& file ) {
     for (size_t i = 0; i < G3; ++i) {
         // координата ячейки
         const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
+        points->InsertNextPoint( c.x, c.y, c.z );
 
         // содержимое ячейки
         const auto& cell = content[ i ];
@@ -520,16 +471,17 @@ inline void SnapshotVTK::biome( const std::string& file ) {
 
 
     // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
     for (auto itr = biome.cbegin(); itr != biome.cend(); ++itr) {
-        polydata->GetPointData()->AddArray( itr->second );
+        data->GetPointData()->AddArray( itr->second );
     }
 
 
     // записываем
-    write( fileName, polydata );
+    write( file, data );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -546,9 +498,8 @@ inline void SnapshotVTK::living( const std::string& file ) {
 
     namespace pd = portulan::planet::set::dungeoncrawl;
 
-    const std::string fileName = file + ".vtp";
 #ifdef _DEBUG
-    std::cout << "Снимок особей сохраняем в \"" << (file + ".vtp") << "\" ... ";
+    std::cout << "Снимок особей сохраняем в \"" << file << "\" ... ";
 #endif
 
     static const size_t grid = pd::LIVING_GRID;
@@ -558,7 +509,6 @@ inline void SnapshotVTK::living( const std::string& file ) {
         mPortulan->topology().topology().living.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
-    auto vertices = vtkSmartPointer< vtkCellArray >::New();
 
     // содержимое
     // @source http://vtk.1045678.n5.nabble.com/How-to-use-vtkRibbonFilter-to-show-a-scalar-field-td1237601.html
@@ -610,14 +560,7 @@ inline void SnapshotVTK::living( const std::string& file ) {
     for (size_t i = 0; i < G3; ++i) {
         // координата ячейки
         const typelib::coordInt_t c = smc_t::ci( i );
-        const float cf[3] = {
-            static_cast< float >( c.x ),
-            static_cast< float >( c.y ),
-            static_cast< float >( c.z )
-        };
-        vtkIdType pid[ 1 ];
-        pid[ 0 ] = points->InsertNextPoint( cf );
-        vertices->InsertNextCell( 1, pid );
+        points->InsertNextPoint( c.x, c.y, c.z );
 
         // содержимое ячейки
         const auto& cell = content[ i ];
@@ -649,16 +592,17 @@ inline void SnapshotVTK::living( const std::string& file ) {
 
 
     // собираем вместе
-    auto polydata = vtkSmartPointer< vtkPolyData >::New(); 
-    polydata->SetPoints( points );
-    polydata->SetVerts( vertices );
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
     for (auto itr = livingCount.cbegin(); itr != livingCount.cend(); ++itr) {
-        polydata->GetPointData()->AddArray( itr->second );
+        data->GetPointData()->AddArray( itr->second );
     }
 
 
     // записываем
-    write( fileName, polydata );
+    write( file, data );
 
 #ifdef _DEBUG
     std::cout << "ОК" << std::endl;
@@ -671,10 +615,33 @@ inline void SnapshotVTK::living( const std::string& file ) {
 
 
 inline void SnapshotVTK::write(
-    const std::string& fileName,
+    const std::string& file,
+    const vtkSmartPointer< vtkStructuredGrid > data
+) {
+    auto writer = vtkSmartPointer< vtkXMLStructuredGridWriter >::New();
+    const std::string fileName = file + ".vts";
+    writer->SetFileName( fileName.c_str() );
+#if VTK_MAJOR_VERSION <= 5
+    writer->SetInput( data );
+#else
+    writer->SetInputData( polydata );
+#endif
+    writer->SetDataModeToBinary();
+    //writer->SetDataModeToAscii();
+    writer->Write();
+}
+
+
+
+
+
+
+inline void SnapshotVTK::write(
+    const std::string& file,
     const vtkSmartPointer< vtkPolyData > data
 ) {
     auto writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
+    const std::string fileName = file + ".vtp";
     writer->SetFileName( fileName.c_str() );
 #if VTK_MAJOR_VERSION <= 5
     writer->SetInput( data );

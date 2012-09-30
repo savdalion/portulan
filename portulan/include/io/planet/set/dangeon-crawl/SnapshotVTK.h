@@ -9,7 +9,9 @@
 #include <vtkCharArray.h>
 #include <vtkPoints.h>
 #include <vtkXMLPolyDataWriter.h>
+#include <vtkXMLStructuredGridWriter.h>
 #include <vtkPolyData.h>
+#include <vtkStructuredGrid.h>
 #include <vtkSmartPointer.h>
 
 
@@ -75,9 +77,13 @@ private:
     */
     static void write(
         const std::string& fileName,
-        const vtkSmartPointer< vtkPolyData > data
+        const vtkSmartPointer< vtkStructuredGrid > data
     );
 
+    static void write(
+        const std::string& fileName,
+        const vtkSmartPointer< vtkPolyData > data
+    );
 
 
 
