@@ -401,6 +401,137 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
 
 
 
+inline void SnapshotVTK::landscape( const std::string& file ) {
+    assert( !file.empty() && "Название файла должно быть указано." );
+
+    namespace pd = portulan::planet::set::dungeoncrawl;
+
+#ifdef _DEBUG
+    std::cout << "Снимок ландшафта сохраняем в \"" << file << "\" ... ";
+#endif
+
+    static const size_t grid = pd::LANDSCAPE_GRID;
+    static const size_t G3 = grid * grid * grid;
+
+    const auto& content =
+        mPortulan->topology().topology().landscape.content;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+
+    // содержимое
+    // сохраним ландшафты из elementLandscape_t
+    // формируем все названия известных в области планеты эл. ландшафта; если
+    // формировать названия в цикле по мере их появления, получим частично
+    // заполненные структуры, которые не удобно анализировать из-за мусорных
+    // значений (которые, к тому же, отличаются в Debug и Release)
+    typedef vtkSmartPointer< vtkFloatArray >  сountArray_t;
+    std::map< pd::CODE_ELEMENT_LANDSCAPE, сountArray_t >  landscapeCount;
+    typedef vtkSmartPointer< vtkFloatArray >  scatteringArray_t;
+    std::map< pd::CODE_ELEMENT_LANDSCAPE, scatteringArray_t >  landscapeScattering;
+    std::set< pd::CODE_ELEMENT_LANDSCAPE >  unique;
+    for (size_t i = 0; i < G3; ++i) {
+        // содержимое ячейки
+        const auto& cell = content[ i ];
+        for (size_t k = 0; k < pd::LANDSCAPE_CELL; ++k) {
+            const auto code = cell[ k ].code;
+            // не рассматриваем пустые элементы
+            if (code != pd::CC_NONE) {
+                unique.insert( code );
+            }
+        }
+    }
+    for (auto itr = unique.cbegin(); itr != unique.cend(); ++itr) {
+        const pd::CODE_ELEMENT_LANDSCAPE code = *itr;
+        std::ostringstream ss;
+        ss << "code " << std::setw( 2 ) << std::setfill( '0' ) << code;
+        // count
+        {
+            auto ftr = landscapeCount.emplace(
+                std::make_pair( code, сountArray_t::New() )
+            ).first;
+            ftr->second->Initialize();
+            const std::string name = "count " + ss.str();
+            ftr->second->SetName( name.c_str() );
+            ftr->second->SetNumberOfComponents( 1 );
+            ftr->second->SetNumberOfValues( G3 );
+            ftr->second->FillComponent( 0, 0.0f );
+        }
+        // scattering
+        {
+            auto ftr = landscapeScattering.emplace(
+                std::make_pair( code, scatteringArray_t::New() )
+            ).first;
+            ftr->second->Initialize();
+            const std::string name = "scattering " + ss.str();
+            ftr->second->SetName( name.c_str() );
+            ftr->second->SetNumberOfComponents( 1 );
+            ftr->second->SetNumberOfValues( G3 );
+            ftr->second->FillComponent( 0, 0.0f );
+        }
+    }
+
+    size_t n = 0;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
+    for (size_t i = 0; i < G3; ++i) {
+        // координата ячейки
+        const typelib::coordInt_t c = smc_t::ci( i );
+        //const vtkIdType id =
+            points->InsertNextPoint( c.x, c.y, c.z );
+
+        // содержимое ячейки
+        const auto& cell = content[ i ];
+        for (size_t k = 0; k < pd::LANDSCAPE_CELL; ++k) {
+            const pd::CODE_ELEMENT_LANDSCAPE code = cell[k].code;
+            if (code == pd::CEL_NONE) {
+                // встретился пустой эл. ландшафта - дальше в ячейке ничего нет
+                break;
+            }
+            // все наборы сформированы и проинициализированы нулями выше
+            // count
+            {
+                auto ftr = landscapeCount.find( code );
+                assert( (ftr != landscapeCount.cend())
+                    && "Не обнаружен набор для элемента ландшафта." );
+                ftr->second->SetValue( n,  cell[k].count );
+            }
+            // scattering
+            {
+                auto ftr = landscapeScattering.find( code );
+                assert( (ftr != landscapeScattering.cend())
+                    && "Не обнаружен набор для элемента ландшафта." );
+                ftr->second->SetValue( n,  cell[k].scattering );
+            }
+        }
+
+        ++n;
+    } // for (size_t i
+
+
+    // собираем вместе
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->SetPoints( points );
+    for (auto itr = landscapeCount.cbegin(); itr != landscapeCount.cend(); ++itr) {
+        data->GetPointData()->AddArray( itr->second );
+    }
+    for (auto itr = landscapeScattering.cbegin(); itr != landscapeScattering.cend(); ++itr) {
+        data->GetPointData()->AddArray( itr->second );
+    }
+
+
+    // записываем
+    write( file, data );
+
+#ifdef _DEBUG
+    std::cout << "ОК" << std::endl;
+#endif
+}
+
+
+
+
+
+
 inline void SnapshotVTK::biome( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 

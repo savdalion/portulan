@@ -32,6 +32,8 @@ static __constant aboutBiome_t aboutBiome = {
         { 0.0f, 1000.0f },
         // drainage
         { 0.0f, 3300.0f },
+        // landscape
+        { CEL_FLAT },
     },
 
     // CB_WASTELAND
@@ -42,6 +44,8 @@ static __constant aboutBiome_t aboutBiome = {
         { 0.0f, 1000.0f },
         // drainage
         { 3300.0f, 5000.0f },
+        // landscape
+        { CEL_FLAT, CEL_BASIN, CEL_RAVINE },
     },
 
     // CB_BADLAND
@@ -52,6 +56,8 @@ static __constant aboutBiome_t aboutBiome = {
         { 0.0f, 1000.0f },
         // drainage
         { 5000.0f, INFINITYf },
+        // landscape
+        { CEL_FLAT, CEL_BASIN, CEL_RAVINE },
     },
 
 };

@@ -34,6 +34,9 @@ enum CODE_ELEMENT_LANDSCAPE {
     // любой
     CEL_ANY = CEL_NONE,
 
+    // равнина, плато
+    CEL_FLAT,
+
     // гора, холм
     // любая возвышенность
     // образуют горные массивы
@@ -67,6 +70,9 @@ enum CODE_ELEMENT_LANDSCAPE {
     // дорога
     // лента из твёрдых компонентов, вдоль которой можно перемещаться
     CEL_ROAD,
+
+    // пещера
+    CEL_CAVE,
 
     // последний
     CEL_last,
@@ -146,7 +152,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Каким компонентом заполнено.
     */
-    CODE_COMPONENT component;
+    enum CODE_COMPONENT component;
 
 } lakeLandscape_t;
 
@@ -162,7 +168,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Какой компонент течёт.
     */
-    CODE_COMPONENT component;
+    enum CODE_COMPONENT component;
 
     /**
     * Скорость течения, м/с.
@@ -172,12 +178,12 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Направление течения: север, юг, ...
     */
-    ...
+    enum DIRECTION direction;
 
 } riverLandscape_t;
 
 
-// итог
+// итоговая структура
 typedef union __attribute__ ((packed)) {
     mountainLandscape_t  mountain;
     basinLandscape_t     basin;
@@ -185,8 +191,7 @@ typedef union __attribute__ ((packed)) {
     ravineLandscape_t    ravine;
     lakeLandscape_t      lake;
     riverLandscape_t     river;
-
-    @todo ...
+    // @todo ...
 
 } aboutElementLandscape_t;
 
@@ -203,9 +208,14 @@ typedef union __attribute__ ((packed)) {
 */
 typedef struct __attribute__ ((packed)) {
 
-    enum CODE_ELEMENT_GEOLANDSCAPE  code;
+    enum CODE_ELEMENT_LANDSCAPE  code;
 
-    aboutElementLandscape_t         about;
+    aboutElementLandscape_t  about;
+
+    /**
+    * Количество близких (см. "scattering") элементов в заданной ячейке.
+    */
+    cl_float count;
 
     /**
     * Коэффициент разброса параметров для элемента.
@@ -213,6 +223,15 @@ typedef struct __attribute__ ((packed)) {
     * Введён, т.к. хранить будем информацию о множестве подобных объединений.
     */
     cl_float scattering;
+
+    /**
+    * Элемент ландшафта может находиться в ячейке частично.
+    * Поэтому, разбиваем ячейку на область 3x3x3 и указываем, к какой стороне
+    * ячейки прилегает другая часть.
+    *
+    * @todo optimize Ячейка с индексом 0 не используется.
+    */
+    enum DIRECTION partially;
 
 } elementLandscape_t;
 

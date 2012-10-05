@@ -895,7 +895,7 @@ typedef struct __attribute__ ((packed)) {
     * Комфортная температура, Цельсий.
     * [ K0; + ]
     */
-    float temperature;
+    cl_float temperature;
 
     /**
     * Перечисление биомов, в которых особь чувствует себя комфортно.
@@ -944,7 +944,7 @@ typedef struct __attribute__ ((packed)) {
     *
     * ( 0.0; + ]
     */
-    float adaptability;
+    cl_float adaptability;
 
     /**
     * Предпочитаемые / необходимые компоненты для жизни особи.

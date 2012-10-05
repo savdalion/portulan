@@ -64,6 +64,7 @@ public:
     void surfaceTemperature( const std::string& file = "surface-temperature" );
     void rainfall(    const std::string& file = "rainfall" );
     void drainage(    const std::string& file = "drainage" );
+    void landscape(   const std::string& file = "landscape" );
     void biome(       const std::string& file = "biome" );
     void living(      const std::string& file = "living" );
 

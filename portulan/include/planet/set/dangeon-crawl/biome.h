@@ -136,15 +136,35 @@ enum CODE_BIOME {
 /**
 * Информация о биоме.
 */
+
 typedef struct {
-    float min;
-    float max;
+    cl_float min;
+    cl_float max;
 } diapasonCharacterBiome_t;
+
+
+typedef struct {
+    enum CODE_ELEMENT_LANDSCAPE  code;
+
+    /* - @todo В каком кол-ве должны содержатся элементы ландшафта в
+    *  этом биоме.
+    diapasonCharacterBiome_t     count;
+    */
+
+} landscapeBiome_t;
+
 
 typedef struct {
     diapasonCharacterBiome_t  temperature;
     diapasonCharacterBiome_t  rainfall;
     diapasonCharacterBiome_t  drainage;
+
+    /**
+    * Какие элементы ландшафта может содержать этот биом.
+    * @todo extend Добавить хар-ки каждому элементу ландшафта.
+    */
+    landscapeBiome_t  landscape[ LANDSCAPE_BIOME_COUNT ];
+
 } aboutOneBiome_t;
 
 

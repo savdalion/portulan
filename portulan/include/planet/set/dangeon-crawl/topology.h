@@ -7,6 +7,7 @@
 #include "surface-temperature.h"
 #include "rainfall.h"
 #include "drainage.h"
+#include "landscape.h"
 #include "biome.h"
 #include "biome-set.h"
 #include "living.h"
