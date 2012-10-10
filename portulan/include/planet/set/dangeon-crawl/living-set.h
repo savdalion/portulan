@@ -176,7 +176,7 @@ static const aboutLiving_t aboutLiving = {
         // comfort
         {
             // temperature
-            0.0f - tc::CK,
+            0.0f,
             // biome
             {
             },
@@ -1130,7 +1130,7 @@ static const aboutLiving_t aboutLiving = {
         // comfort
         {
             // temperature
-            30.0f - tc::CK,
+            30.0f,
             // biome
             // Муравей не любит когда слишком много осадков.
             {
@@ -1359,7 +1359,7 @@ static const aboutLiving_t aboutLiving = {
         // comfort
         {
             // temperature
-            30.0f - tc::CK,
+            30.0f,
             // biome
             // Пастбищная трава не любит чрезмерную влажность и жару.
             {
