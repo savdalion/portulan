@@ -5,6 +5,7 @@
 #include "structure.h"
 #include "component.h"
 #include "temperature.h"
+#include "landscape.h"
 #include "living.h"
 
 
@@ -227,6 +228,33 @@ typedef struct __attribute__ ((packed)) {
 */
 
 
+/**
+* Для элементов ландшафта задаются средние значения и отклонение.
+*/
+typedef struct __attribute__ ((packed)) {
+    mountainLandscape_t  mountain;
+    cl_float             deviationMountain;
+
+    basinLandscape_t     basin;
+    cl_float             deviationBasin;
+
+    rangeLandscape_t     range;
+    cl_float             deviationRange;
+
+    ravineLandscape_t    ravine;
+    cl_float             deviationRavine;
+
+    lakeLandscape_t      lake;
+    cl_float             deviationLake;
+
+    riverLandscape_t     river;
+    cl_float             deviationRiver;
+
+    // @todo ...
+
+} landscapePlanet_t;
+
+
 typedef struct __attribute__ ((packed)) {
     livingAll_t space;
     livingAll_t atmosphere;
@@ -295,6 +323,11 @@ typedef struct __attribute__ ((packed)) {
     surfaceTemperaturePlanet_t  surfaceTemperature;
     rainfallPlanet_t            rainfall;
     drainagePlanet_t            drainage;
+
+    /**
+    * Ландшафт планеты.
+    */
+    landscapePlanet_t landscape;
 
     /**
     * Жизнь на планете, перечисление всех особей и их кол-во в области планеты.
