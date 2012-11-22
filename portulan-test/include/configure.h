@@ -2,10 +2,10 @@
 
 
 namespace portulan {
-    namespace visualtest {
+    namespace test {
 
 
 
-    } // visualtest
+    } // test
 
 } // portulan

@@ -303,8 +303,11 @@ static __constant size_t BIOME_GRID = 81;
 * >= CB_last
 *
 * @see CODE_BIOME
+*
+* #! Некоторые ядра могут не вместить в себя необходимые им методы при
+*    при большом BIOME_COUNT.
 */
-static __constant size_t BIOME_COUNT = 50;
+static __constant size_t BIOME_COUNT = 20;
 
 
 
@@ -322,7 +325,7 @@ static __constant size_t BIOME_CELL = 3;
 *
 * @see CEL_last
 */
-static __constant size_t LANDSCAPE_BIOME_COUNT = 50;
+static __constant size_t LANDSCAPE_BIOME_COUNT = 10;
 
 
 

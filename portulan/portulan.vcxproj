@@ -82,6 +82,7 @@
     <ClInclude Include="configure.h" />
     <ClInclude Include="include\command.h" />
     <ClInclude Include="include\command\common.h" />
+    <ClInclude Include="include\planet\set\dangeon-crawl\biome-utils.h" />
     <ClInclude Include="include\io\planet\set\dangeon-crawl\TextVisual.h" />
     <ClInclude Include="include\io\planet\set\dangeon-crawl\SnapshotVTK.h" />
     <ClInclude Include="include\planet\set\dangeon-crawl\landscape.h" />

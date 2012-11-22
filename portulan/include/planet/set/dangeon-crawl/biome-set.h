@@ -19,9 +19,21 @@ namespace portulan {
 #endif
 
 
-static __constant aboutBiome_t aboutBiome = {
+static __constant aboutBiome_t aboutBiome[ BIOME_COUNT ] = {
     // CB_NONE
     {
+    },
+
+    // CB_FERTILE
+    {
+        // temperature
+        { 10, 30 },
+        // rainfall
+        { 1000.0f, 3000.0f },
+        // drainage
+        { 1000.0f, 3000.0f },
+        // landscape
+        { CEL_FLAT },
     },
 
     // CB_DESERT
@@ -60,6 +72,17 @@ static __constant aboutBiome_t aboutBiome = {
         { CEL_FLAT, CEL_BASIN, CEL_RAVINE },
     },
 
+    // # Признак завершения списка.
+    {
+        // temperature
+        { INFINITYf, INFINITYf },
+        // rainfall
+        { },
+        // drainage
+        { },
+        // landscape
+        { },
+    },
 };
 
 
