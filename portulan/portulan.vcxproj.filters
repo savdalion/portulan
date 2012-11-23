@@ -45,70 +45,91 @@
     <ClInclude Include="include\Portulan.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\Portulan.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="include\planet\Topology.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\command\common.h">
       <Filter>Заголовочные файлы\command\common</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\living.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\biome-set.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\structure.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\biome-utils.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\living-set.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\biome.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\topology.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\component-set.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\planet.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\component.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\component-set.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\drainage.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\io\planet\set\dangeon-crawl\TextVisual.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\landscape.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\-constructor.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\living-set.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\temperature.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\living.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\io\planet\set\dangeon-crawl\SnapshotVTK.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\planet.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\component.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\rainfall.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\surface-temperature.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\structure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\drainage.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\surface-temperature.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\rainfall.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\temperature.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\biome.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\topology.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\biome-set.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\Portulan.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\-biome-method.h">
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\Topology.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\landscape.h">
+    <ClInclude Include="include\world\dangeon-crawl\star\!.txt">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\planet\set\dangeon-crawl\biome-utils.h">
+    <ClInclude Include="include\io\world\dangeon-crawl\planet\0\SnapshotVTK.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\io\world\dangeon-crawl\planet\0\TextVisual.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\-\-constructor.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\Portulan.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\Topology.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\topology.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\structure.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\planet.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star-system.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,22 +143,25 @@
     <None Include="include\Portulan.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
-    <None Include="include\planet\Portulan.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="include\planet\Topology.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
     <None Include="include\command\common.inl">
       <Filter>Заголовочные файлы\command\common</Filter>
     </None>
-    <None Include="include\io\planet\set\dangeon-crawl\TextVisual.inl">
+    <None Include="include\world\dangeon-crawl\planet\0\Topology.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
-    <None Include="include\planet\set\dangeon-crawl\-constructor.inl">
+    <None Include="include\world\dangeon-crawl\star-system\!.txt" />
+    <None Include="include\world\dangeon-crawl\planet\!.txt" />
+    <None Include="include\world\dangeon-crawl\asteroid\!.txt" />
+    <None Include="include\io\world\dangeon-crawl\planet\0\SnapshotVTK.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
-    <None Include="include\io\planet\set\dangeon-crawl\SnapshotVTK.inl">
+    <None Include="include\io\world\dangeon-crawl\planet\0\TextVisual.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\world\dangeon-crawl\-\-constructor.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\world\dangeon-crawl\star-system\0\Topology.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
   </ItemGroup>

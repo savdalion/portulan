@@ -10,25 +10,18 @@
 // Некоторые классы доступны только при включённом OpenCL.
 // @see configure.h
 #ifdef OPENCL_PORTULAN
-#include "include/planet/Portulan.h"
-#include "include/planet/Topology.h"
+#include "include/world/dangeon-crawl/planet/0/Portulan.h"
+#include "include/world/dangeon-crawl/planet/0/Topology.h"
 
 #else
-#pragma message( "Class portulan::planet::Portulan not included in project: OpenCL disable" )
+#pragma message( "Class portulan::world::dungeoncrawl::planet::l0::Portulan not included in project: OpenCL disable" )
 
 #endif
 
 
-#ifdef DUNGEON_CRAWL_SET_PLANET_PORTULAN
-/* - Подключаются в Topology.h.
-#include "include/planet/set/dangeon-crawl/component.h"
-#include "include/planet/set/dangeon-crawl/constructor.h"
-#include "include/planet/set/dangeon-crawl/living.h"
-#include "include/planet/set/dangeon-crawl/living-set.h"
-#include "include/planet/set/dangeon-crawl/structure.h"
-*/
-#include "include/io/planet/set/dangeon-crawl/SnapshotVTK.h"
-#include "include/io/planet/set/dangeon-crawl/TextVisual.h"
+#ifdef DUNGEON_CRAWL_WORLD_PORTULAN
+#include "include/io/world/dangeon-crawl/planet/0/SnapshotVTK.h"
+#include "include/io/world/dangeon-crawl/planet/0/TextVisual.h"
 
 
 #else

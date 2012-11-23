@@ -22,9 +22,9 @@ namespace portulan {
 
 
 /**
-*  акой набор структур использовать.
+*  акой мир (набор структур) использовать.
 */
-#define DUNGEON_CRAWL_SET_PLANET_PORTULAN
+#define DUNGEON_CRAWL_WORLD_PORTULAN
 
 
 } // portulan
