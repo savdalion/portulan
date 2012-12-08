@@ -12,13 +12,14 @@ inline VolumeVTKVisual::VolumeVTKVisual(
 {
     renderWindow->AddRenderer( renderer );
 
-    const size_t sizeWindow = mOption[ "size-window" ];
+    const size_t sizeWindow =
+        mOption.has( "size-window" ) ? mOption[ "size-window" ] : 500;
     renderWindow->SetSize( sizeWindow, sizeWindow );
 
     // Настраиваем камеру
     auto camera = renderer->GetActiveCamera();
     // перспективная проекция сильно искажает картину
-    camera->SetParallelProjection( true );
+    camera->SetParallelProjection( false );
     // направление осей: X - вправо, Y - к наблюдателю, Z - вверх
     camera->SetPosition( 0, -1, 0 );
     camera->SetFocalPoint( 0, 0, 0 );
@@ -186,8 +187,10 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<( const option_t& json ) {
 
     mOption = json;
 
-    const size_t sizeWindow = mOption[ "size-window" ];
-    renderWindow->SetSize( sizeWindow, sizeWindow );
+    if ( mOption.has( "size-window" ) ) {
+        const size_t sizeWindow = mOption[ "size-window" ];
+        renderWindow->SetSize( sizeWindow, sizeWindow );
+    }
 
     renderer->ResetCamera();
     renderWindow->Render();
@@ -455,7 +458,8 @@ inline void VolumeVTKVisual::drawTopologyTemperature(
     // цвет ставим Actor'ом
     auto contentActor = vtkSmartPointer< vtkActor >::New();
     contentActor->SetMapper( mapper );
-    const size_t sizePoint = mOption[ "size-point" ];
+    const size_t sizePoint =
+        mOption.has( "size-point" ) ? mOption[ "size-point" ] : 1;
     contentActor->GetProperty()->SetPointSize( sizePoint );
     // @todo contentActor->GetProperty()->SetAlpha( a );
 

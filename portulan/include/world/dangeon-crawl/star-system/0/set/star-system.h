@@ -25,7 +25,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Протяжённость звёздной системы, XYZ, м.
     */
-    cl_double size[ 3 ];
+    real_t size[ 3 ];
 
     // # Часть информации о звёздной системе декларирована в structure.h.
 
@@ -39,25 +39,18 @@ typedef struct __attribute__ ((packed)) {
 * Упаковываем в объединение, чтобы эффективно обрабатывать
 * данные с помощью OpenCL.
 *
-* # Храним тела парой копий: новое[0] и старое[1]. Т.о. сможем быстрее
-*   обмениваться данными с ядрами OpenCL.
-*   См. - NVidia / OpenCL / проект NBody.
-* # Любые характеристики тела могут меняться движком.
+* # Любые характеристики тела, включая группу элемента, могут меняться движком.
 */
-typedef struct __attribute__ ((packed)) {
-    enum GROUP_ELEMENT  group;
-    aboutPlanet_t       content[ 2 ];
-} planet_t;
-
-typedef struct __attribute__ ((packed)) {
-    enum GROUP_ELEMENT  group;
-    aboutStar_t         content[ 2 ];
-} star_t;
-
 typedef union __attribute__ ((packed)) {
-    planet_t  planet;
-    star_t    star;
+    aboutPlanet_t  planet;
+    aboutStar_t    star;
+} aboutBodyWithoutGroup_t;
+
+typedef struct {
+    enum GROUP_ELEMENT       group;
+    aboutBodyWithoutGroup_t  content;
 } aboutBody_t;
+
 
 
 
@@ -68,7 +61,7 @@ typedef union __attribute__ ((packed)) {
 * # Если тело отсутствует - разрушено, вышло за границу звёздной системы
 *   и т.п. - его масса = 0.
 */
-typedef aboutBody_t*  bodyContent_t;
+typedef aboutBody_t  bodyContent_t[ BODY_COUNT ];
 
 
 

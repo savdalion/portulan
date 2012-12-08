@@ -25,27 +25,44 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Масса планеты, кг.
     */
-    cl_double mass;
+    real_t mass;
 
     /**
     * Радиус планеты, м.
     */
-    cl_double radius;
+    real_t radius;
 
     /**
     * Координаты планеты в звёздной системе, XYZ, м.
     */
-    cl_double coord[ 3 ];
+    real_t coord[ 3 ];
 
     /**
-    * Скорость движения планеты в звёздной системе, XYZ, м/с.
+    * Наклон планеты по XYZ.
     */
-    cl_double velocity[ 3 ];
+    real_t rotation[ 3 ];
 
     /**
     * Вектор гравитационных сил, действующих на планету, Н.
     */
-    cl_double force[ 3 ];
+    real_t force[ 3 ];
+
+    /**
+    * Скорость движения планеты в звёздной системе, XYZ, м/с.
+    */
+    real_t velocity[ 3 ];
+
+
+    /**
+    * @see star.h
+    */
+    real_t tm[ 16 ];
+
+
+    /**
+    * Тестовый набор.
+    */
+    real_t test[ 5 ];
 
 } aboutPlanet_t;
 

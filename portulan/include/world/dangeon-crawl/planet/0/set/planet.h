@@ -347,7 +347,7 @@ typedef struct __attribute__ ((packed)) {
 * по LIFE_CYCLE и по зонам области планеты.
 *
 * #! Изменения этой структуры должны быть согласованы с кодом
-*    в DungeonCrawl::initLiving().
+*    в Engine::initLiving().
 */
 typedef struct __attribute__ ((packed)) {
     float space;
@@ -373,7 +373,7 @@ typedef zoneLCOneLivingCount_t  zoneLivingCount_t[ LIVING_COUNT ];
 * Используется вместе с zoneOneLivingCount_t.
 *
 * #! Изменения этой структуры должны быть согласованы с кодом
-*    в DungeonCrawl::initLiving().
+*    в Engine::initLiving().
 */
 typedef struct __attribute__ ((packed)) {
     bool space;

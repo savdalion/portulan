@@ -2,4 +2,4 @@
 Размер ~ 10000 а.е. ~ 1.50e12 км
 
 # double вмещает ~ 15 десятичных цифр. Для С++ см.
-  std::numeric_limits<double>::digits10.
+  std::numeric_limits< double >::digits10.

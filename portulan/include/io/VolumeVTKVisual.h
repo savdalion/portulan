@@ -119,7 +119,7 @@ private:
     option_t mOption;
 
 
-    vtkSmartPointer< vtkRenderer >  renderer;
+    vtkSmartPointer< vtkRenderer >      renderer;
     vtkSmartPointer< vtkRenderWindow >  renderWindow;
 
     /**

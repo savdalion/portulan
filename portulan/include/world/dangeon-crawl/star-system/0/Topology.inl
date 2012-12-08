@@ -6,13 +6,15 @@ namespace portulan {
 
 
 inline Topology::Topology() {
+    /* - Используем стек.
     mTopology.body.content = new aboutBody_t[ BODY_COUNT ];
+    */
 }
 
 
 
 inline Topology::~Topology() {
-    delete[] mTopology.body.content;
+    //delete[] mTopology.body.content;
 }
 
 

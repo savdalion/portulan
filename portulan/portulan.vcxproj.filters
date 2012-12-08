@@ -30,9 +30,6 @@
     <ClInclude Include="include\command.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\io\VolumeVTKVisual.h">
-      <Filter>Заголовочные файлы\io</Filter>
-    </ClInclude>
     <ClInclude Include="configure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -120,9 +117,6 @@
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\topology.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\structure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -132,11 +126,17 @@
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star-system.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\io\VolumeVTKVisual.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\io\world\dangeon-crawl\star-system\0\VolumeVTKVisual.h">
+      <Filter>Заголовочные файлы\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\io\VolumeVTKVisual.inl">
-      <Filter>Заголовочные файлы\io</Filter>
-    </None>
     <None Include="include\Topology.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
@@ -163,6 +163,12 @@
     </None>
     <None Include="include\world\dangeon-crawl\star-system\0\Topology.inl">
       <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\io\VolumeVTKVisual.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\io\world\dangeon-crawl\star-system\0\VolumeVTKVisual.inl">
+      <Filter>Заголовочные файлы\io</Filter>
     </None>
   </ItemGroup>
 </Project>

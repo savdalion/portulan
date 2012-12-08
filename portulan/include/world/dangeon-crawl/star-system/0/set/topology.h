@@ -7,7 +7,7 @@
 namespace portulan {
     namespace world {
         namespace dungeoncrawl {
-            namespace planet {
+            namespace starsystem {
                 namespace l0 {
 
 /**
@@ -32,7 +32,7 @@ typedef struct __attribute__ ((packed)) {
 
 
                 } // l0
-            } // planet
+            } // starsystem
         } // dungeoncrawl
     } // world
 } // portulan
