@@ -84,12 +84,14 @@
     <ClInclude Include="include\command\common.h" />
     <ClInclude Include="include\io\VolumeVTKVisual.h" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\Topology.h" />
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\asteroid.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\Portulan.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\structure.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\topology.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\planet.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star-system.h" />
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\utils.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\Topology.h" />
     <ClInclude Include="include\world\dangeon-crawl\star\!.txt" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\biome-utils.h" />

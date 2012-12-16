@@ -22,6 +22,11 @@ namespace portulan {
 */
 typedef struct __attribute__ ((packed)) {
     /**
+    * Идентификатор звезды.
+    */
+    uid_t uid;
+
+    /**
     * Масса звезды, кг.
     */
     real_t mass;
@@ -58,6 +63,12 @@ typedef struct __attribute__ ((packed)) {
 
 
     /**
+    * События, которые произошли со звездой и о которых она помнит.
+    */
+    //event_t event[ STAR_EVENT_COUNT ];
+
+
+    /**
     * Переменные используются некоторыми движками, чтобы оптимизировать
     * работу с элементом.
     *
@@ -76,6 +87,28 @@ typedef struct __attribute__ ((packed)) {
     real_t test[ 5 ];
 
 } aboutStar_t;
+
+
+
+
+/**
+* Перечисление всех звёзд в звёздной системе.
+*
+* # Если тело отсутствует - разрушено, вышло за границу звёздной системы
+*   и т.п. - его масса = 0.
+* # Отсутствующая звезда - сигнал конца списка.
+*/
+typedef aboutStar_t starContent_t[ STAR_COUNT ];
+
+
+
+
+/**
+* Звёзды в области звёздной системы.
+*/
+typedef struct __attribute__ ((packed)) {
+    starContent_t content;
+} star_t;
 
 
 

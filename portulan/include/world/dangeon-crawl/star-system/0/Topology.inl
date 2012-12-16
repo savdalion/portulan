@@ -7,14 +7,15 @@ namespace portulan {
 
 inline Topology::Topology() {
     /* - Используем стек.
-    mTopology.body.content = new aboutBody_t[ BODY_COUNT ];
+    mTopology.planet.content = new aboutPlanet_t[ PLANET_COUNT ];
+    ...
     */
 }
 
 
 
 inline Topology::~Topology() {
-    //delete[] mTopology.body.content;
+    //delete[] mTopology.planet.content;
 }
 
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "structure.h"
+#include "asteroid.h"
 #include "planet.h"
 #include "star.h"
 
@@ -35,43 +36,91 @@ typedef struct __attribute__ ((packed)) {
 
 
 /**
-* Список взаимодействующих тел.
-* Упаковываем в объединение, чтобы эффективно обрабатывать
-* данные с помощью OpenCL.
-*
-* # Любые характеристики тела, включая группу элемента, могут меняться движком.
+* Информация о физическом теле.
+* Структура для обмена данными при рассчёте физ. взаимодействий.
 */
-typedef union __attribute__ ((packed)) {
-    aboutPlanet_t  planet;
-    aboutStar_t    star;
-} aboutBodyWithoutGroup_t;
-
-typedef struct {
-    enum GROUP_ELEMENT       group;
-    aboutBodyWithoutGroup_t  content;
+typedef struct __attribute__ ((packed)) {
+    real_t mass;
+    real_t coord[ 3 ];
+    real_t rotation[ 3 ];
 } aboutBody_t;
 
 
 
 
-
 /**
-* Перечисление всех планет в звёздной системе.
-*
-* # Если тело отсутствует - разрушено, вышло за границу звёздной системы
-*   и т.п. - его масса = 0.
+* Информация о физ. теле, как материальной точке.
+* Структура для обмена данными при рассчёте физ. взаимодействий.
 */
-typedef aboutBody_t  bodyContent_t[ BODY_COUNT ];
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+typedef struct {
+    real_t  coord[ 3 ];
+    real_t  velocity[ 3 ];
+    real_t  lengthVelocity;
+} point_t;
+
+#else
+typedef struct {
+    typelib::CoordT< real_t >   coord;
+    typelib::VectorT< real_t >  velocity;
+    real_t                      lengthVelocity;
+} point_t;
+
+
+#endif
 
 
 
 
 /**
-* Планеты в области звёздной системы.
+* Информация об изменении характеристик элементов и их количества
+* в списках. Структура для обмена данными.
+* Повторяет структуру элементов для запоминания разницы между "было"
+* и "стало" (дельты).
 */
 typedef struct __attribute__ ((packed)) {
-    bodyContent_t content;
-} body_t;
+    aboutAsteroid_t about;
+    int count;
+} deltaAsteroid_t;
+
+typedef struct __attribute__ ((packed)) {
+    aboutPlanet_t about;
+    int count;
+} deltaPlanet_t;
+
+typedef struct __attribute__ ((packed)) {
+    aboutStar_t about;
+    int count;
+} deltaStar_t;
+
+typedef struct __attribute__ ((packed)) {
+    deltaAsteroid_t asteroid;
+    deltaPlanet_t   planet;
+    deltaStar_t     star;
+} deltaElement_t;
+
+
+
+
+/**
+* Структура для сбора статистики о звёздной системе.
+* Может использоваться движками для оптимизации расчётов.
+*
+* # Минимум и максимум хранятся в массивах размером 2:
+*     0 минимум
+*     1 максимум
+*/
+typedef struct __attribute__ ((packed)) {
+    real_t  distance[ 2 ];
+    real_t  velocity[ 2 ];
+
+    /**
+    * Ожидаемое время сближения двух тел.
+    */
+    real_t  estimateTimeApproaching[ 2 ];
+
+} statistics_t;
+
 
 
 

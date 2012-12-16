@@ -90,44 +90,44 @@ inline void TextVisual::wait() {
 inline void TextVisual::drawTopologySizeInMemory(
     const portulan::world::dungeoncrawl::planet::l0::topology_t&  tp
 ) {
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
-    static const size_t CG = pd::COMPONENT_GRID * pd::COMPONENT_GRID * pd::COMPONENT_GRID;
-    const size_t memsizeComponent = sizeof( pd::componentCell_t ) * CG;
+    static const size_t CG = pns::COMPONENT_GRID * pns::COMPONENT_GRID * pns::COMPONENT_GRID;
+    const size_t memsizeComponent = sizeof( pns::componentCell_t ) * CG;
 
-    static const size_t TG = pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID * pd::TEMPERATURE_GRID;
-    const size_t memsizeTemperature = sizeof( pd::temperatureCell_t ) * TG;
+    static const size_t TG = pns::TEMPERATURE_GRID * pns::TEMPERATURE_GRID * pns::TEMPERATURE_GRID;
+    const size_t memsizeTemperature = sizeof( pns::temperatureCell_t ) * TG;
 
-    static const size_t STG = pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID * pd::SURFACE_TEMPERATURE_GRID;
-    const size_t memsizeSurfaceTemperature = sizeof( pd::surfaceTemperatureCell_t ) * STG;
+    static const size_t STG = pns::SURFACE_TEMPERATURE_GRID * pns::SURFACE_TEMPERATURE_GRID * pns::SURFACE_TEMPERATURE_GRID;
+    const size_t memsizeSurfaceTemperature = sizeof( pns::surfaceTemperatureCell_t ) * STG;
 
-    static const size_t RG = pd::RAINFALL_GRID * pd::RAINFALL_GRID * pd::RAINFALL_GRID;
-    const size_t memsizeRainfall = sizeof( pd::rainfallCell_t ) * RG;
+    static const size_t RG = pns::RAINFALL_GRID * pns::RAINFALL_GRID * pns::RAINFALL_GRID;
+    const size_t memsizeRainfall = sizeof( pns::rainfallCell_t ) * RG;
 
-    static const size_t DG = pd::DRAINAGE_GRID * pd::DRAINAGE_GRID * pd::DRAINAGE_GRID;
-    const size_t memsizeDrainage = sizeof( pd::temperatureCell_t ) * DG;
+    static const size_t DG = pns::DRAINAGE_GRID * pns::DRAINAGE_GRID * pns::DRAINAGE_GRID;
+    const size_t memsizeDrainage = sizeof( pns::temperatureCell_t ) * DG;
 
-    static const size_t ELG = pd::LANDSCAPE_GRID * pd::LANDSCAPE_GRID * pd::LANDSCAPE_GRID;
-    const size_t memsizeLandscape = sizeof( pd::landscapeCell_t ) * ELG;
+    static const size_t ELG = pns::LANDSCAPE_GRID * pns::LANDSCAPE_GRID * pns::LANDSCAPE_GRID;
+    const size_t memsizeLandscape = sizeof( pns::landscapeCell_t ) * ELG;
 
-    static const size_t BG = pd::BIOME_GRID * pd::BIOME_GRID * pd::BIOME_GRID;
-    const size_t memsizeBiome = sizeof( pd::biomeCell_t ) * BG;
+    static const size_t BG = pns::BIOME_GRID * pns::BIOME_GRID * pns::BIOME_GRID;
+    const size_t memsizeBiome = sizeof( pns::biomeCell_t ) * BG;
 
-    static const size_t LG = pd::LIVING_GRID * pd::LIVING_GRID * pd::LIVING_GRID;
-    const size_t memsizeLiving = sizeof( pd::livingCell_t ) * LG;
+    static const size_t LG = pns::LIVING_GRID * pns::LIVING_GRID * pns::LIVING_GRID;
+    const size_t memsizeLiving = sizeof( pns::livingCell_t ) * LG;
 
     const auto tsumAverage = std::accumulate(
         tp.temperature.content,
         tp.temperature.content + TG,
         0.0f,
-        [] ( float sum, const pd::temperatureCell_t& a ) -> float {
+        [] ( float sum, const pns::temperatureCell_t& a ) -> float {
             return sum + a[0].average;
         }
     );
     const auto tminmaxAverage = std::minmax_element(
         tp.temperature.content,
         tp.temperature.content + TG,
-        [] ( const pd::temperatureCell_t& a, const pd::temperatureCell_t& b ) -> bool {
+        [] ( const pns::temperatureCell_t& a, const pns::temperatureCell_t& b ) -> bool {
             return (a[0].average < b[0].average);
         }
     );
@@ -137,14 +137,14 @@ inline void TextVisual::drawTopologySizeInMemory(
         tp.temperature.content,
         tp.temperature.content + TG,
         0.0f,
-        [] ( float sum, const pd::temperatureCell_t& a ) -> float {
+        [] ( float sum, const pns::temperatureCell_t& a ) -> float {
             return sum + a[0].dispersion;
         }
     );
     const auto tminmaxDispersion = std::minmax_element(
         tp.temperature.content,
         tp.temperature.content + TG,
-        [] ( const pd::temperatureCell_t& a, const pd::temperatureCell_t& b ) -> bool {
+        [] ( const pns::temperatureCell_t& a, const pns::temperatureCell_t& b ) -> bool {
             return (a[0].dispersion < b[0].dispersion);
         }
     );
@@ -153,14 +153,14 @@ inline void TextVisual::drawTopologySizeInMemory(
         tp.temperature.content,
         tp.temperature.content + TG,
         0.0f,
-        [] ( float sum, const pd::temperatureCell_t& a ) -> float {
+        [] ( float sum, const pns::temperatureCell_t& a ) -> float {
             return sum + a[0].rate;
         }
     );
     const auto tminmaxRate = std::minmax_element(
         tp.temperature.content,
         tp.temperature.content + TG,
-        [] ( const pd::temperatureCell_t& a, const pd::temperatureCell_t& b ) -> bool {
+        [] ( const pns::temperatureCell_t& a, const pns::temperatureCell_t& b ) -> bool {
             return (a[0].rate < b[0].rate);
         }
     );
@@ -170,14 +170,14 @@ inline void TextVisual::drawTopologySizeInMemory(
         tp.surfaceTemperature.content,
         tp.surfaceTemperature.content + TG,
         0.0f,
-        [] ( float sum, const pd::surfaceTemperatureCell_t& a ) -> float {
+        [] ( float sum, const pns::surfaceTemperatureCell_t& a ) -> float {
             return sum + a[0].average;
         }
     );
     const auto stminmaxAverage = std::minmax_element(
         tp.surfaceTemperature.content,
         tp.surfaceTemperature.content + TG,
-        [] ( const pd::surfaceTemperatureCell_t& a, const pd::surfaceTemperatureCell_t& b ) -> bool {
+        [] ( const pns::surfaceTemperatureCell_t& a, const pns::surfaceTemperatureCell_t& b ) -> bool {
             return (a[0].average < b[0].average);
         }
     );
@@ -186,14 +186,14 @@ inline void TextVisual::drawTopologySizeInMemory(
         tp.rainfall.content,
         tp.rainfall.content + TG,
         0.0f,
-        [] ( float sum, const pd::rainfallCell_t& a ) -> float {
+        [] ( float sum, const pns::rainfallCell_t& a ) -> float {
             return sum + a[0].average;
         }
     );
     const auto rminmaxAverage = std::minmax_element(
         tp.rainfall.content,
         tp.rainfall.content + TG,
-        [] ( const pd::rainfallCell_t& a, const pd::rainfallCell_t& b ) -> bool {
+        [] ( const pns::rainfallCell_t& a, const pns::rainfallCell_t& b ) -> bool {
             return (a[0].average < b[0].average);
         }
     );
@@ -202,14 +202,14 @@ inline void TextVisual::drawTopologySizeInMemory(
         tp.drainage.content,
         tp.drainage.content + TG,
         0.0f,
-        [] ( float sum, const pd::drainageCell_t& a ) -> float {
+        [] ( float sum, const pns::drainageCell_t& a ) -> float {
             return sum + a[0].average;
         }
     );
     const auto dminmaxAverage = std::minmax_element(
         tp.drainage.content,
         tp.drainage.content + TG,
-        [] ( const pd::drainageCell_t& a, const pd::drainageCell_t& b ) -> bool {
+        [] ( const pns::drainageCell_t& a, const pns::drainageCell_t& b ) -> bool {
             return (a[0].average < b[0].average);
         }
     );
@@ -221,20 +221,20 @@ inline void TextVisual::drawTopologySizeInMemory(
                     sizeof( tp.aboutPlanet ) / 1024 << "梳" <<
                     "\n" <<
                 "        aboutComponent " <<
-                    pd::COMPONENT_COUNT << "u " <<
+                    pns::COMPONENT_COUNT << "u " <<
                     sizeof( tp.aboutComponent ) / 1024 << "梳" <<
                     "\n" <<
                 "        aboutLiving " <<
-                    pd::LIVING_COUNT << "u " <<
+                    pns::LIVING_COUNT << "u " <<
                     sizeof( tp.aboutLiving ) / 1024 / 1024 << "提" <<
                     "\n" <<
                 "        component " <<
-                    pd::COMPONENT_GRID << "x " <<
-                    pd::COMPONENT_CELL << "u " <<
+                    pns::COMPONENT_GRID << "x " <<
+                    pns::COMPONENT_CELL << "u " <<
                     memsizeComponent / 1024 / 1024 << "提" <<
                     "\n" <<
                 "        temperature " <<
-                    pd::TEMPERATURE_GRID << "x " <<
+                    pns::TEMPERATURE_GRID << "x " <<
                     memsizeTemperature / 1024 / 1024 << "提\n" <<
                     "            average  [ " << tminmaxAverage.first[0]->average       <<
                         "; " << tminmaxAverage.second[0]->average       << " ]" <<
@@ -251,38 +251,38 @@ inline void TextVisual::drawTopologySizeInMemory(
                     "\n" <<
                     */
                 "        surfaceTemperature " <<
-                    pd::SURFACE_TEMPERATURE_GRID << "x " <<
+                    pns::SURFACE_TEMPERATURE_GRID << "x " <<
                     memsizeSurfaceTemperature / 1024 / 1024 << "提\n" <<
                     "            average  [ " << stminmaxAverage.first[0]->average       <<
                         "; " << stminmaxAverage.second[0]->average       << " ]" <<
                         "  ~ " << (stsumAverage / static_cast< float >( STG )) <<
                     "\n" <<
                 "        rainfall " <<
-                    pd::RAINFALL_GRID << "x " <<
+                    pns::RAINFALL_GRID << "x " <<
                     memsizeRainfall / 1024 / 1024 << "提\n" <<
                     "            average  [ " << rminmaxAverage.first[0]->average       <<
                         "; " << rminmaxAverage.second[0]->average       << " ]" <<
                         "  ~ " << (rsumAverage / static_cast< float >( RG )) <<
                     "\n" <<
                 "        drainage " <<
-                    pd::DRAINAGE_GRID << "x " <<
+                    pns::DRAINAGE_GRID << "x " <<
                     memsizeDrainage / 1024 / 1024 << "提\n" <<
                     "            average  [ " << dminmaxAverage.first[0]->average       <<
                         "; " << dminmaxAverage.second[0]->average       << " ]" <<
                         "  ~ " << (dsumAverage / static_cast< float >( DG )) <<
                     "\n" <<
                 "        landscape " <<
-                    pd::LANDSCAPE_GRID << "x " <<
-                    pd::LANDSCAPE_CELL << "u " <<
+                    pns::LANDSCAPE_GRID << "x " <<
+                    pns::LANDSCAPE_CELL << "u " <<
                     memsizeLandscape / 1024 / 1024 << "提" <<
                     "\n" <<
                 "        biome " <<
-                    pd::BIOME_GRID << "x " <<
+                    pns::BIOME_GRID << "x " <<
                     memsizeBiome / 1024 / 1024 << "提" <<
                     "\n" <<
                 "        living " <<
-                    pd::LIVING_GRID << "x " <<
-                    pd::LIVING_CELL << "u " <<
+                    pns::LIVING_GRID << "x " <<
+                    pns::LIVING_CELL << "u " <<
                     memsizeLiving / 1024 / 1024 << "提" <<
                     "\n" <<
     std::endl;

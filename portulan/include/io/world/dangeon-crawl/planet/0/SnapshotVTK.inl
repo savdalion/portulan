@@ -40,13 +40,13 @@ inline SnapshotVTK& SnapshotVTK::operator<<( const option_t& json ) {
 inline void SnapshotVTK::component( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок компонентов сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::COMPONENT_GRID;
+    static const size_t grid = pns::COMPONENT_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -62,21 +62,21 @@ inline void SnapshotVTK::component( const std::string& file ) {
     // заполненные структуры, которые не удобно анализировать из-за мусорных
     // значений (которые, к тому же, отличаются в Debug и Release)
     typedef vtkSmartPointer< vtkFloatArray >  componentCountArray_t;
-    std::map< pd::CODE_COMPONENT, componentCountArray_t >  component;
-    std::set< pd::CODE_COMPONENT >  uniqueComponent;
+    std::map< pns::CODE_COMPONENT, componentCountArray_t >  component;
+    std::set< pns::CODE_COMPONENT >  uniqueComponent;
     for (size_t i = 0; i < G3; ++i) {
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::COMPONENT_CELL; ++k) {
+        for (size_t k = 0; k < pns::COMPONENT_CELL; ++k) {
             const auto code = cell[ k ].code;
             // не рассматриваем пустых особей
-            if (code != pd::CC_NONE) {
+            if (code != pns::CC_NONE) {
                 uniqueComponent.insert( code );
             }
         }
     }
     for (auto itr = uniqueComponent.cbegin(); itr != uniqueComponent.cend(); ++itr) {
-        const pd::CODE_COMPONENT code = *itr;
+        const pns::CODE_COMPONENT code = *itr;
         auto ftr = component.emplace( std::make_pair( code, vtkSmartPointer< vtkFloatArray >::New() ) ).first;
         ftr->second->Initialize();
         std::ostringstream ss;
@@ -103,9 +103,9 @@ inline void SnapshotVTK::component( const std::string& file ) {
 
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::COMPONENT_CELL; ++k) {
-            const pd::CODE_COMPONENT code = cell[k].code;
-            if (code == pd::CC_NONE) {
+        for (size_t k = 0; k < pns::COMPONENT_CELL; ++k) {
+            const pns::CODE_COMPONENT code = cell[k].code;
+            if (code == pns::CC_NONE) {
                 // встретился пустой компонент - дальше в ячейке ничего нет
                 break;
             }
@@ -153,13 +153,13 @@ inline void SnapshotVTK::component( const std::string& file ) {
 inline void SnapshotVTK::temperature( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок температуры сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::TEMPERATURE_GRID;
+    static const size_t grid = pns::TEMPERATURE_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -231,13 +231,13 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
 inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок температуры поверхности сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::SURFACE_TEMPERATURE_GRID;
+    static const size_t grid = pns::SURFACE_TEMPERATURE_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -289,13 +289,13 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
 inline void SnapshotVTK::rainfall( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок атмосферных осадков сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::RAINFALL_GRID;
+    static const size_t grid = pns::RAINFALL_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -347,13 +347,13 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
 inline void SnapshotVTK::drainage( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок дренажа сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::DRAINAGE_GRID;
+    static const size_t grid = pns::DRAINAGE_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -405,13 +405,13 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
 inline void SnapshotVTK::landscape( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок ландшафта сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::LANDSCAPE_GRID;
+    static const size_t grid = pns::LANDSCAPE_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -426,23 +426,23 @@ inline void SnapshotVTK::landscape( const std::string& file ) {
     // заполненные структуры, которые не удобно анализировать из-за мусорных
     // значений (которые, к тому же, отличаются в Debug и Release)
     typedef vtkSmartPointer< vtkFloatArray >  сountArray_t;
-    std::map< pd::CODE_ELEMENT_LANDSCAPE, сountArray_t >  landscapeCount;
+    std::map< pns::CODE_ELEMENT_LANDSCAPE, сountArray_t >  landscapeCount;
     typedef vtkSmartPointer< vtkFloatArray >  scatteringArray_t;
-    std::map< pd::CODE_ELEMENT_LANDSCAPE, scatteringArray_t >  landscapeScattering;
-    std::set< pd::CODE_ELEMENT_LANDSCAPE >  unique;
+    std::map< pns::CODE_ELEMENT_LANDSCAPE, scatteringArray_t >  landscapeScattering;
+    std::set< pns::CODE_ELEMENT_LANDSCAPE >  unique;
     for (size_t i = 0; i < G3; ++i) {
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::LANDSCAPE_CELL; ++k) {
+        for (size_t k = 0; k < pns::LANDSCAPE_CELL; ++k) {
             const auto code = cell[ k ].code;
             // не рассматриваем пустые элементы
-            if (code != pd::CC_NONE) {
+            if (code != pns::CC_NONE) {
                 unique.insert( code );
             }
         }
     }
     for (auto itr = unique.cbegin(); itr != unique.cend(); ++itr) {
-        const pd::CODE_ELEMENT_LANDSCAPE code = *itr;
+        const pns::CODE_ELEMENT_LANDSCAPE code = *itr;
         std::ostringstream ss;
         ss << "code " << std::setw( 2 ) << std::setfill( '0' ) << code;
         // count
@@ -481,9 +481,9 @@ inline void SnapshotVTK::landscape( const std::string& file ) {
 
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::LANDSCAPE_CELL; ++k) {
-            const pd::CODE_ELEMENT_LANDSCAPE code = cell[k].code;
-            if (code == pd::CEL_NONE) {
+        for (size_t k = 0; k < pns::LANDSCAPE_CELL; ++k) {
+            const pns::CODE_ELEMENT_LANDSCAPE code = cell[k].code;
+            if (code == pns::CEL_NONE) {
                 // встретился пустой эл. ландшафта - дальше в ячейке ничего нет
                 break;
             }
@@ -536,13 +536,13 @@ inline void SnapshotVTK::landscape( const std::string& file ) {
 inline void SnapshotVTK::biome( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок биома сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::BIOME_GRID;
+    static const size_t grid = pns::BIOME_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -559,21 +559,21 @@ inline void SnapshotVTK::biome( const std::string& file ) {
     // #i vtkBitArray здесь был бы лучшей альтернативой, но с ним
     //    не работает write() ниже.
     typedef vtkSmartPointer< vtkCharArray >  biomePresentArray_t;
-    std::map< pd::CODE_BIOME, biomePresentArray_t >  biome;
-    std::set< pd::CODE_BIOME >  uniqueBiome;
+    std::map< pns::CODE_BIOME, biomePresentArray_t >  biome;
+    std::set< pns::CODE_BIOME >  uniqueBiome;
     for (size_t i = 0; i < G3; ++i) {
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::BIOME_CELL; ++k) {
+        for (size_t k = 0; k < pns::BIOME_CELL; ++k) {
             const auto code = cell[ k ].code;
             // не рассматриваем пустые ячейки
-            if (code != pd::CB_NONE) {
+            if (code != pns::CB_NONE) {
                 uniqueBiome.insert( code );
             }
         }
     }
     for (auto itr = uniqueBiome.cbegin(); itr != uniqueBiome.cend(); ++itr) {
-        const pd::CODE_BIOME code = *itr;
+        const pns::CODE_BIOME code = *itr;
         auto ftr = biome.emplace( std::make_pair( code, vtkSmartPointer< vtkCharArray >::New() ) ).first;
         ftr->second->Initialize();
         std::ostringstream ss;
@@ -594,10 +594,10 @@ inline void SnapshotVTK::biome( const std::string& file ) {
 
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::BIOME_CELL; ++k) {
-            const pd::CODE_BIOME code = cell[k].code;
+        for (size_t k = 0; k < pns::BIOME_CELL; ++k) {
+            const pns::CODE_BIOME code = cell[k].code;
             // работаем только с не пустыми биомами
-            if (code != pd::CB_NONE) {
+            if (code != pns::CB_NONE) {
                 // все наборы сформированы и проинициализированы нулями выше
                 auto ftr = biome.find( code );
                 assert( (ftr != biome.cend())
@@ -636,13 +636,13 @@ inline void SnapshotVTK::biome( const std::string& file ) {
 inline void SnapshotVTK::living( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 
-    namespace pd = portulan::world::dungeoncrawl::planet::l0;
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
 #ifdef _DEBUG
     std::cout << "Снимок особей сохраняем в \"" << file << "\" ... ";
 #endif
 
-    static const size_t grid = pd::LIVING_GRID;
+    static const size_t grid = pns::LIVING_GRID;
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
@@ -658,29 +658,29 @@ inline void SnapshotVTK::living( const std::string& file ) {
     // частично заполненные структуры, которые не удобно анализировать из-за
     // мусорных значений (которые, к тому же, отличаются в Debug и Release)
     typedef vtkSmartPointer< vtkFloatArray >  livingCountArray_t;
-    typedef std::pair< int /* pd::CODE_LIVING */,  int /* pd::LIFE_CYCLE */ >  codeLivingAndLifeCycle_t;
+    typedef std::pair< int /* pns::CODE_LIVING */,  int /* pns::LIFE_CYCLE */ >  codeLivingAndLifeCycle_t;
     std::map< codeLivingAndLifeCycle_t, livingCountArray_t >  livingCount;
     std::set< codeLivingAndLifeCycle_t >  uniqueLiving;
     for (size_t i = 0; i < G3; ++i) {
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::LIVING_CELL; ++k) {
+        for (size_t k = 0; k < pns::LIVING_CELL; ++k) {
             // информация об особях сгруппирована по LIFE_CYCLE
             // @todo optimize Можно убрать цикл ниже (потеря наглядности).
-            for (size_t l = static_cast< size_t >( pd::LC_EMBRYO);
-                    l < static_cast< size_t >( pd::LC_last );  ++l
+            for (size_t l = static_cast< size_t >( pns::LC_EMBRYO);
+                    l < static_cast< size_t >( pns::LC_last );  ++l
             ) {
                 const auto code = cell[ k ][ l ].code;
                 // не рассматриваем пустых особей
-                if (code != pd::CL_NONE) {
+                if (code != pns::CL_NONE) {
                     uniqueLiving.insert( std::make_pair( code,  l ) );
                 }
             }
         }
     }
     for (auto itr = uniqueLiving.cbegin(); itr != uniqueLiving.cend(); ++itr) {
-        const pd::CODE_LIVING code = static_cast< pd::CODE_LIVING >( itr->first );
-        const pd::LIFE_CYCLE l = static_cast< pd::LIFE_CYCLE >( itr->second );
+        const pns::CODE_LIVING code = static_cast< pns::CODE_LIVING >( itr->first );
+        const pns::LIFE_CYCLE l = static_cast< pns::LIFE_CYCLE >( itr->second );
         const auto searchCode = std::make_pair( code, l );
         std::ostringstream ss;
         ss << "c " << std::setw( 3 ) << std::setfill( '0' ) << code << " lc " << l;
@@ -704,12 +704,12 @@ inline void SnapshotVTK::living( const std::string& file ) {
 
         // содержимое ячейки
         const auto& cell = content[ i ];
-        for (size_t k = 0; k < pd::LIVING_CELL; ++k) {
-            for (size_t l = static_cast< size_t >( pd::LC_EMBRYO);
-                    l < static_cast< size_t >( pd::LC_last );  ++l
+        for (size_t k = 0; k < pns::LIVING_CELL; ++k) {
+            for (size_t l = static_cast< size_t >( pns::LC_EMBRYO);
+                    l < static_cast< size_t >( pns::LC_last );  ++l
             ) {
-                const pd::CODE_LIVING code = cell[ k ][ l ].code;
-                if (code == pd::CL_NONE) {
+                const pns::CODE_LIVING code = cell[ k ][ l ].code;
+                if (code == pns::CL_NONE) {
                     // не учитываем пустых особей
                     continue;
                 }

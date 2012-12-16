@@ -5,6 +5,7 @@
 
 #ifdef DUNGEON_CRAWL_WORLD_PORTULAN
 #include "set/topology.h"
+#include "set/utils.h"
 
 #else
 #pragma message( "File configure.h don't include any set of portulan. Build of portulan is not complete." )

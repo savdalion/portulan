@@ -41,8 +41,8 @@ namespace portulan {
                 namespace starsystem {
                     namespace l0 {
 
-namespace pd = portulan::world::dungeoncrawl::starsystem::l0;
-namespace pe = porte::world::dungeoncrawl::starsystem::l0;
+namespace pns = portulan::world::dungeoncrawl::starsystem::l0;
+namespace pes = porte::world::dungeoncrawl::starsystem::l0;
 
 
 /**
@@ -75,7 +75,7 @@ public:
     * Визуализирует область. Если окно визуализации ещё не было создано, оно
     * создаётся. Иначе, портулан добавляется к текущему окну.
     */
-    VolumeVTKVisual& operator<<( const pd::Portulan& );
+    VolumeVTKVisual& operator<<( const pns::Portulan& );
 
 
 
@@ -88,8 +88,12 @@ public:
 
     /**
     * Ожидает закрытия окна визуализации.
+    *
+    * @param frequence Как часто будет вызываться пульс движка, мс.
+    *        Если == 0, пульсации не происходит (движок 'engine' на мир
+    *        не оказывает влияния).
     */
-    void wait( pe::Engine* = nullptr, int pulse = 1 );
+    void wait( pes::Engine* = nullptr, int pulse = 1, size_t frequence = 1 );
 
 
 
@@ -113,7 +117,7 @@ private:
 
 private:
     /**
-    * Введён для взаимодействия движка и событий мыши / клавиатуры.
+    * Введён для синхронизации движка и визуального образа.
     *
     * @see http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/Animation
     */
@@ -128,7 +132,7 @@ private:
         }
 
 
-        void init( VolumeVTKVisual* parent, pe::Engine* engine, int pulse ) {
+        void init( VolumeVTKVisual* parent, pes::Engine* engine, int pulse ) {
             assert( parent &&
                 "Родитель должен быть указан." );
             assert( engine &&
@@ -146,10 +150,13 @@ private:
             unsigned long  eventId,
             void*          vtkNotUsed( callData )
         ) {
+            // меняем внутреннее состояние
             *engine << pulse;
+
+            // обновляем визуальный образ
             // @todo optimize Не перерисовывать всю картинку, менять
             //       только положение Actor's.
-            const pd::Portulan* p = engine->portulan();
+            const pns::Portulan* p = engine->portulan();
             *parent << *p;
 
             /* - См. todo выше.
@@ -157,12 +164,31 @@ private:
                 vtkRenderWindowInteractor::SafeDownCast( caller );
             rw->GetRenderWindow()->Render();
             */
+
+#if 0
+            size_t i = 0;
+            const auto& tpc =
+                engine->portulan()
+                ->topology().topology()
+                .planet.content[ i ];
+            std::cout <<
+                "  m " << tpc.mass <<
+                "  " << typelib::CoordT< pns::real_t >( tpc.coord ) <<
+    #if 1
+                "  " << tpc.test[0] <<
+                 " " << tpc.test[1] <<
+                 " " << tpc.test[2] <<
+                 " " << tpc.test[3] <<
+                 " " << tpc.test[4] <<
+    #endif
+            std::endl;
+#endif
         }
 
 
     private:
         VolumeVTKVisual* parent;
-        pe::Engine* engine;
+        pes::Engine* engine;
         int pulse;
     };
 

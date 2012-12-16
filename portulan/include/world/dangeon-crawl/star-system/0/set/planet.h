@@ -23,6 +23,11 @@ namespace portulan {
 */
 typedef struct __attribute__ ((packed)) {
     /**
+    * Идентификатор планеты.
+    */
+    uid_t uid;
+
+    /**
     * Масса планеты, кг.
     */
     real_t mass;
@@ -54,6 +59,12 @@ typedef struct __attribute__ ((packed)) {
 
 
     /**
+    * События, которые произошли с планетой и о которых она помнит.
+    */
+    //event_t event[ PLANET_EVENT_COUNT ];
+
+
+    /**
     * @see star.h
     */
     real_t tm[ 16 ];
@@ -65,6 +76,28 @@ typedef struct __attribute__ ((packed)) {
     real_t test[ 5 ];
 
 } aboutPlanet_t;
+
+
+
+
+/**
+* Перечисление всех планет в звёздной системе.
+*
+* # Если тело отсутствует - разрушено, вышло за границу звёздной системы
+*   и т.п. - его масса = 0.
+* # Отсутствующая планета - сигнал конца списка.
+*/
+typedef aboutPlanet_t  planetContent_t[ PLANET_COUNT ];
+
+
+
+
+/**
+* Планеты в области звёздной системы.
+*/
+typedef struct __attribute__ ((packed)) {
+    planetContent_t content;
+} planet_t;
 
 
 
