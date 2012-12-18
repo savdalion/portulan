@@ -533,6 +533,64 @@ inline void SnapshotVTK::landscape( const std::string& file ) {
 
 
 
+inline void SnapshotVTK::illuminance( const std::string& file ) {
+    assert( !file.empty() && "Название файла должно быть указано." );
+
+    namespace pns = portulan::world::dungeoncrawl::planet::l0;
+
+#ifdef _DEBUG
+    std::cout << "Снимок освещённости сохраняем в \"" << file << "\" ... ";
+#endif
+
+    static const size_t grid = pns::ILLUMINANCE_GRID;
+    static const size_t G3 = grid * grid * grid;
+
+    const auto& content =
+        mPortulan->topology().topology().illuminance.content;
+
+    auto points = vtkSmartPointer< vtkPoints >::New();
+
+    // содержимое
+    auto star = vtkSmartPointer< vtkFloatArray >::New();
+    star->Initialize();
+    star->SetName( "star" );
+    star->SetNumberOfComponents( 1 );
+    star->SetNumberOfValues( G3 );
+
+    size_t n = 0;
+    typedef typelib::CubeSMC3D< grid >  smc_t;
+    for (size_t i = 0; i < G3; ++i) {
+        const typelib::coordInt_t c = smc_t::ci( i );
+        points->InsertNextPoint( c.x, c.y, c.z );
+
+        const auto& cell = content[ i ];
+        star->SetValue( n,  cell[0].star );
+
+        ++n;
+    } // for (size_t i
+
+
+    // собираем вместе
+    auto data = vtkSmartPointer< vtkStructuredGrid >::New();
+    data->SetDimensions( grid, grid, grid );
+    data->Modified();
+    data->SetPoints( points );
+    data->GetPointData()->AddArray( star );
+
+
+    // записываем
+    write( file, data );
+
+#ifdef _DEBUG
+    std::cout << "ОК" << std::endl;
+#endif
+}
+
+
+
+
+
+
 inline void SnapshotVTK::biome( const std::string& file ) {
     assert( !file.empty() && "Название файла должно быть указано." );
 

@@ -32,6 +32,9 @@ inline Topology::Topology() {
     mTopology.landscape.content =
         new landscapeCell_t[ LANDSCAPE_GRID * LANDSCAPE_GRID * LANDSCAPE_GRID ];
 
+    mTopology.illuminance.content =
+        new illuminanceCell_t[ ILLUMINANCE_GRID * ILLUMINANCE_GRID * ILLUMINANCE_GRID ];
+
     mTopology.biome.content =
         new biomeCell_t[ BIOME_GRID * BIOME_GRID * BIOME_GRID ];
 

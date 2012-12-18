@@ -57,6 +57,18 @@ typedef struct __attribute__ ((packed)) {
     */
     real_t velocity[ 3 ];
 
+    /**
+    * Ќаклон оси планеты, градусы.
+    *
+    * @see http://en.wikipedia.org/wiki/Axial_tilt
+    */
+    real_t axilTilt;
+
+    /**
+    * ѕериод вращени€ планеты, с.
+    */
+    real_t rotationPeriod;
+
 
     /**
     * —обыти€, которые произошли с планетой и о которых она помнит.

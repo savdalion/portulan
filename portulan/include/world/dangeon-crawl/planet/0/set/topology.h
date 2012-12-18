@@ -8,6 +8,7 @@
 #include "rainfall.h"
 #include "drainage.h"
 #include "landscape.h"
+#include "illuminance.h"
 #include "biome.h"
 #include "biome-set.h"
 #include "living.h"
@@ -45,6 +46,7 @@ typedef struct __attribute__ ((packed)) {
     rainfall_t            rainfall;
     drainage_t            drainage;
     landscape_t           landscape;
+    illuminance_t         illuminance;
     biome_t               biome;
     living_t              living;
 

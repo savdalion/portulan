@@ -108,9 +108,7 @@ public:
 
 
 private:
-    void drawTopology(
-        const portulan::world::dungeoncrawl::starsystem::l0::topology_t&
-    );
+    void drawTopology( const pns::topology_t& );
 
 
 
@@ -214,7 +212,7 @@ private:
 
 
                     } // l0
-                } // planet
+                } // starsystem
             } // dungeoncrawl
         } // world
     } // io

@@ -110,6 +110,9 @@ inline void TextVisual::drawTopologySizeInMemory(
     static const size_t ELG = pns::LANDSCAPE_GRID * pns::LANDSCAPE_GRID * pns::LANDSCAPE_GRID;
     const size_t memsizeLandscape = sizeof( pns::landscapeCell_t ) * ELG;
 
+    static const size_t IG = pns::ILLUMINANCE_GRID * pns::ILLUMINANCE_GRID * pns::ILLUMINANCE_GRID;
+    const size_t memsizeIlluminance = sizeof( pns::illuminanceCell_t ) * IG;
+
     static const size_t BG = pns::BIOME_GRID * pns::BIOME_GRID * pns::BIOME_GRID;
     const size_t memsizeBiome = sizeof( pns::biomeCell_t ) * BG;
 
@@ -214,6 +217,22 @@ inline void TextVisual::drawTopologySizeInMemory(
         }
     );
 
+    const auto iSsumAverage = std::accumulate(
+        tp.illuminance.content,
+        tp.illuminance.content + TG,
+        0.0f,
+        [] ( float sum, const pns::illuminanceCell_t& a ) -> float {
+            return sum + a[0].star;
+        }
+    );
+    const auto iSminmaxAverage = std::minmax_element(
+        tp.illuminance.content,
+        tp.illuminance.content + TG,
+        [] ( const pns::illuminanceCell_t& a, const pns::illuminanceCell_t& b ) -> bool {
+            return (a[0].star < b[0].star);
+        }
+    );
+
     *out <<
         "ѕам€ть, занимаема€ топологией планеты\n" <<
             "    topology\n" <<
@@ -275,6 +294,13 @@ inline void TextVisual::drawTopologySizeInMemory(
                     pns::LANDSCAPE_GRID << "x " <<
                     pns::LANDSCAPE_CELL << "u " <<
                     memsizeLandscape / 1024 / 1024 << "ћб" <<
+                    "\n" <<
+                "        illuminance from star" <<
+                    pns::ILLUMINANCE_GRID << "x " <<
+                    memsizeIlluminance / 1024 / 1024 << "ћб\n" <<
+                    "            average  [ " << iSminmaxAverage.first[0]->star       <<
+                        "; " << iSminmaxAverage.second[0]->star       << " ]" <<
+                        "  ~ " << (iSsumAverage / static_cast< float >( IG )) <<
                     "\n" <<
                 "        biome " <<
                     pns::BIOME_GRID << "x " <<

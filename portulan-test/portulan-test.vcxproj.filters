@@ -24,6 +24,9 @@
     <ClInclude Include="include\planet\set\dangeon-crawl\biome-utils-test.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\planet\set\dangeon-crawl\illuminance-utils-test.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\portulan-test.cpp">

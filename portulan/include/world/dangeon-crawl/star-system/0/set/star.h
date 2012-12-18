@@ -42,6 +42,13 @@ typedef struct __attribute__ ((packed)) {
     real_t temperature;
 
     /**
+    * Сила света, кд.
+    *
+    * @source http://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BB%D0%B0_%D1%81%D0%B2%D0%B5%D1%82%D0%B0
+    */
+    real_t luminousIntensity;
+
+    /**
     * Координаты звезды в звёздной системе, XYZ, м.
     */
     real_t coord[ 3 ];

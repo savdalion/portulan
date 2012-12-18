@@ -20,6 +20,8 @@
 #endif
 
 
+// # Из-за того, что утилиты используют структуры из 'portulan', лучше их
+//   хранить в пространстве имён портулана, а не движка.
 namespace portulan {
     namespace world {
         namespace dungeoncrawl {

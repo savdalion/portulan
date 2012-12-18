@@ -55,9 +55,9 @@ public:
 
 
     /**
-    * Сохраняет в файлы данные о топологии портулана.
+    * Сохраняет в файл данные о топологии портулана.
     */
-    //void all();
+    // @todo void all();
 
     void component(   const std::string& file = "component" );
     void temperature( const std::string& file = "temperature" );
@@ -65,6 +65,7 @@ public:
     void rainfall(    const std::string& file = "rainfall" );
     void drainage(    const std::string& file = "drainage" );
     void landscape(   const std::string& file = "landscape" );
+    void illuminance( const std::string& file = "illuminance" );
     void biome(       const std::string& file = "biome" );
     void living(      const std::string& file = "living" );
 

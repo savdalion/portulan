@@ -293,6 +293,23 @@ static __constant size_t LANDSCAPE_CELL = 30;
 
 
 /**
+* Сетка распределения освещённости в области планеты.
+*/
+static __constant size_t ILLUMINANCE_GRID = 27;
+
+
+
+/**
+* Максимально возможное кол-во звёзд для рассчёта освещённости.
+*
+* @see illuminance-utils.h
+*/
+static __constant size_t ILLUMINANCE_STAR_COUNT = 10;
+
+
+
+
+/**
 * Сетка распределения биомов в области планеты.
 */
 static __constant size_t BIOME_GRID = 81;

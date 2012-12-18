@@ -141,6 +141,15 @@
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\utils.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance-utils.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\io\world\dangeon-crawl\planet\0\VolumeVTKVisual.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Topology.inl">
@@ -175,6 +184,9 @@
     </None>
     <None Include="include\io\world\dangeon-crawl\star-system\0\VolumeVTKVisual.inl">
       <Filter>Заголовочные файлы\io</Filter>
+    </None>
+    <None Include="include\io\world\dangeon-crawl\planet\0\VolumeVTKVisual.inl">
+      <Filter>Заголовочные файлы</Filter>
     </None>
   </ItemGroup>
 </Project>

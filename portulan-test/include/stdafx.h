@@ -1,15 +1,15 @@
 #pragma once
 
 // Длина внутреннего имени объекта в компиляторе превысила максимальное значение, имя усечено
-#pragma warning( disable : 4503 )
+//#pragma warning( disable : 4503 )
 
 // Компилятор обнаружил функцию, которая была помечена как устаревшая — deprecated
 // @see http://lists.boost.org/Archives/boost/2006/08/109338.php 
-#pragma warning( disable : 4996 )
+//#pragma warning( disable : 4996 )
 
 // @todo fine Переписать так, чтобы Warning C4251 гасить не пришлось.
 // @source http://www.windows-api.com/microsoft/VC-Language/30952961/a-solution-to-warning-c4251--class-needs-to-have-dllinterface.aspx
-#pragma warning( disable : 4251 )
+//#pragma warning( disable : 4251 )
 
 
 
@@ -60,4 +60,3 @@
 
 // Отладка
 #include <gtest/gtest.h>
-#include <ezlogger_headers.hpp>

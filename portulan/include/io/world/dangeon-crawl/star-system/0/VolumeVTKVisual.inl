@@ -207,7 +207,7 @@ inline void VolumeVTKVisual::clear() {
 
 
 inline void VolumeVTKVisual::drawTopology(
-    const portulan::world::dungeoncrawl::starsystem::l0::topology_t&  topology
+    const pns::topology_t&  topology
 ) {
     // звёзды
     {
@@ -332,7 +332,7 @@ inline void VolumeVTKVisual::drawTopology(
 
 
                     } // l0
-                } // planet
+                } // starsystem
             } // dungeoncrawl
         } // world
     } // io
