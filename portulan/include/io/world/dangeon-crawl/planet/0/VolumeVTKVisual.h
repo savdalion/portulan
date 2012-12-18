@@ -195,22 +195,24 @@ private:
             typedef typelib::CubeSMC3D< pnp::ILLUMINANCE_GRID >  smc_t;
             for (size_t k = 0; k < pnp::ILLUMINANCE_STAR_COUNT; ++k) {
                 const pnp::aboutIlluminanceStar_t& ais = ib->source.star[ k ];
-                if ( !typelib::empty( ais.radius ) ) {
-                    // # Метод для расчёта освещения предназначен для
-                    //   исполнения в ядрах OpenCL. Поэтому...
-                    for (size_t i = 0; i < VOLUME; ++i) {
-                        const typelib::coordInt_t c = smc_t::ci( i );
-                        pnp::starIlluminance(
-                            ib->result[ i ],
-                            c.x, c.y, c.z,
-                            // планета
-                            ib->radius,
-                            ib->coord,
-                            ib->omega,
-                            // звезда
-                            ais
-                        );
-                    }
+                if (ais.radius <= 0) {
+                    // # Запись star с пустым radius - признак завершения списка.
+                    break;
+                }
+                // # Метод для расчёта освещения предназначен для
+                //   исполнения в ядрах OpenCL. Поэтому...
+                for (size_t i = 0; i < VOLUME; ++i) {
+                    const typelib::coordInt_t c = smc_t::ci( i );
+                    pnp::starIlluminancePlanet(
+                        ib->result[ i ],
+                        c.x, c.y, c.z,
+                        // планета
+                        ib->radius,
+                        ib->coord,
+                        ib->omega,
+                        // звезда
+                        &ais
+                    );
                 }
             }
 

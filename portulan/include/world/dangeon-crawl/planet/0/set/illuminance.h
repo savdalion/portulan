@@ -57,7 +57,6 @@ typedef sourceIlluminance_t  illuminanceCell_t[ 1 ];
 
 
 
-
 /**
 * Освещённость в области планеты.
 */
@@ -65,6 +64,60 @@ typedef illuminanceCell_t*  illuminanceContent_t;
 typedef struct __attribute__ ((packed)) {
     illuminanceContent_t content;
 } illuminance_t;
+
+
+
+
+
+/**
+* Структуры для обмена инфо об освещённости.
+*/
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Радиус звезды, м.
+    */
+    cl_float radius;
+
+    /**
+    * Средняя температура, К.
+    */
+    cl_float temperature;
+
+    /**
+    * Сила света, кд.
+    *
+    * @source http://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BB%D0%B0_%D1%81%D0%B2%D0%B5%D1%82%D0%B0
+    */
+    cl_float luminousIntensity;
+
+    /**
+    * Координаты звезды в звёздной системе, XYZ, м.
+    */
+    cl_float coord[ 3 ];
+
+} aboutIlluminanceStar_t;
+
+
+
+
+typedef struct __attribute__ ((packed)) {
+    aboutIlluminanceStar_t  star[ ILLUMINANCE_STAR_COUNT ];
+    // @todo sattelite, planet
+} aboutIlluminanceSource_t;
+
+
+
+
+typedef struct {
+    // результат освещения
+    illuminanceContent_t  result;
+    // тело, которое освещают
+    cl_float  radius;
+    cl_float  coord[ 3 ];
+    cl_float  omega[ 3 ];
+    // источники освещения
+    aboutIlluminanceSource_t  source;
+} illuminanceBody_t;
 
 
 

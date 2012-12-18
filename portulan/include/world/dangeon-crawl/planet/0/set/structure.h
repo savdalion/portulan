@@ -9,7 +9,13 @@
 *   # Структуры организованы т. о., чтобы не дублировать их при включении
 *     в код OpenCL.
 */
+#ifndef __constant
 #define __constant const
+#endif
+
+#ifndef __global
+#define __global /*nothing*/
+#endif
 
 // Выравнивание для VC++ не требуется
 #define __attribute__(x) /*nothing*/

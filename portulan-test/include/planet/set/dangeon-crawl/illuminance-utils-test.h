@@ -33,10 +33,10 @@ class IlluminanceUtilsTest : public ::testing::Test {
 
 
 /**
-* starIlluminance()
+* starIlluminancePlanet()
 */
 
-TEST_F( IlluminanceUtilsTest, starIlluminance ) {
+TEST_F( IlluminanceUtilsTest, starIlluminancePlanet ) {
 
     // подготавливаем структуру для тестирования
     static const size_t VOLUME =
@@ -58,6 +58,7 @@ TEST_F( IlluminanceUtilsTest, starIlluminance ) {
         { 0, 23.44, 0 },
         //{ 0, 0, 0 },
         // источники освещения
+        // # Запись star с пустым radius - признак завершения списка.
         // star[]
         {
             // 0
@@ -72,7 +73,7 @@ TEST_F( IlluminanceUtilsTest, starIlluminance ) {
                 3e27,
                 // coord[ 3 ]
                 { 0, 0, 0 }
-            },
+            }
         }
 #endif
     };

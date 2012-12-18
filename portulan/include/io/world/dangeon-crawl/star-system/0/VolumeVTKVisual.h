@@ -126,6 +126,7 @@ private:
             cb->parent = nullptr;
             cb->engine = nullptr;
             cb->pulse = 0;
+            cb->complete = true;
             return cb;
         }
 
@@ -148,6 +149,11 @@ private:
             unsigned long  eventId,
             void*          vtkNotUsed( callData )
         ) {
+            // команда не должна вызыватьс€ пока не завершена предыдуща€
+            if ( !complete ) {
+                return;
+            }
+
             // мен€ем внутреннее состо€ние
             *engine << pulse;
 
@@ -181,6 +187,8 @@ private:
     #endif
             std::endl;
 #endif
+            // команда завершена, можно вызывать следующую
+            complete = true;
         }
 
 
@@ -188,6 +196,11 @@ private:
         VolumeVTKVisual* parent;
         pes::Engine* engine;
         int pulse;
+
+        /**
+        * Ќе позвол€ем командам накапливатьс€ - блокировки.
+        */
+        bool complete;
     };
 
 

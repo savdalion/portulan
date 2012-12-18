@@ -461,13 +461,13 @@ enum TYPE_ATTACK_LIVING {
     // выстрелить, метнуть, брызнуть, плюнуть, выдохнуть в заданном направлении
     // @see TAL_MAGIC
     // @see Соглашение о защите в aboutOnePartLiving_t::resist.
-    // попадание тупой пулей
+    // попадание тупым предметом
     TAL_SHOOT_CRUSH,
     // попадание газом (например, дыхание огнём / холодом / брызгами)
     TAL_SHOOT_GAS,
     // попадание жидкостью (например, кислота)
     TAL_SHOOT_LIQUID,
-    // попадание острой пулей
+    // попадание острым (пронизывающим) предметом
     TAL_SHOOT_PIERCE,
 
     // прикоснуться (см. "вкус атаки")
@@ -533,11 +533,12 @@ enum FLAVOUR_ATTACK_LIVING {
     FAL_PARALYZE,
 
     // отравить
-    //   # Шкала отравлений согласно http://crawl.chaosforge.org/index.php?title=Poison#Poison_Types
-    //     10 - обычная (regular)
-    //     20 - средняя (medium)
-    //     40 - сильная (strong)
-    //     80 - мерзкая (nasty)
+    //   # Шкала отравлений согласно
+    //     http://crawl.chaosforge.org/index.php?title=Poison#Poison_Types
+    //       10 - обычная (regular)
+    //       20 - средняя (medium)
+    //       40 - сильная (strong)
+    //       80 - мерзкая (nasty)
     FAL_POISON,
 
     // лечит атакующего на 1d(нанесённое повреждение)
@@ -683,8 +684,8 @@ typedef struct __attribute__ ((packed)) {
     */
 
     /**
-    * Какие функции выполняет орган, его важность для особи
-    * (битовое перечисление FPL_*).
+    * Какие функции выполняет орган, его важность для особи.
+    * Битовое перечисление FPL_*.
     */
     cl_ulong function;
 
@@ -708,15 +709,15 @@ typedef struct __attribute__ ((packed)) {
     // Орган переводит компоненты (пищу) в энергию.
     // Энергия = количеству энергии, освобождаемой при сгорании компонента.
     // КПД органа усвоения определяет, какая часть комп. усвоится организмом.
-    uptakeSolidLiving_t     uptakeSolid;
-    uptakeLiquidLiving_t    uptakeLiquid;
-    uptakeGasLiving_t       uptakeGas;
+    uptakeSolidLiving_t      uptakeSolid;
+    uptakeLiquidLiving_t     uptakeLiquid;
+    uptakeGasLiving_t        uptakeGas;
 
 
     // выделение компонентов (см. выше - поглощение и усвоение компонентов)
-    excretionSolidLiving_t  excretionSolid;
-    excretionLiquidLiving_t excretionLiquid;
-    excretionGasLiving_t    excretionGas;
+    excretionSolidLiving_t   excretionSolid;
+    excretionLiquidLiving_t  excretionLiquid;
+    excretionGasLiving_t     excretionGas;
 
 
     // усвоение и выделение энергий
@@ -724,8 +725,8 @@ typedef struct __attribute__ ((packed)) {
     // из окр. среды.
     //   # Для органа указывается только *возможность* усвоения энергии.
     //     Требуемое кол-во энергии указано в информации об особи.
-    uptakeEnergyLiving_t    uptakeEnergy;
-    excretionEnergyLiving_t excretionEnergy;
+    uptakeEnergyLiving_t     uptakeEnergy;
+    excretionEnergyLiving_t  excretionEnergy;
 
 
     /**
@@ -734,7 +735,7 @@ typedef struct __attribute__ ((packed)) {
     *     не задаётся "общая атака" (как для защиты "resist"): все атаки
     *     содержат абсолютные значения.
     */
-    attackPartLiving_t attack;
+    attackPartLiving_t  attack;
 
 
     /**
@@ -746,7 +747,7 @@ typedef struct __attribute__ ((packed)) {
     *   # Защита для вкусов TAL_SHOOT_CRUSH и TAL_SHOOT_PIERCE совпадает соотв.
     *     с TAL_CRUSH и TAL_PIERCE.
     */
-    resistPartLiving_t resist;
+    resistPartLiving_t  resist;
 
 } aboutOnePartLiving_t;
 
@@ -998,9 +999,11 @@ typedef struct __attribute__ ((packed)) {
     * Защита особи от воздействий.
     * Определяет базовые значения защиты частей тела (органов).
     *
-    *   # Творческая компиляция значений AC и MR из http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
+    *   # Творческая компиляция значений AC и MR из
+    *     http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
     *   # Общая магическая защита от атаки записывается
-    *     парой TAL_MAGIC + FAL_ANY и значением MR из http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
+    *     парой TAL_MAGIC + FAL_ANY и значением MR из
+    *     http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
     *   # Если особь уязвима к опред. виду воздействия, значение защиты <= -1.0.
     *
     * @see Соглашение о защите в aboutOnePartLiving_t::resist.
@@ -1014,8 +1017,8 @@ typedef struct __attribute__ ((packed)) {
 
     /**
     * Уклонение особи от атак.
-    *   # Уклонение зависит линейно и прямо пропорционально от кол-ва
-    *     неповреждённых органов особи.
+    *   # Уклонение зависит прямо пропорционально от кол-ва неповреждённых
+    *     органов особи.
     *     @todo extend? Учитывать размер органа (вклад в уклонение).
     *
     * @see Вычисление > http://crawl.chaosforge.org/index.php?title=Evasion
@@ -1047,11 +1050,11 @@ typedef struct __attribute__ ((packed)) {
     *   # Скорость перемещения особи вычисляется как равновесовой вклад
     *     каждого органа, отвечающего за перемещение.
     */
-    moveSolidSurfaceLiving_t moveSolidSurface;
-    moveLiquidSurfaceLiving_t moveLiquidSurface;
-    moveSolidInsideLiving_t moveSolidInside;
-    moveLiquidInsideLiving_t moveLiquidInside;
-    moveGasInsideLiving_t moveGasInside;
+    moveSolidSurfaceLiving_t   moveSolidSurface;
+    moveLiquidSurfaceLiving_t  moveLiquidSurface;
+    moveSolidInsideLiving_t    moveSolidInside;
+    moveLiquidInsideLiving_t   moveLiquidInside;
+    moveGasInsideLiving_t      moveGasInside;
 
 
     /**

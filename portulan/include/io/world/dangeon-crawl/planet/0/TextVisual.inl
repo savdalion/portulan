@@ -171,7 +171,7 @@ inline void TextVisual::drawTopologySizeInMemory(
 
     const auto stsumAverage = std::accumulate(
         tp.surfaceTemperature.content,
-        tp.surfaceTemperature.content + TG,
+        tp.surfaceTemperature.content + STG,
         0.0f,
         [] ( float sum, const pns::surfaceTemperatureCell_t& a ) -> float {
             return sum + a[0].average;
@@ -179,7 +179,7 @@ inline void TextVisual::drawTopologySizeInMemory(
     );
     const auto stminmaxAverage = std::minmax_element(
         tp.surfaceTemperature.content,
-        tp.surfaceTemperature.content + TG,
+        tp.surfaceTemperature.content + STG,
         [] ( const pns::surfaceTemperatureCell_t& a, const pns::surfaceTemperatureCell_t& b ) -> bool {
             return (a[0].average < b[0].average);
         }
@@ -187,7 +187,7 @@ inline void TextVisual::drawTopologySizeInMemory(
 
     const auto rsumAverage = std::accumulate(
         tp.rainfall.content,
-        tp.rainfall.content + TG,
+        tp.rainfall.content + RG,
         0.0f,
         [] ( float sum, const pns::rainfallCell_t& a ) -> float {
             return sum + a[0].average;
@@ -195,7 +195,7 @@ inline void TextVisual::drawTopologySizeInMemory(
     );
     const auto rminmaxAverage = std::minmax_element(
         tp.rainfall.content,
-        tp.rainfall.content + TG,
+        tp.rainfall.content + RG,
         [] ( const pns::rainfallCell_t& a, const pns::rainfallCell_t& b ) -> bool {
             return (a[0].average < b[0].average);
         }
@@ -203,7 +203,7 @@ inline void TextVisual::drawTopologySizeInMemory(
 
     const auto dsumAverage = std::accumulate(
         tp.drainage.content,
-        tp.drainage.content + TG,
+        tp.drainage.content + DG,
         0.0f,
         [] ( float sum, const pns::drainageCell_t& a ) -> float {
             return sum + a[0].average;
@@ -211,7 +211,7 @@ inline void TextVisual::drawTopologySizeInMemory(
     );
     const auto dminmaxAverage = std::minmax_element(
         tp.drainage.content,
-        tp.drainage.content + TG,
+        tp.drainage.content + DG,
         [] ( const pns::drainageCell_t& a, const pns::drainageCell_t& b ) -> bool {
             return (a[0].average < b[0].average);
         }
@@ -219,7 +219,7 @@ inline void TextVisual::drawTopologySizeInMemory(
 
     const auto iSsumAverage = std::accumulate(
         tp.illuminance.content,
-        tp.illuminance.content + TG,
+        tp.illuminance.content + IG,
         0.0f,
         [] ( float sum, const pns::illuminanceCell_t& a ) -> float {
             return sum + a[0].star;
@@ -227,7 +227,7 @@ inline void TextVisual::drawTopologySizeInMemory(
     );
     const auto iSminmaxAverage = std::minmax_element(
         tp.illuminance.content,
-        tp.illuminance.content + TG,
+        tp.illuminance.content + IG,
         [] ( const pns::illuminanceCell_t& a, const pns::illuminanceCell_t& b ) -> bool {
             return (a[0].star < b[0].star);
         }

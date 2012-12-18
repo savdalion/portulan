@@ -36,9 +36,10 @@ namespace portulan {
 *     избежать создания booster-структуры (см. porte::Booster).
 */
 typedef struct __attribute__ ((packed)) {
-    aboutPlanet_t     aboutPlanet;
-    aboutComponent_t  aboutComponent;
-    aboutLiving_t     aboutLiving;
+    aboutPlanet_t             aboutPlanet;
+    aboutComponent_t          aboutComponent;
+    aboutLiving_t             aboutLiving;
+    aboutIlluminanceSource_t  aboutIlluminanceSource;
 
     component_t           component;
     temperature_t         temperature;
@@ -52,7 +53,7 @@ typedef struct __attribute__ ((packed)) {
 
     // @todo extend Ветры.
     // @todo extend Облака.
-    // @todo extend Карта пожаров > http://gis-lab.info/blog/2012-09/fires-wfa/
+    // @todo extend Карта пожаров > http://gis-lab.info/blog/2012-09/fires-wfa
 
 } topology_t;
 
