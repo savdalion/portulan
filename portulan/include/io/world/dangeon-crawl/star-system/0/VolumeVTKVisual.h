@@ -150,6 +150,7 @@ private:
             void*          vtkNotUsed( callData )
         ) {
             // команда не должна вызываться пока не завершена предыдущая
+            // @todo optimize Лишнее? Проверить соглашения для VTK::Execute().
             if ( !complete ) {
                 return;
             }

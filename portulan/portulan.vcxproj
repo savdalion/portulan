@@ -84,6 +84,12 @@
     <ClInclude Include="include\command\common.h" />
     <ClInclude Include="include\io\VolumeVTKVisual.h" />
     <ClInclude Include="include\io\world\dangeon-crawl\planet\0\VolumeVTKVisual.h" />
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\Portulan.h" />
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\living-set.h" />
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\living.h" />
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\structure.h" />
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\topology.h" />
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\Topology.h" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance-utils.h" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance.h" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\Topology.h" />
@@ -128,6 +134,8 @@
     <None Include="include\io\world\dangeon-crawl\planet\0\TextVisual.inl" />
     <None Include="include\io\world\dangeon-crawl\planet\0\SnapshotVTK.inl" />
     <None Include="include\io\world\dangeon-crawl\planet\0\VolumeVTKVisual.inl" />
+    <None Include="include\world\dangeon-crawl\living - %40todo\!.txt" />
+    <None Include="include\world\dangeon-crawl\living - %40todo\0\Topology.inl" />
     <None Include="include\world\dangeon-crawl\planet\!.txt" />
     <None Include="include\world\dangeon-crawl\-\-constructor.inl" />
     <None Include="include\world\dangeon-crawl\planet\0\Topology.inl" />

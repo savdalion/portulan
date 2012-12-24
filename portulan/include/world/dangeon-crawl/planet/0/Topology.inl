@@ -14,32 +14,48 @@ inline Topology::Topology() {
     static_assert( ((GRID_SZ % 3) == 0), "Размер стороны по Z должен быть кратен 3." );
     */
 
+    // # Все структуры инициализируем нулями. Удобно для отладки.
+
+    std::memset( &mTopology.aboutPlanet, 0, sizeof( mTopology.aboutPlanet ) );
+    std::memset( &mTopology.aboutComponent, 0, sizeof( mTopology.aboutComponent ) );
+    std::memset( &mTopology.aboutLiving, 0, sizeof( mTopology.aboutLiving ) );
+    std::memset( &mTopology.aboutIlluminanceSource, 0, sizeof( mTopology.aboutIlluminanceSource ) );
+
     mTopology.component.content =
         new componentCell_t[ COMPONENT_GRID * COMPONENT_GRID * COMPONENT_GRID ];
+    std::memset( mTopology.component.content, 0, sizeof( *mTopology.component.content ) );
 
     mTopology.temperature.content =
         new temperatureCell_t[ TEMPERATURE_GRID * TEMPERATURE_GRID * TEMPERATURE_GRID ];
+    std::memset( mTopology.temperature.content, 0, sizeof( *mTopology.temperature.content ) );
 
     mTopology.surfaceTemperature.content =
         new surfaceTemperatureCell_t[ SURFACE_TEMPERATURE_GRID * SURFACE_TEMPERATURE_GRID * SURFACE_TEMPERATURE_GRID ];
+    std::memset( mTopology.surfaceTemperature.content, 0, sizeof( *mTopology.surfaceTemperature.content ) );
 
     mTopology.rainfall.content =
         new rainfallCell_t[ RAINFALL_GRID * RAINFALL_GRID * RAINFALL_GRID ];
+    std::memset( mTopology.rainfall.content, 0, sizeof( *mTopology.rainfall.content ) );
 
     mTopology.drainage.content =
         new drainageCell_t[ DRAINAGE_GRID * DRAINAGE_GRID * DRAINAGE_GRID ];
+    std::memset( mTopology.drainage.content, 0, sizeof( *mTopology.drainage.content ) );
 
     mTopology.landscape.content =
         new landscapeCell_t[ LANDSCAPE_GRID * LANDSCAPE_GRID * LANDSCAPE_GRID ];
+    std::memset( mTopology.landscape.content, 0, sizeof( *mTopology.landscape.content ) );
 
     mTopology.illuminance.content =
         new illuminanceCell_t[ ILLUMINANCE_GRID * ILLUMINANCE_GRID * ILLUMINANCE_GRID ];
+    std::memset( mTopology.illuminance.content, 0, sizeof( *mTopology.illuminance.content ) );
 
     mTopology.biome.content =
         new biomeCell_t[ BIOME_GRID * BIOME_GRID * BIOME_GRID ];
+    std::memset( mTopology.biome.content, 0, sizeof( *mTopology.biome.content ) );
 
     mTopology.living.content =
         new livingCell_t[ LIVING_GRID * LIVING_GRID * LIVING_GRID ];
+    std::memset( mTopology.living.content, 0, sizeof( *mTopology.living.content ) );
 }
 
 
@@ -51,6 +67,7 @@ inline Topology::~Topology() {
     delete[] mTopology.rainfall.content;
     delete[] mTopology.drainage.content;
     delete[] mTopology.landscape.content;
+    delete[] mTopology.illuminance.content;
     delete[] mTopology.biome.content;
     delete[] mTopology.living.content;
 }

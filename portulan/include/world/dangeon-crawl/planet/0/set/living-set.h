@@ -215,7 +215,8 @@ static const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
     //     3    Старики.
     //     4    Мёртвые особи - тела, скелеты.
     //     5    Бессмертные особи.
-    // В качестве массы для взрослой особи взята 20-я часть массы из http://koti.welho.com/jarmoki/crawl/crawl_ss_monsters_by_name.html
+    // В качестве массы для взрослой особи взята 20-я часть массы
+    // из http://koti.welho.com/jarmoki/crawl/crawl_ss_monsters_by_name.html
     { 0.5f,  10.0f,  20.0f,  25.0f,  20.0f,  30.0f },
 
     // maxGroupSize

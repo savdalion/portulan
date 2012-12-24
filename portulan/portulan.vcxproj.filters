@@ -150,6 +150,24 @@
     <ClInclude Include="include\io\world\dangeon-crawl\planet\0\VolumeVTKVisual.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\living-set.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\living.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\structure.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\set\topology.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\Portulan.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\Topology.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Topology.inl">
@@ -188,5 +206,9 @@
     <None Include="include\io\world\dangeon-crawl\planet\0\VolumeVTKVisual.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
+    <None Include="include\world\dangeon-crawl\living - %40todo\0\Topology.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\world\dangeon-crawl\living - %40todo\!.txt" />
   </ItemGroup>
 </Project>

@@ -36,7 +36,7 @@ namespace portulan {
 * Величина пульса в области планеты.
 *    # 1 пульс = 1 год = 400 дней
 *    # 1 день = 25 часов
-*/
+*//*
 static __constant cl_float SECOND_IN_MINUTE = 60.0f;
 static __constant cl_float MINUTE_IN_HOUR   = 60.0f;
 static __constant cl_float HOUR_IN_DAY      = 25.0f;
@@ -44,6 +44,7 @@ static __constant cl_float DAY_IN_YEAR      = 400.0f;
 static __constant cl_float HOUR_IN_YEAR     = DAY_IN_YEAR    * HOUR_IN_DAY;
 static __constant cl_float MINUTE_IN_YEAR   = HOUR_IN_YEAR   * MINUTE_IN_HOUR;
 static __constant cl_float SECOND_IN_YEAR   = MINUTE_IN_YEAR * SECOND_IN_MINUTE;
+*/
 #endif
 
 
