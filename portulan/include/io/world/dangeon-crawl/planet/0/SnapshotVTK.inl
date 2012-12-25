@@ -5,9 +5,11 @@ namespace portulan {
                 namespace planet {
                     namespace l0 {
 
-        
+namespace pnp = portulan::world::dungeoncrawl::planet::l0;
+
+
 inline SnapshotVTK::SnapshotVTK(
-    const portulan::world::dungeoncrawl::planet::l0::Portulan*  p
+    const std::shared_ptr< pnp::Portulan >  p
 ) :
     mPortulan( p )
 {
@@ -50,7 +52,7 @@ inline void SnapshotVTK::component( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().component.content;
+        mPortulan.lock()->topology().topology().component.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -163,7 +165,7 @@ inline void SnapshotVTK::temperature( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().temperature.content;
+        mPortulan.lock()->topology().topology().temperature.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -241,7 +243,7 @@ inline void SnapshotVTK::surfaceTemperature( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().surfaceTemperature.content;
+        mPortulan.lock()->topology().topology().surfaceTemperature.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -299,7 +301,7 @@ inline void SnapshotVTK::rainfall( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().rainfall.content;
+        mPortulan.lock()->topology().topology().rainfall.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -357,7 +359,7 @@ inline void SnapshotVTK::drainage( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().drainage.content;
+        mPortulan.lock()->topology().topology().drainage.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -415,7 +417,7 @@ inline void SnapshotVTK::landscape( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().landscape.content;
+        mPortulan.lock()->topology().topology().landscape.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -546,7 +548,7 @@ inline void SnapshotVTK::illuminance( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().illuminance.content;
+        mPortulan.lock()->topology().topology().illuminance.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -604,7 +606,7 @@ inline void SnapshotVTK::biome( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().biome.content;
+        mPortulan.lock()->topology().topology().biome.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 
@@ -704,7 +706,7 @@ inline void SnapshotVTK::living( const std::string& file ) {
     static const size_t G3 = grid * grid * grid;
 
     const auto& content =
-        mPortulan->topology().topology().living.content;
+        mPortulan.lock()->topology().topology().living.content;
 
     auto points = vtkSmartPointer< vtkPoints >::New();
 

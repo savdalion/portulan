@@ -54,7 +54,7 @@ public:
     /**
     * Открывает окно для визуализации.
     */
-    VolumeVTKVisual( const option_t& );
+    explicit VolumeVTKVisual( const option_t& );
 
 
 

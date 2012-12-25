@@ -28,8 +28,9 @@ namespace portulan {
 * 
 * @see structure::topology_t
 */
-class Topology {
-
+class Topology :
+    public std::enable_shared_from_this< Topology >
+{
 public:
     typedef std::shared_ptr< Topology >  Ptr;
     typedef std::unique_ptr< Topology >  UPtr;

@@ -27,8 +27,12 @@ namespace portulan {
 *   # На уровне I отсутствуют конкретные сущности.
 *   # Общие сущности позиционируются по целым ячейкам.
 *
+*
+* @todo fine Создать базовый класс. Наследовать от базового класса.
 */
-class Portulan {
+class Portulan :
+    public std::enable_shared_from_this< Portulan >
+{
 public:
     /**
     * Ссылки.
@@ -85,6 +89,6 @@ private:
 
 
 #else
-#pragma message( "Class portulan::world::dungeoncrawl::planet::l0::Portulan not included in project: OpenCL disable" )
+#pragma message( "Class pnp::Portulan not included in project: OpenCL disable" )
 
 #endif

@@ -62,7 +62,7 @@ public:
     /**
     * Открывает окно для визуализации.
     */
-    VolumeVTKVisual( const option_t& );
+    explicit VolumeVTKVisual( const option_t& );
 
 
 
@@ -161,7 +161,7 @@ private:
             // обновляем визуальный образ
             // @todo optimize Не перерисовывать всю картинку, менять
             //       только положение Actor's.
-            const pns::Portulan* p = engine->portulan();
+            const auto p = engine->portulan();
             *parent << *p;
 
             /* - См. todo выше.

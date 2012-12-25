@@ -16,7 +16,7 @@
 #include "include/world/dangeon-crawl/star-system/0/Topology.h"
 
 #else
-#pragma message( "Class portulan::world::dungeoncrawl::planet::l0::Portulan not included in project: OpenCL disable" )
+#pragma message( "The class pnp = portulan::world::dungeoncrawl::planet::l0::Portulan not included in project because the OpenCL is disable." )
 
 #endif
 
@@ -29,6 +29,6 @@
 
 
 #else
-#pragma message( "File configure.h don't include any set of portulan. Build of portulan is not complete." )
+#pragma message( "The file configure.h don't include any set of portulan. Build of the portulan is not complete." )
 
 #endif

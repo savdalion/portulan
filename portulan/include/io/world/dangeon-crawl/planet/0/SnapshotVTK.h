@@ -23,6 +23,9 @@ namespace portulan {
                 namespace planet {
                     namespace l0 {
 
+namespace pnp = portulan::world::dungeoncrawl::planet::l0;
+
+
 /**
 * Сохраняет мир Dungeon Crawl в формате VTK.
 * Просмотреть можно визуализаторами, которые понимают формат VTK:
@@ -38,7 +41,7 @@ public:
 
 
 public:
-    SnapshotVTK( const portulan::world::dungeoncrawl::planet::l0::Portulan* );
+    explicit SnapshotVTK( const std::shared_ptr< pnp::Portulan > );
 
 
     virtual ~SnapshotVTK();
@@ -94,7 +97,7 @@ private:
     /**
     * Портулан.
     */
-    const portulan::world::dungeoncrawl::planet::l0::Portulan*  mPortulan;
+    const std::weak_ptr< pnp::Portulan >  mPortulan;
 
 };
 

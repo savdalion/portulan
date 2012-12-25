@@ -17,8 +17,12 @@ namespace portulan {
 /**
 * Класс для эффективного хранения и обработки 3D-модели звёздной системы
 * на графических процессорах (OpenCL, Cuda).
+*
+* @todo fine Создать базовый класс. Наследовать от базового класса.
 */
-class Portulan {
+class Portulan :
+    public std::enable_shared_from_this< Portulan >
+{
 public:
     /**
     * Ссылки.
@@ -75,6 +79,6 @@ private:
 
 
 #else
-#pragma message( "Class portulan::world::dungeoncrawl::planet::l0::Portulan not included in project: OpenCL disable" )
+#pragma message( "Class pnp::Portulan not included in project: OpenCL disable" )
 
 #endif

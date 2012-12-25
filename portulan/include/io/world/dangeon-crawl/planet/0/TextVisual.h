@@ -11,6 +11,9 @@ namespace portulan {
                 namespace planet {
                     namespace l0 {
 
+namespace pnp = portulan::world::dungeoncrawl::planet::l0;
+
+
 /**
 * Вывод информации о состоянии области планеты мира Dungeon Crawl
 * в виде текста.
@@ -35,7 +38,7 @@ public:
     /**
     * Печатает в текущий поток.
     */
-    TextVisual& operator<<( const portulan::world::dungeoncrawl::planet::l0::Portulan& );
+    TextVisual& operator<<( const pnp::Portulan& );
     TextVisual& operator<<( const std::string& );
 
 
@@ -57,7 +60,7 @@ public:
 
 private:
     void drawTopologySizeInMemory(
-        const portulan::world::dungeoncrawl::planet::l0::topology_t&
+        const pnp::topology_t&
     );
 
 

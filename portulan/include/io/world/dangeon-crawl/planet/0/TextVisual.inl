@@ -5,7 +5,9 @@ namespace portulan {
                 namespace planet {
                     namespace l0 {
 
-        
+namespace pnp = portulan::world::dungeoncrawl::planet::l0;
+
+
 inline TextVisual::TextVisual(
     std::ostream&  out,
     const option_t&  json
@@ -27,7 +29,7 @@ inline TextVisual::~TextVisual() {
 
 
 inline TextVisual& TextVisual::operator<<(
-    const portulan::world::dungeoncrawl::planet::l0::Portulan&  portulan
+    const pnp::Portulan&  portulan
 ) {
     const auto& topology = portulan.topology().topology();
 
@@ -88,7 +90,7 @@ inline void TextVisual::wait() {
 
 
 inline void TextVisual::drawTopologySizeInMemory(
-    const portulan::world::dungeoncrawl::planet::l0::topology_t&  tp
+    const pnp::topology_t&  tp
 ) {
     namespace pns = portulan::world::dungeoncrawl::planet::l0;
 
