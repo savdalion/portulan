@@ -34,7 +34,7 @@ namespace portulan {
 // @todo fine OpenCL требует объ€влени€ этого метода в biome.hcl. –азобратьс€,
 //       почему нельз€ объ€вить только здесь и как 'inline'.
 void starIlluminancePlanet(
-    __global illuminanceCell_t  u,
+    __global sourceIlluminance_t*  u,
     const cl_int ix, const cl_int iy, const cl_int iz,
     // планета
     const cl_float  radius,

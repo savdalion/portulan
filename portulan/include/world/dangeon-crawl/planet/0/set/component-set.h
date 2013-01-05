@@ -19,7 +19,8 @@ namespace portulan {
 namespace tc = typelib::constant::physics;
 
 
-static const aboutComponent_t aboutComponent[ COMPONENT_COUNT ] = {
+// # Здесь не помешает хранение 'static', но CPU OpenCL не воспринимает его.
+const aboutComponent_t aboutComponent[ COMPONENT_COUNT ] = {
 /**
 * Пустой компонент для выравнивания индексов списка по CODE_COMPONENT.
 */

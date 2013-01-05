@@ -20,7 +20,8 @@ namespace portulan {
 #endif
 
 
-static __constant aboutBiome_t aboutBiome[ BIOME_COUNT ] = {
+// # «десь не помешает хранение 'static', но CPU OpenCL не воспринимает его.
+__constant aboutBiome_t aboutBiome[ BIOME_COUNT ] = {
     // CB_NONE
     {
     },

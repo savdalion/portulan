@@ -20,7 +20,8 @@ namespace portulan {
 namespace tc = typelib::constant::physics;
 
 
-static const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
+// # Здесь не помешает хранение 'static', но CPU OpenCL не воспринимает его.
+const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
 /**
 * Пустая особь.
 * Используется для выравнивания индексов списка по CODE_LIVING.

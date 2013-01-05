@@ -38,11 +38,11 @@ namespace portulan {
 // @todo fine OpenCL требует объявления этого метода в biome.hcl. Разобраться,
 //       почему нельзя объявить только здесь и как 'inline'.
 void likeBiome(
-    __global biomeCell_t bc,
+    __global presentBiome_t* bc,
     const cl_float temperature,
     const cl_float rainfall,
     const cl_float drainage,
-    __global const landscapeCell_t landscapeCell,
+    __global const elementLandscape_t* landscapeCell,
     const cl_uint randomValue
 ) {
     // @todo Протестировать.
