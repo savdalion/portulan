@@ -108,6 +108,7 @@ enum DIRECTION {
 
 /**
 * Критерии для оценки.
+* Цвета разданы по спектру > http://ru.wikipedia.org/wiki/%D0%A6%D0%B2%D0%B5%D1%82#.D0.A6.D0.B2.D0.B5.D1.82.D0.B0_.D1.81.D0.BF.D0.B5.D0.BA.D1.82.D1.80.D0.B0_.D0.B8_.D0.BE.D1.81.D0.BD.D0.BE.D0.B2.D0.BD.D1.8B.D0.B5_.D1.86.D0.B2.D0.B5.D1.82.D0.B0
 */
 enum CRITERIA {
     // абсолютно не важно / ничего нет / не определено
@@ -115,9 +116,9 @@ enum CRITERIA {
     CRITERIA_EMPTY = CRITERIA_NONE,
     CRITERIA_A_WHITE = CRITERIA_NONE,
     // ниже среднего / мало
-    CRITERIA_B_GREEN,
+    CRITERIA_B_BLUE,
     // средняя важность / нормально
-    CRITERIA_C_BLUE,
+    CRITERIA_C_GREEN,
     // выше среднего / много
     CRITERIA_D_YELLOW,
     // жизненная необходимость / предостаточно

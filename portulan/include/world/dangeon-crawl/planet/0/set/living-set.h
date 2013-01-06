@@ -54,9 +54,7 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
     {},
 
     // resist
-    {
-        { TAL_NONE,  FAL_NONE,  0.0f }
-    },
+    {},
 
     // evasion
     0.0f,
@@ -89,7 +87,9 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
     0.0f,
 
     // composition
-    {},
+    {
+        { CC_NONE, 0.0f },
+    },
 
     // metabolism
     {
@@ -137,7 +137,13 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
         //adaptability
         0.0f
 #endif
-    }
+    },
+
+    // friend
+    {},
+
+    // enemy
+    {}
 },
 #endif
 
@@ -180,6 +186,15 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
 
     // attack
     {
+        // не может жвалами пронзить, но раздробить / разрезать - вполне
+        // @see http://crawl.chaosforge.org/index.php?title=Worker_ant
+        { TAL_CRUSH,     FAL_PLAIN,   4.0f },
+        { TAL_CUTTING,   FAL_PLAIN,   8.0f },
+        // впрыскивает отраву
+        // @see http://crawl.chaosforge.org/index.php?title=Poison
+        { TAL_ANY,       FAL_POISON,  10.0f },
+        // признак завершения списка
+        { TAL_NONE,  FAL_NONE,  0.0f }
     },
 
     // resist
@@ -253,13 +268,19 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
 
     // composition
     {
+        { CC_WATER,         0.4f },
+        { CC_PROTEIN,       0.2f },
+        { CC_FAT,           0.1f },
+        { CC_CARBOHYDRATE,  0.25f },
+        { CC_SPARSE,        0.05f },
+        { CC_NONE,          0.0f },
     },
 
     // metabolism
     {
 #if 1
         // componentNeed_t[ COMPONENT_NEED_LIVING ]
-        // кг / день
+        // кг / день-
         {
             // ~ 3 л воды / день (1 л = 1 кг)
             { CC_WATER,         3.0f },
@@ -303,8 +324,8 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
         //   - муравей способен жить на границе твёрдой и газообразной сред,
         //     а также внутри твёрдой среды (норы, муравейники)
         {
-            HL_GAS | HL_SOLID,
             HL_SOLID,
+            HL_GAS | HL_SOLID,
             0U,
         },
 
@@ -321,7 +342,16 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
         // adaptability
         0.5f
 #endif
-    }
+    },
+
+    // friend
+    {
+        // code, force
+        { CL_WORKER_ANT, CRITERIA_D_YELLOW },
+    },
+
+    // enemy
+    {}
 },
 #endif
 
@@ -371,10 +401,7 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
     {},
 
     // resist
-    {
-        // признак завершения списка
-        { TAL_NONE,  FAL_NONE,  0.0f }
-    },
+    {},
 
     // evasion
     0.0f,
@@ -411,7 +438,11 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
 
     // composition
     {
-        // @todo ...
+        { CC_WATER,         0.800f },
+        { CC_CARBOHYDRATE,  0.150f },
+        { CC_PROTEIN,       0.049f },
+        { CC_SPARSE,        0.001f },
+        { CC_NONE,          0.0f },
     },
 
     // metabolism
@@ -500,7 +531,13 @@ const aboutLiving_t aboutLiving[ LIVING_COUNT ] = {
         // adaptability
         0.5f
 #endif
-    }
+    },
+
+    // friend
+    {},
+
+    // enemy
+    {}
 },
 #endif
 

@@ -128,18 +128,21 @@ enum DIRECTION {
 
 /**
 *  ритерии дл€ оценки.
+* ÷вета разданы по спектру > http://ru.wikipedia.org/wiki/%D0%A6%D0%B2%D0%B5%D1%82#.D0.A6.D0.B2.D0.B5.D1.82.D0.B0_.D1.81.D0.BF.D0.B5.D0.BA.D1.82.D1.80.D0.B0_.D0.B8_.D0.BE.D1.81.D0.BD.D0.BE.D0.B2.D0.BD.D1.8B.D0.B5_.D1.86.D0.B2.D0.B5.D1.82.D0.B0
 */
 enum CRITERIA {
     // абсолютно не важно / ничего нет / не определено
-    CRITERIA_A = 0,
+    CRITERIA_NONE = 0,
+    CRITERIA_EMPTY = CRITERIA_NONE,
+    CRITERIA_A_WHITE = CRITERIA_NONE,
     // ниже среднего / мало
-    CRITERIA_B,
-    // средн€€ важность / много
-    CRITERIA_C,
-    // выше среднего / очень много
-    CRITERIA_D,
+    CRITERIA_B_BLUE,
+    // средн€€ важность / нормально
+    CRITERIA_C_GREEN,
+    // выше среднего / много
+    CRITERIA_D_YELLOW,
     // жизненна€ необходимость / предостаточно
-    CRITERIA_E,
+    CRITERIA_E_RED,
 
     // последний = кол-во критериев
     CRITERIA_last,
@@ -404,7 +407,7 @@ static __constant size_t RESIST_PART_LIVING = 30;
 * ћаксимальное кол-во *разных* хим. компонентов, из которых может
 * состо€ть особь.
 */
-static __constant size_t COMPONENT_COMPOSITION_LIVING = 5;
+static __constant size_t COMPONENT_COMPOSITION_LIVING = 10;
 
 
 
@@ -461,6 +464,20 @@ static __constant size_t HABITAT_SURVIVOR_LIVING = 5;
 * ћаксимальное кол-во *разных* биомов, где особь чувствует себ€ комфортно.
 */
 static __constant size_t BIOME_COMFORT_SURVIVOR_LIVING = BIOME_COUNT;
+
+
+
+/**
+* ћаксимальное кол-во друзей дл€ особи.
+*/
+static __constant size_t FRIEND_COUNT_LIVING = 10;
+
+
+
+/**
+* ћаксимальное кол-во врагов дл€ особи.
+*/
+static __constant size_t ENEMY_COUNT_LIVING = 10;
 
 
 

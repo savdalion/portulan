@@ -562,6 +562,44 @@ typedef struct __attribute__ ((packed)) {
 } survivorLiving_t;
 
 
+
+
+/**
+* Друзья.
+* # Значение критериев:
+*     CRITERIA_B_BLUE    Защита прекращается при малейшей опасности.
+*     CRITERIA_C_GREEN   Защита прекращается при серьёзной опасности.
+*     CRITERIA_D_YELLOW  Защита прекращается при гарантированной опасности.
+*     CRITERIA_E_RED     Будут защищены ценой собственной жизни.
+*/
+typedef struct __attribute__ ((packed)) {
+    enum CODE_LIVING  code;
+    enum CRITERIA     force;
+} aboutFriendLiving_t;
+
+typedef aboutFriendLiving_t  friendLiving_t[ FRIEND_COUNT_LIVING ];
+
+
+
+
+/**
+* Враги.
+* # Значение критериев:
+*     CRITERIA_B_BLUE    Будут атакованы при гарантированной угрозе.
+*     CRITERIA_C_GREEN   Будут атакованы при серьёзной угрозе.
+*     CRITERIA_D_YELLOW  Будут атакованы при малейшей угрозе.
+*     CRITERIA_E_RED     Будут атакованы всегда.
+*/
+typedef struct __attribute__ ((packed)) {
+    enum CODE_LIVING  code;
+    enum CRITERIA     force;
+} aboutEnemyLiving_t;
+
+typedef aboutEnemyLiving_t  enemyLiving_t[ ENEMY_COUNT_LIVING ];
+
+
+
+
 typedef struct __attribute__ ((packed)) {
     /**
     * Код вида особи.
@@ -708,6 +746,19 @@ typedef struct __attribute__ ((packed)) {
     *   # Условия выживания одинаковы для всех жизненных циклов особи.
     */
     survivorLiving_t survivor;
+
+
+    /**
+    * Друзья.
+    */
+    friendLiving_t friend;
+
+
+    /**
+    * Враги.
+    */
+    enemyLiving_t enemy;
+
 
 } aboutOneLiving_t;
 
