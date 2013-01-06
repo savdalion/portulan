@@ -472,5 +472,4 @@ inline void VolumeVTKVisual::drawTopologyTemperature(
 
 
     } // io
-
 } // portulan

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "configure.h"
-#include "include/command.h"
-#include "include/Portulan.h"
-#include "include/Topology.h"
+#include "include/portulan/command.h"
+#include "include/portulan/Portulan.h"
+#include "include/portulan/Topology.h"
 #include "include/io/VolumeVTKVisual.h"
 
 

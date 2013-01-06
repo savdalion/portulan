@@ -4,4 +4,4 @@
 * ¬се известные наборы команд дл€ создани€ карт.
 */
 
-#include "command/common.h"
+#include "../command/common.h"

@@ -71,264 +71,6 @@ typedef struct __attribute__ ((packed)) {
 
 
 
-
-/**
-* Перечисление общих частей тела живых существ.
-*   # Деление на группы животных / растений - чисто условное.
-*/
-enum COMMON_PART_LIVING {
-    // пустая часть или часть не определена
-    // используется как признак, что орган не прикреплён ни к какому
-    // другому органу
-    CPL_NONE = 0,
-
-    /* животные, насекомые */
-    // голова
-    CPL_HEAD,
-    // грудь
-    CPL_BREAST,
-    // брюшко
-    CPL_BELLY,
-    // мозг
-    CPL_BRAIN,
-    // жвалы
-    CPL_MANDIBLE,
-    // глаз
-    CPL_EYE,
-    // усик
-    CPL_FEELER,
-    // лапка насекомого
-    CPL_TARSUS,
-    // лапа животного
-    CPL_LEG,
-    /* - @todo extend Добавление железы повлечёт за собой усложнение структуры.
-         Сейчас яд будет создаваться в том же органе, который воздействует
-         на окр. среду.
-    // ядовитая железа
-    CPL_VENOM_GLAND
-    */
-
-    /* растения */
-    // корень
-    CPL_ROOT,
-    // стебель, ствол
-    CPL_STEM,
-    // листва, листья
-    CPL_LEAF,
-    // колосок
-    CPL_SPIKELET,
-    // семя
-    CPL_SEED,
-    // плод, зародыш, эмбрион
-    //CPL_FETUS, - ограничиться семенем?
-
-    // последняя
-    CPL_last
-};
-
-
-
-
-
-/**
-* Местоположение органа особи по координатным осям XYZ.
-*   # Наблюдатель смотрит навстречу оси Z, ось X направлена вправо, Y - вверх.
-*/
-#if 1
-
-enum LOCUS_X_PART_LIVING {
-    LXL_UNDEFINED = 0,
-    LXL_LEFT,
-    LXL_CENTER,
-    LXL_RIGHT,
-    // орган расположен по всей особи (например, кровеносные сосуды)
-    LXL_EXTENT,
-
-    // последний
-    LXL_last
-};
-
-enum LOCUS_Y_PART_LIVING {
-    LYL_UNDEFINED = 0,
-    LYL_BOTTOM,
-    LYL_CENTER,
-    LYL_TOP,
-    LYL_EXTENT,
-
-    // последний
-    LYL_last
-};
-
-enum LOCUS_Z_PART_LIVING {
-    LZL_UNDEFINED = 0,
-    LZL_FAR,
-    LZL_CENTER,
-    LZL_NEAR,
-    LZL_EXTENT,
-
-    // последний
-    LZL_last
-};
-
-#endif
-
-
-
-
-
-/**
-* Код органа особи.
-* Код разделён на несколько частей, чтобы обеспечить дополн. динамику
-* без лишнего кодирования.
-*/
-typedef struct __attribute__ ((packed)) {
-    // какой особи принадлежит орган
-    enum CODE_LIVING specimen;
-
-    // часть органа
-    enum COMMON_PART_LIVING part;
-
-    // местоположение органа относительно особи
-    //   # Особь разворачивается головой вверх, спиной к наблюдателю и т.о.,
-    //     чтобы её проекция относительно взгляда наблюдателя была
-    //     максимальной.
-    //   # Смотрим на особь сверху: ось Z - навстречу наблюдателю, ось X -
-    //     направо, ось Y - вверх.
-    enum LOCUS_X_PART_LIVING lx;
-    enum LOCUS_Y_PART_LIVING ly;
-    enum LOCUS_Z_PART_LIVING lz;
-
-    // орган находится внутри другого органа
-    // Например: мозг, сердце.
-    enum COMMON_PART_LIVING inner;
-
-    // орган находится на поверхности или прикреплён к другому органу
-    // Например: глаз, рука.
-    //   # Если к органу прикреплены неск. меньших по размеру органов,
-    //     факт прикрепления указывается для меньших органов.
-    //   # Если скреплены близкие по размеру органы, факт прикрепления
-    //     указывается для нижнего органа. См. выше "местоположение органа".
-    enum COMMON_PART_LIVING outer;
-
-} codePartLiving_t;
-
-
-
-
-
-
-/**
-* Функция части тела особи.
-*/
-#if 1
-
-// жизненно важная часть (летальный исход при отсутствии)
-#define FPL_LIVE                          (1ULL << 0)
-
-// перемещение по твёрдой поверхности
-#define FPL_MOVE_SOLID_SURFACE            (1ULL << 1)
-// перемещение по жидкой поверхности
-#define FPL_MOVE_LIQUID_SURFACE           (1ULL << 2)
-
-// перемещение внутри твёрдой поверхности с копанием норы
-#define FPL_MOVE_SOLID_INSIDE_DIG         (1ULL << 3)
-// перемещение внутри твёрдой поверхности по готовой норе
-#define FPL_MOVE_SOLID_INSIDE_BURROW      (1ULL << 4)
-// перемещение внутри жидкой поверхности
-#define FPL_MOVE_LIQUID_INSIDE            (1ULL << 5)
-// перемещение внутри газообразной поверхности (полёт по воздуху)
-#define FPL_MOVE_GAS_INSIDE               (1ULL << 6)
-
-// # Что конкретно поглощает - указано для каждого органа.
-// поглощение твёрдых питательных компонентов (пища, рот)
-#define FPL_EAT_SOLID                     (1ULL << 7)
-// поглощение жидких питательных компонентов (вода, хобот)
-#define FPL_EAT_LIQUID                    (1ULL << 8)
-// поглощение газообразных питательных компонентов (воздух, лёгкие)
-#define FPL_EAT_GAS                       (1ULL << 9)
-// поглощение энергий
-#define FPL_EAT_ENERGY                    (1ULL << 10)
-
-// # Что конкретно усваивает - указано для каждого органа.
-// усвоение твёрдых питательных компонентов (пища)
-#define FPL_UPTAKE_SOLID                  (1ULL << 11)
-// усвоение жидких питательных компонентов (вода)
-#define FPL_UPTAKE_LIQUID                 (1ULL << 12)
-// усвоение газообразных питательных компонентов (воздух)
-#define FPL_UPTAKE_GAS                    (1ULL << 13)
-// усвоение энергий
-#define FPL_UPTAKE_ENERGY                 (1ULL << 14)
-
-// выделение твёрдых питательных компонентов (кал)
-#define FPL_EXCRETION_SOLID               (1ULL << 15)
-// выделение жидких питательных компонентов (моча)
-#define FPL_EXCRETION_LIQUID              (1ULL << 16)
-// выделение газообразных питательных компонентов (газы)
-#define FPL_EXCRETION_GAS                 (1ULL << 17)
-// выделение света (светлячок)
-#define FPL_EXCRETION_NORMAL_LIGHT        (1ULL << 18)
-
-//   # Особь перерабатывает питательные компоненты в энергию для жизни.
-
-// рецепторы особи (экстероцепторы, что способна чувствовать в окр. среде)
-// # @todo extend? Каждый рецептор содержит уровень воспринимаемого
-//   сигнала по шкале
-//     - ультра (например, ультрафиолетовое излучение)
-//     - нормально (например, видимый свет)
-//     - инфра (например, инфракрасное излучение)
-// @see http://ru.wikipedia.org/wiki/%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BC%D0%B0%D0%B3%D0%BD%D0%B8%D1%82%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B5%D0%BA%D1%82%D1%80
-// вкус
-#define FPL_TASTE_NORMAL_SIGNAL           (1ULL << 19)
-// обоняние
-#define FPL_SMELL_NORMAL_SIGNAL           (1ULL << 20)
-// осязание
-#define FPL_TOUCH_NORMAL_SIGNAL           (1ULL << 21)
-// слух
-#define FPL_HEARING_NORMAL_SIGNAL         (1ULL << 22)
-// зрение
-#define FPL_VISION_NORMAL_SIGNAL          (1ULL << 23)
-// чужое присутствие (помним: это мир Dungeon Crawl)
-#define FPL_PRESENCE_NORMAL_SIGNAL        (1ULL << 24)
-
-// эффекты, производимые особью
-// отражаемое излучение (в каком свете особь или её орган видны)
-#define FPL_VISION_REFLECT_NORMAL_EFFECT  (1ULL << 25)
-/* - Для шума - см. noise в инф. об особи.
-// шумит (издаёт шум) при передвижении
-#define FPL_NOISE_MOVE_NORMAL_EFFECT      (1ULL << ..)
-*/
-
-// возможность физической атаки (челюсти, жало)
-#define FPL_PHYSICAL_ATTACK               (1ULL << 26)
-
-// возможность магической атаки (мозг)
-#define FPL_MAGIC_ATTACK                  (1ULL << 27)
-
-// интеллект (мозг)
-#define FPL_INTELLECT                     (1ULL << 28)
-
-//   # Общение - выделение вкусовых компонентов, запахов (вкусовые комп.
-//     в виде газов), звуков, особые прикосновения, движения (танцы), которые
-//     несут в себе смысловую информацию и могут быть восприняты другими
-//     особями при наличии соотв. рецептора.
-// общение с помощью вкусовых сигналов
-// @see Трофаллаксис > http://ru.wikipedia.org/wiki/%D0%A2%D1%80%D0%BE%D1%84%D0%B0%D0%BB%D0%BB%D0%B0%D0%BA%D1%81%D0%B8%D1%81
-#define FPL_EMIT_NORMAL_TASTE             (1ULL << 29)
-// общение с помощью запахов
-#define FPL_EMIT_NORMAL_SMELL             (1ULL << 30)
-// общение с помощью прикосновений
-#define FPL_EMIT_NORMAL_TOUCH             (1ULL << 31)
-// общение с помощью звуков (сигналы, речь)
-#define FPL_EMIT_NORMAL_SOUND             (1ULL << 32)
-// общение с помощью наблюдения (визуальные сигналы)
-#define FPL_EMIT_NORMAL_VISION            (1ULL << 33)
-
-#endif
-
-
-
-
-
 /**
 * Среды обитания - HABITAT_LIVING - особи.
 */
@@ -420,12 +162,10 @@ enum TAG_LIVING {
 // холоднокровная особь
 #define TL_COLD_BLOODED            (1ULL << 1)
 
-// регенерация особи (органа особи)
+// регенерация особи
 //   # Особь не регениерирует, если не указан хотя бы один из тегов ниже.
 // восстанавливаются повреждения
 #define TL_DAMAGE_REGENERATION     (1ULL << 2)
-// восстанавливаются утерянные части тела
-#define TL_LOSE_PART_REGENERATION  (1ULL << 3)
 
 #endif
 
@@ -562,14 +302,14 @@ typedef struct __attribute__ ((packed)) {
     enum TYPE_ATTACK_LIVING     type;
     enum FLAVOUR_ATTACK_LIVING  flavour;
     cl_float                    force;
-} aboutOnePartAttack_t;
+} aboutAttack_t;
 
 
 
 /**
-* Атаки, известные органу особи.
+* Атаки, известные особи.
 */
-typedef aboutOnePartAttack_t  attackPartLiving_t[ ATTACK_PART_LIVING ];
+typedef aboutAttack_t  attackLiving_t[ ATTACK_PART_LIVING ];
 
 
 
@@ -586,173 +326,22 @@ typedef struct __attribute__ ((packed)) {
     enum TYPE_ATTACK_LIVING     type;
     enum FLAVOUR_ATTACK_LIVING  flavour;
     cl_float                    force;
-} aboutOnePartResist_t;
+} aboutResist_t;
 
 
 
 /**
 * Защиты от известных атак.
 */
-typedef aboutOnePartResist_t  resistPartLiving_t[ RESIST_PART_LIVING ];
-
+typedef aboutResist_t  resistLiving_t[ RESIST_PART_LIVING ];
 
 
 
 
 /**
-* Информация об органе особи.
-*   # Размер органа особи определяется размером самой особи и массой органа.
+* Из каких компонентов состоит особь.
 */
-#if 1
-
 typedef portionComponent_t  compositionPortionLiving_t[ COMPONENT_COMPOSITION_LIVING ];
-
-typedef enum CODE_COMPONENT  componentCodeNeedLiving_t[ COMPONENT_NEED_LIVING ];
-
-typedef struct __attribute__ ((packed)) {
-    componentCodeNeedLiving_t componentNeed;
-    cl_float efficiency;
-} uptakeSolidLiving_t;
-
-typedef struct __attribute__ ((packed)) {
-    componentCodeNeedLiving_t componentNeed;
-    cl_float efficiency;
-} uptakeLiquidLiving_t;
-
-typedef struct __attribute__ ((packed)) {
-    componentCodeNeedLiving_t componentNeed;
-    cl_float efficiency;
-} uptakeGasLiving_t;
-
-
-typedef enum CODE_COMPONENT  componentCodeWasteLiving_t[ COMPONENT_WASTE_LIVING ];
-
-typedef struct __attribute__ ((packed)) {
-    componentCodeWasteLiving_t componentWaste;
-} excretionSolidLiving_t;
-
-typedef struct __attribute__ ((packed)) {
-    componentCodeWasteLiving_t componentWaste;
-} excretionLiquidLiving_t;
-
-typedef struct __attribute__ ((packed)) {
-    componentCodeWasteLiving_t componentWaste;
-} excretionGasLiving_t;
-
-
-typedef enum CODE_ENERGY  energyCodeNeedLiving_t[ ENERGY_NEED_LIVING ];
-
-typedef struct __attribute__ ((packed)) {
-    energyCodeNeedLiving_t energyNeed;
-} uptakeEnergyLiving_t;
-
-// выделение энергий (см. выше - усвоение энергий)
-typedef enum CODE_ENERGY  energyCodeWasteLiving_t[ ENERGY_WASTE_LIVING ];
-
-typedef struct __attribute__ ((packed)) {
-    energyCodeWasteLiving_t energyWaste;
-} excretionEnergyLiving_t;
-
-typedef struct __attribute__ ((packed)) {
-    /**
-    * Код органа особи.
-    */
-    codePartLiving_t code;
-
-    /**
-    * Масса органа особи относительно общей массы особи, части.
-    *   # Всегда <= 1.0.
-    *   # Масса всех органов особи должна быть <= 1.0.
-    *   # Если масса органа = 0.0, остаток массы распределиться
-    *     равномерно между всеми органами с нулевой массой (чтобы
-    *     привести сумму частей к 1.0).
-    */
-    cl_float mass;
-
-    /**
-    * Из каких компонентов состоит орган особи.
-    * Массовые доли (от общей массы органа), сумма = 1.0.
-    * Например: вода, белки (мясо), жиры, углеводы (скелет, панцирь).
-    */
-    compositionPortionLiving_t composition;
-
-
-    /**
-    * Характеристики органа в зависимости от его функциональности.
-    *   # Орган может обладать сразу неск. функциями.
-    *   # Наличие заданной функции определяется битами FPL_*.
-    */
-
-    /**
-    * Какие функции выполняет орган, его важность для особи.
-    * Битовое перечисление FPL_*.
-    */
-    cl_ulong function;
-
-
-    // Перемещение особи в разных средах.
-    // Задаётся в "function" и в самой особи.
-
-
-    // поглощение компонентов (см. ниже - усвоение)
-    //   # Наличие органа поглощения указывает на возможность организму принять
-    //     компоненты для усвоения.
-    // Не требует параметров.
-
-
-    // усвоение компонентов (см. выше - поглощение)
-    // Перечисляется список компонентов, которые орган способен усвоить
-    // из особи.
-    //   # Для органа указывается только *возможность* усвоения компонента.
-    //     Требуемое кол-во компонента декларировано в информации об особи.
-    //   # 1 литр воздуха (CC_AIR) весит 1.2 грамма.
-    // Орган переводит компоненты (пищу) в энергию.
-    // Энергия = количеству энергии, освобождаемой при сгорании компонента.
-    // КПД органа усвоения определяет, какая часть комп. усвоится организмом.
-    uptakeSolidLiving_t      uptakeSolid;
-    uptakeLiquidLiving_t     uptakeLiquid;
-    uptakeGasLiving_t        uptakeGas;
-
-
-    // выделение компонентов (см. выше - поглощение и усвоение компонентов)
-    excretionSolidLiving_t   excretionSolid;
-    excretionLiquidLiving_t  excretionLiquid;
-    excretionGasLiving_t     excretionGas;
-
-
-    // усвоение и выделение энергий
-    // Перечисляется список энергий, которые орган способен усвоить
-    // из окр. среды.
-    //   # Для органа указывается только *возможность* усвоения энергии.
-    //     Требуемое кол-во энергии указано в информации об особи.
-    uptakeEnergyLiving_t     uptakeEnergy;
-    excretionEnergyLiving_t  excretionEnergy;
-
-
-    /**
-    * Атаки, известные органу особи.
-    *   # Из-за относительно большого разброса возможностей атак, для особи
-    *     не задаётся "общая атака" (как для защиты "resist"): все атаки
-    *     содержат абсолютные значения.
-    */
-    attackPartLiving_t  attack;
-
-
-    /**
-    * Защита органа относительно общей защиты особи.
-    * Как надёжно орган защищён от воздействия.
-    *   # Защита части тела = resist особи + Относительная защита органа
-    *   # Для относительной защиты органа никогда не пишется IMMUNE (достаточно
-    *     записи для особи).
-    *   # Защита для вкусов TAL_SHOOT_CRUSH и TAL_SHOOT_PIERCE совпадает соотв.
-    *     с TAL_CRUSH и TAL_PIERCE.
-    */
-    resistPartLiving_t  resist;
-
-} aboutOnePartLiving_t;
-
-#endif
-
 
 
 
@@ -773,12 +362,8 @@ typedef struct __attribute__ ((packed)) {
 // перемещение в различных средах
 typedef struct __attribute__ ((packed)) {
     /**
-    * Максимальная скорость перемещения особи по поверхности, которую
-    * даёт этот орган.
-    * м/с
+    * Скорость перемещения особи по поверхности, м/с.
     * Определяет инициативу при моделировании столкновений.
-    *   # В обычных (не боевых) условиях, скорость перемещения
-    *     считается в 2 раза меньшей.
     */
     cl_float speed;
 
@@ -892,6 +477,7 @@ typedef struct __attribute__ ((packed)) {
 } preferComponentLiving_t;
 
 
+// @see struct planet::l0::topology_t
 typedef struct __attribute__ ((packed)) {
     /**
     * Комфортная температура, Цельсий.
@@ -900,12 +486,30 @@ typedef struct __attribute__ ((packed)) {
     cl_float temperature;
 
     /**
+    * Комфортное кол-во атмосферных осадков.
+    */
+    cl_float rainfall;
+
+    /**
+    * Комфортный дренаж.
+    */
+    cl_float drainage;
+
+    /**
+    * Комфортное освещение.
+    */
+    cl_float illuminance;
+
+    // @todo extend Включить все характеристики из planet::l0::topology_t.
+
+    /**
     * Перечисление биомов, в которых особь чувствует себя комфортно.
     * Помним и используем: биомы строятся на основе температуры,
     * атм. осадков, дренажа - всё это можно проверять при расселении
     * особей.
-    */
+    *//* - Заменено составляющими биомов. См. выше.
     enum CODE_BIOME  biome[ BIOME_COMFORT_SURVIVOR_LIVING ];
+    */
 
 } comfortLiving_t;
 
@@ -996,8 +600,16 @@ typedef struct __attribute__ ((packed)) {
 
 
     /**
+    * Атаки, известные особи.
+    *   # Из-за большого разброса возможностей атак, для особи не задаётся
+    *     "общая атака" (как для защиты "resist"): все атаки содержат
+    *     абсолютные значения.
+    */
+    attackLiving_t  attack;
+
+
+    /**
     * Защита особи от воздействий.
-    * Определяет базовые значения защиты частей тела (органов).
     *
     *   # Творческая компиляция значений AC и MR из
     *     http://koti.welho.com/jarmoki/crawl/crawl_ss_monster_combat_by_name.html
@@ -1012,14 +624,11 @@ typedef struct __attribute__ ((packed)) {
     * @see Magic resistance > http://crawl.chaosforge.org/index.php?title=MR
     * @see Вычисление > http://crawl.chaosforge.org/index.php?title=AC_calculations
     */
-    resistPartLiving_t resist;
+    resistLiving_t resist;
 
 
     /**
     * Уклонение особи от атак.
-    *   # Уклонение зависит прямо пропорционально от кол-ва неповреждённых
-    *     органов особи.
-    *     @todo extend? Учитывать размер органа (вклад в уклонение).
     *
     * @see Вычисление > http://crawl.chaosforge.org/index.php?title=Evasion
     */
@@ -1029,7 +638,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Насколько крепка особь (живучесть).
     * Аналог хитпоинта.
-    * Влияет на способность органов особи держать повреждения.
+    * Влияет на способность особи держать повреждения.
     *
     * @see Hit points > http://crawl.chaosforge.org/index.php?title=HP
     */
@@ -1046,21 +655,14 @@ typedef struct __attribute__ ((packed)) {
 
     /**
     * Перемещение особи в разных средах.
-    *   # Орган, отвечающий за перемещение, задаётся в "function" органа.
-    *   # Скорость перемещения особи вычисляется как равновесовой вклад
-    *     каждого органа, отвечающего за перемещение.
+    *   # Отрицательное значение скорости означает, что особь не может
+    *     перемещаться в заданной среде.
     */
     moveSolidSurfaceLiving_t   moveSolidSurface;
     moveLiquidSurfaceLiving_t  moveLiquidSurface;
     moveSolidInsideLiving_t    moveSolidInside;
     moveLiquidInsideLiving_t   moveLiquidInside;
     moveGasInsideLiving_t      moveGasInside;
-
-
-    /**
-    * Из каких частей (органов) состоит особь.
-    */
-    aboutOnePartLiving_t  part[ PART_LIVING ];
 
 
     /**
@@ -1081,11 +683,18 @@ typedef struct __attribute__ ((packed)) {
     *
     * @todo Болезнь определяется очагами и силой. Произведение
     * иммунитета и силы очага болезни - это % особей (отн. значения 1.0),
-    * которые здоровы.
+    * которые остаются здоровы.
     *
     * @todo extend? Иммунитет зависит от жизненного цикла особи LIFE_CYCLE.
     */
     cl_float immunity;
+
+
+    /**
+    * Из каких компонентов состоит особь.
+    * Например: вода, белки (мясо), жиры, углеводы (скелет, панцирь).
+    */
+    compositionPortionLiving_t composition;
 
 
     /**

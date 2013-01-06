@@ -383,7 +383,7 @@ static __constant size_t PART_LIVING = 20;
 
 
 /**
-* ћаксимальное кол-во *разных* атак, известных органу особи.
+* ћаксимальное кол-во *разных* атак, известных особи.
 *
 * @see RESIST_PART_LIVING
 */
@@ -392,7 +392,7 @@ static __constant size_t ATTACK_PART_LIVING = 30;
 
 
 /**
-* ћаксимальное кол-во *разных* защит, известных органу особи.
+* ћаксимальное кол-во *разных* защит, известных особи.
 *
 * @see ATTACK_PART_LIVING
 */
@@ -402,7 +402,7 @@ static __constant size_t RESIST_PART_LIVING = 30;
 
 /**
 * ћаксимальное кол-во *разных* хим. компонентов, из которых может
-* состо€ть орган особи.
+* состо€ть особь.
 */
 static __constant size_t COMPONENT_COMPOSITION_LIVING = 5;
 

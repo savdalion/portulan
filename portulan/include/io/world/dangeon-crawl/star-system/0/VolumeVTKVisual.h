@@ -162,7 +162,7 @@ private:
             // @todo optimize Не перерисовывать всю картинку, менять
             //       только положение Actor's.
             const auto p = engine->portulan();
-            *parent << *p;
+            p->draw( parent );
 
             /* - См. todo выше.
             vtkRenderWindowInteractor* rw =

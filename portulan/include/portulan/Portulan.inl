@@ -2,7 +2,7 @@ namespace portulan {
 
 
 template< size_t SX, size_t SY, size_t SZ >
-inline void Portulan< SX, SY, SZ >::harmonize() {
+inline void Portulan< SX, SY, SZ >::XXharmonize() {
     // (!) Очерёдность - важна.
     harmonizePlenum( false, false );
     harmonizePresenceToPlenum();

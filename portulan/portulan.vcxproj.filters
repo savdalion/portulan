@@ -27,19 +27,10 @@
     <ClInclude Include="include\configure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\command.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="configure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="portulan.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Topology.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Portulan.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="include\command\common.h">
@@ -168,14 +159,17 @@
     <ClInclude Include="include\world\dangeon-crawl\living - %40todo\0\Topology.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\portulan\Portulan.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\portulan\Topology.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\portulan\command.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\Topology.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="include\Portulan.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
     <None Include="include\command\common.inl">
       <Filter>Заголовочные файлы\command\common</Filter>
     </None>
@@ -210,5 +204,11 @@
       <Filter>Заголовочные файлы</Filter>
     </None>
     <None Include="include\world\dangeon-crawl\living - %40todo\!.txt" />
+    <None Include="include\portulan\Portulan.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\portulan\Topology.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
   </ItemGroup>
 </Project>

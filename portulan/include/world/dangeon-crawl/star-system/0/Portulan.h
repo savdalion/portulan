@@ -51,9 +51,21 @@ public:
     }
 
 
-
     inline Topology& topology() {
         return mTopology;
+    }
+
+
+
+
+    /**
+    * Визуализирует портулан с помощью 'visualizer'.
+    *
+    * #! 'visualizer' должен реализовывать метод operator<<().
+    */
+    template< class V >
+    inline void draw( V* visualizer ) const {
+        *visualizer << *this;
     }
 
 
