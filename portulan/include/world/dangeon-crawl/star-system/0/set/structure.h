@@ -12,7 +12,10 @@
 #endif
 */
 
+#include "../../../../../../configure.h"
 #include <CL/cl_platform.h>
+#include <string>
+#include <ostream>
 
 
 /**
@@ -38,11 +41,11 @@ namespace portulan {
         namespace dungeoncrawl {
             namespace starsystem {
                 namespace l0 {
-
+                    
 // Увы, не все видеокарты поддерживают 'double' для OpenCL.
 // #! Типы данных должны быть согласованы с OpenCL GPU.
 // # double4 поддерживается не всеми устройствами OpenCL. Не используем.
-#if defined( PERMIT_DOUBLE_ENGINE_PORTE )
+#ifdef PERMIT_DOUBLE_ENGINE_PORTULAN
 typedef cl_double  real_t;
 #else
 typedef cl_float   real_t;
@@ -134,6 +137,17 @@ static __constant size_t STAR_EVENT_COUNT = 10;
 * на своём месте (меняют индексы).
 */
 typedef cl_int  uid_t;
+
+
+
+
+/**
+* Идентификатор элемента в звёздной системе.
+*/
+typedef struct {
+    enum GROUP_ELEMENT ge;
+    uid_t uid;
+} uidElement_t;
 
 
 

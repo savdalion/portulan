@@ -70,7 +70,7 @@ void likeBiome(
                 aboutBiome[ i ]->temperature.max
             ) / 2.0f;
             // учитываем важность характеристики
-            const cl_float delta = average * ( cl_float )( CRITERIA_D );
+            const cl_float delta = average * ( cl_float )( CRITERIA_D_YELLOW );
             if ( (temperature >= aboutBiome[ i ]->temperature.min)
               && (temperature <= aboutBiome[ i ]->temperature.max)
             ) {
@@ -86,7 +86,7 @@ void likeBiome(
                 aboutBiome[ i ]->rainfall.min +
                 aboutBiome[ i ]->rainfall.max
             ) / 2.0f;
-            const cl_float delta = average * ( cl_float )( CRITERIA_C );
+            const cl_float delta = average * ( cl_float )( CRITERIA_C_GREEN );
             if ( (rainfall >= aboutBiome[ i ]->rainfall.min)
               && (rainfall <= aboutBiome[ i ]->rainfall.max)
             ) {
@@ -102,7 +102,7 @@ void likeBiome(
                 aboutBiome[ i ]->drainage.min +
                 aboutBiome[ i ]->drainage.max
             ) / 2.0f;
-            const cl_float delta = average * ( cl_float )( CRITERIA_C );
+            const cl_float delta = average * ( cl_float )( CRITERIA_C_GREEN );
             if ( (drainage >= aboutBiome[ i ]->drainage.min)
               && (drainage <= aboutBiome[ i ]->drainage.max)
             ) {
@@ -143,7 +143,7 @@ void likeBiome(
             if ( present ) {
                 const cl_float delta =
                     ( cl_float )( yes ) *
-                    ( cl_float )( CRITERIA_B ) /
+                    ( cl_float )( CRITERIA_B_BLUE ) /
                     ( cl_float )( no );
                 like[ i ] += delta;
             } else {

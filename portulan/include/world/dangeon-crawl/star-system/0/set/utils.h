@@ -84,7 +84,7 @@ static inline bool presentStar( const aboutStar_t& e ) {
 *         -1 если список пустой.
 */
 static inline cl_int lastIndexOfPresentAsteroid(
-    const asteroidContent_t ec,
+    const aboutAsteroid_t* ec,
     cl_int startI = ASTEROID_COUNT - 1
 ) {
     cl_int tail = startI;
@@ -102,7 +102,7 @@ static inline cl_int lastIndexOfPresentAsteroid(
 /**
 * @return Указанный список элементов звёздной системы - пустой.
 */
-static inline bool emptyAsteroid( const asteroidContent_t ec ) {
+static inline bool emptyAsteroid( const aboutAsteroid_t* ec ) {
     return (lastIndexOfPresentAsteroid( ec ) == -1);
 }
 
@@ -113,7 +113,7 @@ static inline bool emptyAsteroid( const asteroidContent_t ec ) {
 * Оптимизирует список элементов звёздной системы.
 * Меняется размещение элементов в списке.
 */
-static inline void optimizeAsteroid( asteroidContent_t ec ) {
+static inline void optimizeAsteroid( aboutAsteroid_t* ec ) {
     // удалим из списка все элементы, которые были исключены
     // с помощью exclude*()
     // # Список содержит хотя бы 1 элемент (проверили выше).
@@ -143,8 +143,8 @@ static inline void optimizeAsteroid( asteroidContent_t ec ) {
 *        ускорит подсчёт элементов.
 */
 static inline cl_uint countAsteroid(
-    const asteroidContent_t ec,
-    bool optimized = false
+    const aboutAsteroid_t* ec,
+    bool optimized
 ) {
     cl_uint n = 0;
     for (cl_uint i = 0; i < ASTEROID_COUNT; ++i) {
@@ -155,6 +155,33 @@ static inline cl_uint countAsteroid(
         }
     }
     return n;
+}
+
+
+
+
+/**
+* @return Ссылка на информацию о планете в звёздной системе или nullptr,
+*         если планета с заданным 'uid' не обнаружена.
+*
+* @param optimized Когда список оптимизирован, установка этого признака
+*        ускорит подсчёт элементов.
+*/
+static inline const aboutPlanet_t* findPlanet(
+    uid_t uid,
+    const aboutPlanet_t* ec,
+    bool optimized
+) {
+    for (cl_uint i = 0; i < PLANET_COUNT; ++i) {
+        if ( presentPlanet( ec[ i ] ) ) {
+            if (ec[ i ].uid == uid) {
+                return &ec[ i ];
+            }
+        } else if ( optimized ) {
+            return nullptr;
+        }
+    }
+    return nullptr;
 }
 
 

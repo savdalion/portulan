@@ -168,6 +168,9 @@
     <ClInclude Include="include\portulan\command.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\Statistics.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\command\common.inl">
@@ -208,6 +211,9 @@
       <Filter>Заголовочные файлы</Filter>
     </None>
     <None Include="include\portulan\Topology.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="include\world\dangeon-crawl\star-system\0\Statistics.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
   </ItemGroup>

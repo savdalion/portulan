@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../../../configure.h"
+
 #ifdef OPENCL_PORTULAN
 
 #ifdef DUNGEON_CRAWL_WORLD_PORTULAN
