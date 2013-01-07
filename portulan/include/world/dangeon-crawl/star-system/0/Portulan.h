@@ -111,11 +111,14 @@ public:
 
 
 
-    inline void addOrderStatistics( const uidElement_t& uide ) {
-        std::ostringstream suffix;
-        suffix << uide << "-starsystem-stat";
+    /**
+    * @param skipPulse  Сколько пульсов пропускать, не собирая данные. От
+    *        этого зависит точность собираемых данных и скорость заполнения
+    *        буфера статистики STATISTICS_BUFFER_COUNT.
+    */
+    inline void addOrderStatistics( const uidElement_t& uide,  size_t skipPulse ) {
         mOrderStatistics.insert( std::make_pair(
-            uide,  new statistics_t( uide, &mTopology, suffix.str() )
+            uide,  new statistics_t( uide, &mTopology, skipPulse, "starsystem" )
         ) );
     }
 
@@ -189,7 +192,7 @@ inline std::ostream& operator<<(
         (uide.ge == GE_PLANET)   ? "planet" :
         (uide.ge == GE_STAR)     ? "star" :
         "x";
-    out << uide.uid << "-" << gen;
+    out << gen << "-" << uide.uid;
     return out;
 }
 

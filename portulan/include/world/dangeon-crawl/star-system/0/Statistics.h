@@ -109,17 +109,21 @@ public:
 
 public:
     /**
-    * @param engine      Движок, к которому подключена статистика.
-    * @param suffixFile  Суффикс файла, в котором статистика сохранится.
+    * @param uide        Элемент, для которого собирается статистика.
+    * @param skipPulse   Сколько пульсов пропускать без сбора данных.
+    * @param prefixFile  Префикс файла, в котором статистика сохранится.
     */
     inline Statistics(
         const uidElement_t&  uide,
         const Topology*      topology,
-        const std::string&   suffixFile
+        const size_t         skipPulse,
+        const std::string&   prefixFile
     ) :
         mUIDElement( uide ),
         mTopology( topology ),
-        mSuffixFile( suffixFile ),
+        mSkipPulse( skipPulse ),
+        mCountPulse( 0 ),
+        mPrefixFile( prefixFile ),
         mDataPulse(),
         mCurrentItr( mDataPulse.begin() )
     {
@@ -257,9 +261,15 @@ private:
     const Topology*     mTopology;
 
     /**
+    * Количество пульсов, которые пропускаются (данные не собираются).
+    */
+    const size_t  mSkipPulse;
+    size_t  mCountPulse;
+
+    /**
     * Суффикс файла, в котором статистика сохранится.
     */
-    const std::string mSuffixFile;
+    const std::string  mPrefixFile;
 
     /**
     * Собранные данные.

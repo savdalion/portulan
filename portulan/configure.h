@@ -48,7 +48,7 @@ namespace portulan {
 *
 * @see world::*::Portulan::statistics_t
 */
-static const size_t STATISTICS_BUFFER_COUNT = 200000;
+static const size_t STATISTICS_BUFFER_COUNT = 50000;
 
 
 } // portulan

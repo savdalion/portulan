@@ -8,6 +8,13 @@ namespace portulan {
 template< size_t N >
 inline void
 Statistics< N >::grabPulse( pulse_t pulse ) {
+    // пропускаем заданое кол-во пульсов
+    ++mCountPulse;
+    if (mCountPulse <= mSkipPulse) {
+        return;
+    }
+    mCountPulse = 0;
+
     // # »тератор указывает на текущую €чейку дл€ записи.
 
     // делаем снимок состо€ни€ элемента
@@ -114,6 +121,8 @@ Statistics< N >::flush() {
     //       статич. размер, как здесь (см. ниже и цикл).
     points->SetNumberOfPoints( all );
 
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+
     // # 'mCurrentItr' указывает на текущую (ещЄ не использованную) €чейку.
     size_t n = 0;
     for (auto itr = first; itr != mCurrentItr; ++itr) {
@@ -139,14 +148,17 @@ Statistics< N >::flush() {
         minDistance->SetValue( n, d.minDistance.total );
         maxDistance->SetValue( n, d.maxDistance.total );
         
+        const vtkIdType pid[ 1 ] = { n };
         points->SetPoint( n, d.coord.x, d.coord.y, d.coord.z );
-        
+        vertices->InsertNextCell( 1, pid );
+
         ++n;
     }
 
     // собираем вместе
     auto data = vtkSmartPointer< vtkPolyData >::New();
     data->SetPoints( points );
+    data->SetVerts( vertices );
     data->GetPointData()->AddArray( pulse );
     data->GetPointData()->AddArray( element );
     data->GetPointData()->AddArray( coord );
@@ -159,7 +171,8 @@ Statistics< N >::flush() {
     dataPulse_t::const_iterator last = mCurrentItr;
     --last;
     std::ostringstream file;
-    file << "p" << first->pulse << "-" << last->pulse << "-" << mSuffixFile;
+    // # »м€ файла важно дл€ подхвата визуализаци в ParaView > http://paraview.org/Wiki/Animating_legacy_VTK_file_series
+    file << mPrefixFile << "-" << mUIDElement << "-" << last->pulse;
     write( file.str(), data );
 
 #ifdef _DEBUG
