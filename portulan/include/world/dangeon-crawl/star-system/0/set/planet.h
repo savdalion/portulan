@@ -16,6 +16,18 @@ namespace portulan {
 #endif
 
 
+/**
+* Память планеты о событиях в звёздной системе.
+*
+* @see Комментарии в 'asteroid.h'.
+*/
+typedef struct __attribute__ ((packed)) {
+    cl_int   waldo;
+    event_t  content[ PLANET_EVENT_COUNT ];
+} planetMemoryEvent_t;
+
+
+
 
 /**
 * Информация о планете в звёздной системе.
@@ -26,6 +38,11 @@ typedef struct __attribute__ ((packed)) {
     * Идентификатор планеты.
     */
     uid_t uid;
+
+    /**
+    * Планета взаимодействует с другими элементами звёздной системы.
+    */
+    bool live;
 
     /**
     * Масса планеты, кг.
@@ -71,9 +88,10 @@ typedef struct __attribute__ ((packed)) {
 
 
     /**
-    * События, которые произошли с планетой и о которых она помнит.
+    * События, которые произошли с планетой.
+    * @see #Соглашения в 'event_t'.
     */
-    //event_t event[ PLANET_EVENT_COUNT ];
+    planetMemoryEvent_t memoryEvent;
 
 
     /**

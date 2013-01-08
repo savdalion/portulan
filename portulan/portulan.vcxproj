@@ -93,6 +93,7 @@
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance-utils.h" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance.h" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\Topology.h" />
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\observer.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\asteroid.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\Portulan.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star.h" />

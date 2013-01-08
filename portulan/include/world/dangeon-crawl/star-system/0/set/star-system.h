@@ -3,6 +3,7 @@
 #pragma once
 
 #include "structure.h"
+#include "observer.h"
 #include "asteroid.h"
 #include "planet.h"
 #include "star.h"

@@ -171,6 +171,9 @@
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\Statistics.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\observer.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\command\common.inl">

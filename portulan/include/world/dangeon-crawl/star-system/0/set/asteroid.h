@@ -23,12 +23,12 @@ namespace portulan {
 */
 typedef struct __attribute__ ((packed)) {
     /**
-    * Индекс для записи текущего события.
+    * Индекс ("валдо" - см. игру 'SpaceChem') для записи текущего события.
     * [0; *_EVENT_COUNT - 1]
     *
     * # Позволяем быть отрицательным, чтобы ускорить работу с ним.
     */
-    cl_int  ck;
+    cl_int   waldo;
 
     event_t  content[ ASTEROID_EVENT_COUNT ];
     
@@ -46,6 +46,11 @@ typedef struct __attribute__ ((packed)) {
     * Идентификатор астероида.
     */
     uid_t uid;
+
+    /**
+    * Астероид взаимодействует с другими элементами звёздной системы.
+    */
+    bool live;
 
     /**
     * Масса астероида, кг.

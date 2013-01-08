@@ -17,6 +17,19 @@ namespace portulan {
 
 
 /**
+* Память звезды о событиях в звёздной системе.
+*
+* @see Комментарии в 'asteroid.h'.
+*/
+typedef struct __attribute__ ((packed)) {
+    cl_int   waldo;
+    event_t  content[ STAR_EVENT_COUNT ];
+} starMemoryEvent_t;
+
+
+
+
+/**
 * Информация о звезде в звёздной системе.
 * Хранить будем по координатам: сетка MapContent3D - слишком накладно.
 */
@@ -25,6 +38,11 @@ typedef struct __attribute__ ((packed)) {
     * Идентификатор звезды.
     */
     uid_t uid;
+
+    /**
+    * Звезда взаимодействует с другими элементами звёздной системы.
+    */
+    bool live;
 
     /**
     * Масса звезды, кг.
@@ -70,9 +88,10 @@ typedef struct __attribute__ ((packed)) {
 
 
     /**
-    * События, которые произошли со звездой и о которых она помнит.
+    * События, которые произошли со звездой.
+    * @see #Соглашения в 'event_t'.
     */
-    //event_t event[ STAR_EVENT_COUNT ];
+    starMemoryEvent_t memoryEvent;
 
 
     /**

@@ -15,6 +15,8 @@ inline Topology::Topology() {
 
     std::memset( &mTopology.aboutStarSystem, 0, sizeof( mTopology.aboutStarSystem ) );
 
+    std::memset( &mTopology.observer, 0, sizeof( mTopology.observer ) );
+
     std::memset( &mTopology.asteroid, 0, sizeof( mTopology.asteroid ) );
     std::memset( &mTopology.planet, 0, sizeof( mTopology.planet ) );
     std::memset( &mTopology.star, 0, sizeof( mTopology.star ) );

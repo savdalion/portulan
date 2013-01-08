@@ -23,6 +23,8 @@ namespace portulan {
 typedef struct __attribute__ ((packed)) {
     aboutStarSystem_t  aboutStarSystem;
 
+    observer_t  observer;
+
     asteroid_t  asteroid;
     planet_t    planet;
     star_t      star;
