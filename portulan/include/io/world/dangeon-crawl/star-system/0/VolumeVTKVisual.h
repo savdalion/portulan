@@ -93,7 +93,13 @@ public:
     *        Если == 0, пульсации не происходит (движок 'engine' на мир
     *        не оказывает влияния).
     */
-    void wait( pes::Engine* = nullptr, int pulse = 1, size_t frequence = 1 );
+    void wait(
+        pes::Engine* = nullptr,
+        int pulse = 1,
+        size_t frequence = 1,
+        int needStep = 0,
+        bool closeWindow = false
+    );
 
 
 
@@ -126,21 +132,34 @@ private:
             cb->parent = nullptr;
             cb->engine = nullptr;
             cb->pulse = 0;
+            cb->needStep = 0;
+            cb->currentStep = 0;
+            cb->closeWindow = false;
             cb->complete = true;
             return cb;
         }
 
 
-        void init( VolumeVTKVisual* parent, pes::Engine* engine, int pulse ) {
+        void init(
+            VolumeVTKVisual* parent,
+            pes::Engine* engine,
+            int pulse,
+            int needStep = -1,
+            bool closeWindow = false
+        ) {
             assert( parent &&
                 "Родитель должен быть указан." );
             assert( engine &&
                 "Движок должен быть указан." );
             assert( (pulse > 0) &&
                 "Пульс должен быть положительным." );
-            this->parent = parent;
-            this->engine = engine;
-            this->pulse  = pulse;
+            this->parent   = parent;
+            this->engine   = engine;
+            this->pulse    = pulse;
+            this->needStep = needStep;
+            this->currentStep = 0;
+            this->closeWindow = closeWindow;
+            this->complete = true;
         }
 
 
@@ -152,6 +171,16 @@ private:
             // команда не должна вызываться пока не завершена предыдущая
             // @todo optimize Лишнее? Проверить соглашения для VTK::Execute().
             if ( !complete ) {
+                return;
+            }
+
+            // возвращаем управление по прошествии 'needStep' шагов
+            if ( (needStep > 0) && (currentStep > needStep) ) {
+                auto rwi = static_cast< vtkRenderWindowInteractor* >( caller );
+                rwi->TerminateApp();
+                if ( closeWindow ) {
+                    rwi->GetRenderWindow()->Finalize();
+                }
                 return;
             }
 
@@ -188,6 +217,10 @@ private:
     #endif
             std::endl;
 #endif
+
+            // считаем "шаги"
+            ++currentStep;
+
             // команда завершена, можно вызывать следующую
             complete = true;
         }
@@ -196,7 +229,32 @@ private:
     private:
         VolumeVTKVisual* parent;
         pes::Engine* engine;
+        
+        /**
+        * Количество пульсов, которые должен выполнить движок
+        * до визуализации результата.
+        */
         int pulse;
+
+        /**
+        * Скольк шагов "прокрутить".
+        * По прошествии заданного кол-ва шагов управление возвращается
+        * вызвавшему метод wait*().
+        * Если (needStep <= 0), wait*() выполняется бесконечно.
+        */
+        int needStep;
+
+        /**
+        * Выполнено шагов с момента запуска.
+        */
+        int currentStep;
+
+        /**
+        * Закрыть окно при возврате управления.
+        *
+        * @see needStep
+        */
+        bool closeWindow;
 
         /**
         * Не позволяем командам накапливаться - блокировки.

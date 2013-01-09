@@ -53,7 +53,6 @@ public:
 
 
 
-
 private:
     topology_t mTopology;
 

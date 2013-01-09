@@ -331,67 +331,6 @@ static inline const aboutPlanet_t* findPlanet(
 
 
 
-
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-
-static inline void printEventTwo(
-    const eventTwo_t& eventTwo,
-    bool detail
-) {
-    static const auto fnWho = []( enum GROUP_ELEMENT g ) -> std::string {
-        return
-            (g == GE_NONE)     ? "" :
-            (g == GE_ASTEROID) ? "a" :
-            (g == GE_PLANET)   ? "p" :
-            (g == GE_STAR)     ? "s" :
-            "?";
-    };
-    const std::string whoA = fnWho( eventTwo.piA.ge );
-    const std::string how =
-        (eventTwo.uid == E_NONE) ? "!none" :
-        (eventTwo.uid == E_COLLISION) ? "+" :
-        "!?";
-    const std::string whoB = fnWho( eventTwo.piB.ge );
-    std::cout << whoA;
-    if ( detail ) { std::cout << eventTwo.piA.uu; }
-    std::cout << how;
-    std::cout << whoB;
-    if ( detail ) { std::cout << eventTwo.piB.uu; }
-    std::cout << std::endl;
-}
-
-
-
-
-/**
-* Выводит в поток информацию о событии.
-* Мысль в коде, пример: "астероид[a] столкнулся[+] с планетой[p]".
-*
-* @param detail Будет отображаться больше инфо о событии. Например,
-*        рядом с названием участника, напишем уникальный код участника
-*        в звёздной системе.
-*/
-static inline void printEvent(
-    enum GROUP_ELEMENT ge1,
-    uid_t uid1,
-    const event_t& event,
-    bool detail
-) {
-    const eventTwo_t eventTwo = {
-        // uid event
-        event.uid,
-        // участники: ge, ii, uu
-        { ge1, 0, uid1 },
-        event.pi
-    };
-    printEventTwo( eventTwo, detail );
-}
-
-#endif
-
-
-
-
 /**
 * Запоминает событие с двумя участниками в первой свободной ячейке памяти
 * наблюдателя.
@@ -699,6 +638,82 @@ static inline void starUniqueEvent(
 
 
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
+
+
+static inline void printEventTwo(
+    const eventTwo_t& eventTwo,
+    topology_t* topology
+) {
+    static const auto fnWho = []( enum GROUP_ELEMENT g ) -> std::string {
+        return
+            (g == GE_NONE)     ? "" :
+            (g == GE_ASTEROID) ? "a" :
+            (g == GE_PLANET)   ? "p" :
+            (g == GE_STAR)     ? "s" :
+            "?";
+    };
+
+    static const auto fnMass = [ topology ]( enum GROUP_ELEMENT g,  cl_uint i ) -> real_t {
+        return
+            (g == GE_NONE)     ? 0.0 :
+            (g == GE_ASTEROID) ? topology->asteroid.content[ i ].mass :
+            (g == GE_PLANET)   ? topology->planet.content[ i ].mass :
+            (g == GE_STAR)     ? topology->star.content[ i ].mass :
+            0.0;
+    };
+
+    const std::string whoA = fnWho( eventTwo.piA.ge );
+    const std::string how =
+        (eventTwo.uid == E_NONE) ? "!none" :
+        (eventTwo.uid == E_COLLISION) ? "+" :
+        "!?";
+    const std::string whoB = fnWho( eventTwo.piB.ge );
+
+    std::cout << whoA;
+    if ( topology ) {
+        std::cout << eventTwo.piA.uu <<
+            " (" << fnMass( eventTwo.piA.ge, eventTwo.piA.ii ) << ")";
+    }
+
+    std::cout << " " << how << " ";
+
+    std::cout << whoB;
+    if ( topology ) {
+        std::cout << eventTwo.piB.uu <<
+            " (" << fnMass( eventTwo.piB.ge, eventTwo.piB.ii ) << ")";
+    }
+
+    std::cout << std::endl;
+}
+
+
+
+
+/**
+* Выводит в поток информацию о событии.
+* Мысль в коде, пример: "астероид[a] столкнулся[+] с планетой[p]".
+*
+* @param detail Будет отображаться больше инфо о событии. Например,
+*        рядом с названием участника, напишем уникальный код участника
+*        в звёздной системе.
+*/
+static inline void printEvent(
+    enum GROUP_ELEMENT ge1,
+    uid_t uid1,
+    const event_t& event,
+    topology_t* topology
+) {
+    const eventTwo_t eventTwo = {
+        // uid event
+        event.uid,
+        // участники: ge, ii, uu
+        { ge1, 0, uid1 },
+        event.pi
+    };
+    printEventTwo( eventTwo, topology );
+}
+
+
                 } // l0
             } // starsystem
         } // dungeoncrawl

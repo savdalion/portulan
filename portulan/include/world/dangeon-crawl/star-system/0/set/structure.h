@@ -108,10 +108,13 @@ enum EVENT {
 /**
 * ћакс. кол-во элементов, которые могут существовать (взаимодействовать)
 * в области звЄздной системы (в портулане).
+*
+* # –езервируем на 1 элемент больше, чтобы в коде не заморачиватьс€ с
+*   услови€ми добавлени€ признака окончани€ списка.
 */
-static __constant size_t ASTEROID_COUNT = 1000;
-static __constant size_t PLANET_COUNT = 100;
-static __constant size_t STAR_COUNT = 10;
+static __constant size_t ASTEROID_COUNT = 1000 + 1;
+static __constant size_t PLANET_COUNT = 100 + 1;
+static __constant size_t STAR_COUNT = 10 + 1;
 
 
 

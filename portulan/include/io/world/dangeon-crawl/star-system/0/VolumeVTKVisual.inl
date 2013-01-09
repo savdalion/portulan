@@ -165,7 +165,9 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<( const option_t& json ) {
 
 inline void VolumeVTKVisual::wait(
     pes::Engine* engine, int pulse,
-    size_t frequence
+    size_t frequence,
+    int needStep,
+    bool closeWindow
 ) {
     //renderer->ResetCamera();
 
@@ -176,7 +178,7 @@ inline void VolumeVTKVisual::wait(
 
     if ( engine && (frequence != 0) ) {
         auto cb = vtkSmartPointer< vtkPulseCallback >::New();
-        cb->init( this, engine, pulse );
+        cb->init( this, engine, pulse, needStep, closeWindow );
         rwi->AddObserver( vtkCommand::TimerEvent, cb );
         const int tid = rwi->CreateRepeatingTimer( frequence );
     }
