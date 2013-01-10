@@ -25,8 +25,7 @@ inline VolumeVTKVisual::VolumeVTKVisual(
 
     renderWindow->AddRenderer( renderer );
 
-    const size_t sizeWindow =
-        mOption.has( "size-window" ) ? mOption[ "size-window" ] : 500;
+    const size_t sizeWindow = mOption.at( "size-window", 500u );
     renderWindow->SetSize( sizeWindow, sizeWindow );
 
     // Настраиваем камеру
@@ -66,7 +65,7 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
 
 
     // Отмечаем границы холста
-    const double extent = mOption[ "extent" ];
+    const double extent = mOption.at( "extent", 0.0 );
     const typelib::coordDouble_t halfN(
         extent / 2.0,
         extent / 2.0,
@@ -114,6 +113,14 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
     renderer->AddActor( cornerActor );
 
 
+    // Показываем масштаб
+    const bool legendScale = mOption.at( "legend-scale", false );
+    if ( legendScale ) {
+        auto legendScaleActor = vtkSmartPointer< vtkLegendScaleActor >::New();
+        renderer->AddActor( legendScaleActor );
+    }
+
+
     // Переводим полученную карту в формат VTK
     // @todo optimize http://vtk.1045678.n5.nabble.com/Filling-vtkPoints-and-vtkCellArray-fast-td1243607.html
 
@@ -128,7 +135,7 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
 
 
     // Обновляем что нарисовали
-    const bool autoScaleCamera = mOption[ "auto-scale-camera" ];
+    const bool autoScaleCamera = mOption.at( "auto-scale-camera", false );
     if ( !alreadyAutoScaleCamera || autoScaleCamera ) {
         renderer->ResetCamera();
         alreadyAutoScaleCamera = true;
@@ -149,7 +156,7 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<( const option_t& json ) {
     mOption = json;
 
     if ( mOption.has( "size-window" ) ) {
-        const size_t sizeWindow = mOption[ "size-window" ];
+        const size_t sizeWindow = mOption.at( "size-window", 500u );
         renderWindow->SetSize( sizeWindow, sizeWindow );
     }
 
@@ -246,8 +253,7 @@ inline void VolumeVTKVisual::drawTopology(
 #endif
             auto contentActor = vtkSmartPointer< vtkActor >::New();
             contentActor->SetMapper( mapper );
-            const size_t sizePoint = mOption.has( "star-size-point" ) ?
-                mOption[ "star-size-point" ] : 10;
+            const size_t sizePoint = mOption.at( "star-size-point", 10u );
             contentActor->GetProperty()->SetPointSize( sizePoint );
             contentActor->GetProperty()->SetColor( 1.0, 1.0, 0.0 );
             renderer->AddActor( contentActor );
@@ -286,8 +292,7 @@ inline void VolumeVTKVisual::drawTopology(
 #endif
             auto contentActor = vtkSmartPointer< vtkActor >::New();
             contentActor->SetMapper( mapper );
-            const size_t sizePoint = mOption.has( "planet-size-point" ) ?
-                mOption[ "planet-size-point" ] : 5;
+            const size_t sizePoint = mOption.at( "planet-size-point", 5u );
             contentActor->GetProperty()->SetPointSize( sizePoint );
             contentActor->GetProperty()->SetColor( 0.0, 0.0, 1.0 );
             renderer->AddActor( contentActor );
@@ -326,8 +331,7 @@ inline void VolumeVTKVisual::drawTopology(
 #endif
             auto contentActor = vtkSmartPointer< vtkActor >::New();
             contentActor->SetMapper( mapper );
-            const size_t sizePoint = mOption.has( "asteroid-size-point" ) ?
-                mOption[ "asteroid-size-point" ] : 2;
+            const size_t sizePoint = mOption.at( "asteroid-size-point", 2u );
             contentActor->GetProperty()->SetPointSize( sizePoint );
             contentActor->GetProperty()->SetColor( 0.5, 0.5, 0.5 );
             renderer->AddActor( contentActor );

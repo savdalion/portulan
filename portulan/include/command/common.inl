@@ -50,7 +50,7 @@ inline void elevationMap(
     double hMin,
     double hMax,
     const typelib::coordInt_t& shiftArea,
-    const typelib::psizeInt_t& sizeArea
+    const typelib::sizeInt_t& sizeArea
 ) {
     // ƒл€ создани€ карты высот воспользуемс€ проектом Silhouette
     const siu::shape::ElevationMap< SX, SY, SZ >  elm( source, scaleXY, hMin, hMax, true, shiftArea, sizeArea );

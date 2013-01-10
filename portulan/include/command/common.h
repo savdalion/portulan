@@ -97,7 +97,7 @@ void elevationMap(
     double hMin,
     double hMax,
     const typelib::coordInt_t& shiftArea = typelib::coordInt_t::UNDEFINED(),
-    const typelib::psizeInt_t& sizeArea = typelib::psizeInt_t::ONE()
+    const typelib::sizeInt_t& sizeArea = typelib::sizeInt_t::ONE()
 );
 
 

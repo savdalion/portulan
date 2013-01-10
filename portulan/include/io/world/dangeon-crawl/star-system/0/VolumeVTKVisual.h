@@ -20,10 +20,9 @@
 #include <vtkRegularPolygonSource.h>
 #include <vtkCubeAxesActor.h>
 #include <vtkLookupTable.h>
-//#include <vtkFloatArray.h>
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
-
+#include <vtkLegendScaleActor.h>
 #include <vtkSmartPointer.h>
 #include <vtkPoints.h>
 #include <vtkCellArray.h>
@@ -47,6 +46,8 @@ namespace pes = porte::world::dungeoncrawl::starsystem::l0;
 
 /**
 * Визуализация области звёздной системы средствами VTK.
+*
+* @see FormVTKVisual для визуализации формы элементов.
 *
 * @source http://vtk.org
 */
@@ -75,14 +76,14 @@ public:
     * Визуализирует область. Если окно визуализации ещё не было создано, оно
     * создаётся. Иначе, портулан добавляется к текущему окну.
     */
-    VolumeVTKVisual& operator<<( const pns::Portulan& );
+    virtual VolumeVTKVisual& operator<<( const pns::Portulan& );
 
 
 
     /**
     * Обновляет опции визуализатора.
     */
-    VolumeVTKVisual& operator<<( const option_t& );
+    virtual VolumeVTKVisual& operator<<( const option_t& );
 
 
 
@@ -116,14 +117,14 @@ public:
     /**
     * Очищает окно визаулизатора.
     */
-    void clear();
+    virtual void clear();
 
 
 
 
 
-private:
-    void drawTopology( const pns::topology_t& );
+protected:
+    virtual void drawTopology( const pns::topology_t& );
 
 
 
@@ -256,7 +257,7 @@ private:
 
 
 
-private:
+protected:
     /**
     * Опции визуализатора.
     */

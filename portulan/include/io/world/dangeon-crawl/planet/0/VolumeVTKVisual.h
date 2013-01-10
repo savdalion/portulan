@@ -9,6 +9,7 @@
 #include <vtkActor.h>
 #include <vtkLight.h>
 #include <vtkLightCollection.h>
+#include <vtkColor.h>
 #include <vtkLegendScaleActor.h>
 #include <vtkCommand.h>
 #include <vtkRenderWindow.h>
@@ -116,7 +117,7 @@ public:
 
 private:
     /**
-    * Рисует общую картину ситемы "звёзды->планета".
+    * Рисует общую картину системы "звёзды->планета".
     */
     void drawMacro( const pnp::illuminanceBody_t& );
 
