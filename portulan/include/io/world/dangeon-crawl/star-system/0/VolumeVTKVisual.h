@@ -89,17 +89,26 @@ public:
     /**
     * Ожидает закрытия окна визуализации.
     *
-    * @param frequence Как часто будет вызываться пульс движка, мс.
-    *        Если == 0, пульсации не происходит (движок 'engine' на мир
-    *        не оказывает влияния).
+    * @template frequence Как часто будет вызываться пульс движка, мс.
+    *           Если == 0, пульсации не происходит (движок 'engine' на мир
+    *           не оказывает влияния).
+    * @template pulse Количество пульсов, которые должен выполнить движок
+    *           до визуализации результата.
+    * @template needStep Скольк шагов "прокрутить".
+    *           По прошествии заданного кол-ва шагов управление возвращается
+    *           вызвавшему метод wait*().
+    *           Если (needStep <= 0), wait*() выполняется бесконечно.
+    * @template closeWindow Закрыть окно визуализатора при возврате управления.
+    * @template showPulse Печатать текущий пульс каждый шаг.
     */
-    void wait(
-        pes::Engine* = nullptr,
-        int pulse = 1,
-        size_t frequence = 1,
-        int needStep = 0,
-        bool closeWindow = false
-    );
+    template<
+        size_t frequence,
+        int pulse,
+        int needStep,
+        bool closeWindow,
+        bool showPulse
+    >
+    void wait( pes::Engine* = nullptr );
 
 
 
@@ -125,16 +134,21 @@ private:
     *
     * @see http://vtk.org/Wiki/VTK/Examples/Cxx/Utilities/Animation
     */
+    template<
+        int pulse,
+        int needStep,
+        bool closeWindow,
+        bool showPulse
+    >
     class vtkPulseCallback : public vtkCommand {
     public:
         static vtkPulseCallback* New() {
+            static_assert( (pulse > 0),
+                "Пульс должен быть положительным." );
             vtkPulseCallback* cb = new vtkPulseCallback;
             cb->parent = nullptr;
             cb->engine = nullptr;
-            cb->pulse = 0;
-            cb->needStep = 0;
             cb->currentStep = 0;
-            cb->closeWindow = false;
             cb->complete = true;
             return cb;
         }
@@ -142,23 +156,16 @@ private:
 
         void init(
             VolumeVTKVisual* parent,
-            pes::Engine* engine,
-            int pulse,
-            int needStep = -1,
-            bool closeWindow = false
+            pes::Engine* engine
         ) {
             assert( parent &&
                 "Родитель должен быть указан." );
             assert( engine &&
                 "Движок должен быть указан." );
-            assert( (pulse > 0) &&
-                "Пульс должен быть положительным." );
+
             this->parent   = parent;
             this->engine   = engine;
-            this->pulse    = pulse;
-            this->needStep = needStep;
             this->currentStep = 0;
-            this->closeWindow = closeWindow;
             this->complete = true;
         }
 
@@ -184,6 +191,11 @@ private:
                 return;
             }
 
+            // печатаем пульс
+            if ( showPulse ) {
+                std::cout << engine->live() << std::endl;
+            }
+
             // меняем внутреннее состояние
             *engine << pulse;
 
@@ -200,6 +212,7 @@ private:
             */
 
 #if 0
+            // @test
             size_t i = 0;
             const auto& tpc =
                 engine->portulan()
@@ -231,30 +244,9 @@ private:
         pes::Engine* engine;
         
         /**
-        * Количество пульсов, которые должен выполнить движок
-        * до визуализации результата.
-        */
-        int pulse;
-
-        /**
-        * Скольк шагов "прокрутить".
-        * По прошествии заданного кол-ва шагов управление возвращается
-        * вызвавшему метод wait*().
-        * Если (needStep <= 0), wait*() выполняется бесконечно.
-        */
-        int needStep;
-
-        /**
         * Выполнено шагов с момента запуска.
         */
         int currentStep;
-
-        /**
-        * Закрыть окно при возврате управления.
-        *
-        * @see needStep
-        */
-        bool closeWindow;
 
         /**
         * Не позволяем командам накапливаться - блокировки.
