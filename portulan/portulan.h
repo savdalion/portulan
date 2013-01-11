@@ -25,7 +25,6 @@
 #include "include/io/world/dangeon-crawl/planet/0/SnapshotVTK.h"
 #include "include/io/world/dangeon-crawl/planet/0/TextVisual.h"
 
-#include "include/io/world/dangeon-crawl/star-system/0/FormVTKVisual.h"
 #include "include/io/world/dangeon-crawl/star-system/0/VolumeVTKVisual.h"
 
 

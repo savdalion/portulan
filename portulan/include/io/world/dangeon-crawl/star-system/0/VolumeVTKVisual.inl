@@ -128,19 +128,19 @@ inline VolumeVTKVisual& VolumeVTKVisual::operator<<(
     // портулан звёздной системы - это набор физ. тел, которые надо
     // визуализировать в 3D-пространстве
 
-    //const int timestep = mOption[ "timestep" ];
-
-    // проходим по всем физ. телам, собираем точки в объёме
-    drawTopology( topology );
-
-
-    // Обновляем что нарисовали
+    // Масштабируем до отрисовки топологии
     const bool autoScaleCamera = mOption.at( "auto-scale-camera", false );
     if ( !alreadyAutoScaleCamera || autoScaleCamera ) {
         renderer->ResetCamera();
         alreadyAutoScaleCamera = true;
     }
 
+
+    // Размещаем на холсте топологию портулана
+    drawTopology( topology );
+
+
+    // Обновляем что нарисовали
     renderWindow->Render();
 
     return *this;
@@ -217,127 +217,195 @@ inline void VolumeVTKVisual::clear() {
 
 
 
-
-
 inline void VolumeVTKVisual::drawTopology(
     const pns::topology_t&  topology
 ) {
-    // звёзды
-    {
-        auto points = vtkSmartPointer< vtkPoints >::New();
-        points->SetDataTypeToDouble();
-        auto vertices = vtkSmartPointer< vtkCellArray >::New();
-        for (size_t i = 0; i < pns::STAR_COUNT; ++i) {
-            const pns::aboutStar_t& s = topology.star.content[ i ];
-            if ( pns::absentStar( s ) ) {
-                // # Завершаем поиск, как только встречается
-                //   отсутствующая звезда.
-                break;
-            }
-            vtkIdType pid[ 1 ];
-            pid[ 0 ] = points->InsertNextPoint(
-                s.coord[ 0 ], s.coord[ 1 ], s.coord[ 2 ]
-            );
-            vertices->InsertNextCell( 1, pid );
-        }
+    const auto cameraScale =
+        static_cast< pns::real_t >( renderer->GetActiveCamera()->GetParallelScale() );
+    const auto windowSize =
+        static_cast< pns::real_t >( renderWindow->GetSize()[ 0 ] );
+    const auto csDIVws = cameraScale / windowSize;
 
-        if (points->GetNumberOfPoints() > 0) {
-            auto point = vtkSmartPointer< vtkPolyData >::New(); 
-            point->SetPoints( points );
-            point->SetVerts( vertices );
-            auto mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-#if VTK_MAJOR_VERSION <= 5
-            mapper->SetInput( point );
-#else
-            mapper->SetInputData( point );
-#endif
-            auto contentActor = vtkSmartPointer< vtkActor >::New();
-            contentActor->SetMapper( mapper );
-            const size_t sizePoint = mOption.at( "star-size-point", 10u );
-            contentActor->GetProperty()->SetPointSize( sizePoint );
-            contentActor->GetProperty()->SetColor( 1.0, 1.0, 0.0 );
-            renderer->AddActor( contentActor );
+    drawTopology( topology.star.content,     csDIVws );
+    drawTopology( topology.planet.content,   csDIVws );
+    drawTopology( topology.asteroid.content, csDIVws );
+}
+
+
+
+
+inline void VolumeVTKVisual::drawTopology(
+    const pns::starContent_t  topo,
+    pns::real_t  csDIVws
+) {
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    points->SetDataTypeToDouble();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+    const size_t sizePoint = mOption.at( "star-size-point", 5u );
+    static const typelib::vector_t  color( 1.0, 1.0, 0.0 );
+    for (size_t i = 0; i < pns::STAR_COUNT; ++i) {
+        const pns::aboutStar_t& a = topo[ i ];
+        if ( pns::absentStar( a ) ) {
+            // # Завершаем поиск, как только нет элемента.
+            break;
         }
+        // размер делаем таким, чтобы элемент всегда был показан
+        const auto minRealSize = a.radius;
+        const auto scale = csDIVws / minRealSize;
+        // элемент покажем точкой или формой
+        if (scale > 2.0) {
+            insertPoint( points, vertices, a.coord );
+        } else {
+            drawSphere( a.coord, a.radius, color );
+        }
+    } // for (size_t i = 0; ...
+    drawPoints( points, vertices, sizePoint, color );
+}
+
+
+
+
+inline void VolumeVTKVisual::drawTopology(
+    const pns::planetContent_t  topo,
+    pns::real_t  csDIVws
+) {
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    points->SetDataTypeToDouble();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+    const size_t sizePoint = mOption.at( "planet-size-point", 5u );
+    static const typelib::vector_t  color( 0.0, 0.0, 1.0 );
+    for (size_t i = 0; i < pns::PLANET_COUNT; ++i) {
+        const pns::aboutPlanet_t& a = topo[ i ];
+        if ( pns::absentPlanet( a ) ) {
+            // # Завершаем поиск, как только нет элемента.
+            break;
+        }
+        // размер делаем таким, чтобы элемент всегда был показан
+        const auto minRealSize = a.radius;
+        const auto scale = csDIVws / minRealSize;
+        // элемент покажем точкой или формой
+        if (scale > 2.0) {
+            insertPoint( points, vertices, a.coord );
+        } else {
+            drawSphere( a.coord, a.radius, color );
+        }
+    } // for (size_t i = 0; ...
+    drawPoints( points, vertices, sizePoint, color );
+}
+
+
+
+
+inline void VolumeVTKVisual::drawTopology(
+    const pns::asteroidContent_t  topo,
+    pns::real_t  csDIVws
+) {
+    auto points = vtkSmartPointer< vtkPoints >::New();
+    points->SetDataTypeToDouble();
+    auto vertices = vtkSmartPointer< vtkCellArray >::New();
+    const size_t sizePoint = mOption.at( "asteroid-size-point", 2u );
+    static const typelib::vector_t  color( 0.5, 0.5, 0.5 );
+    for (size_t i = 0; i < pns::ASTEROID_COUNT; ++i) {
+        const pns::aboutAsteroid_t& a = topo[ i ];
+        if ( pns::absentAsteroid( a ) ) {
+            // # Завершаем поиск, как только нет элемента.
+            break;
+        }
+        // размер делаем таким, чтобы элемент всегда был показан
+        const auto realSize = typelib::SizeT< pns::real_t >( a.size );
+        const auto minRealSize = realSize.min();
+        const auto scale = csDIVws / minRealSize;
+        // элемент покажем точкой или формой
+        if (scale > 2.0) {
+            insertPoint( points, vertices, a.coord );
+        } else {
+            drawEllipsoid( a.coord, a.size, color );
+        }
+    } // for (size_t i = 0; ...
+    drawPoints( points, vertices, sizePoint, color );
+}
+
+
+
+
+inline void VolumeVTKVisual::insertPoint(
+    vtkSmartPointer< vtkPoints >  points,
+    vtkSmartPointer< vtkCellArray >  vertices,
+    const pns::real_t  coord[ 3 ]
+) {
+    vtkIdType pid[ 1 ];
+    pid[ 0 ] = points->InsertNextPoint( coord[ 0 ],  coord[ 1 ],  coord[ 2 ] );
+    vertices->InsertNextCell( 1, pid );
+}
+
+
+
+
+inline void VolumeVTKVisual::drawPoints(
+    vtkSmartPointer< vtkPoints >  points,
+    vtkSmartPointer< vtkCellArray >  vertices,
+    size_t  sizePoint,
+    const typelib::vector_t&  color
+) {
+    if (points->GetNumberOfPoints() == 0) {
+        return;
     }
 
+    auto point = vtkSmartPointer< vtkPolyData >::New(); 
+    point->SetPoints( points );
+    point->SetVerts( vertices );
 
-    // планеты
-    {
-        auto points = vtkSmartPointer< vtkPoints >::New();
-        points->SetDataTypeToDouble();
-        auto vertices = vtkSmartPointer< vtkCellArray >::New();
-        for (size_t i = 0; i < pns::PLANET_COUNT; ++i) {
-            const pns::aboutPlanet_t& p = topology.planet.content[ i ];
-            if ( pns::absentPlanet( p ) ) {
-                // # Завершаем поиск, как только встречается
-                //   отсутствующая планета.
-                break;
-            }
-            vtkIdType pid[ 1 ];
-            pid[ 0 ] = points->InsertNextPoint(
-                p.coord[ 0 ], p.coord[ 1 ], p.coord[ 2 ]
-            );
-            vertices->InsertNextCell( 1, pid );
-        }
-
-        if (points->GetNumberOfPoints() > 0) {
-            auto point = vtkSmartPointer< vtkPolyData >::New(); 
-            point->SetPoints( points );
-            point->SetVerts( vertices );
-            auto mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
+    auto mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 #if VTK_MAJOR_VERSION <= 5
-            mapper->SetInput( point );
+    mapper->SetInput( point );
 #else
-            mapper->SetInputData( point );
+    mapper->SetInputData( point );
 #endif
-            auto contentActor = vtkSmartPointer< vtkActor >::New();
-            contentActor->SetMapper( mapper );
-            const size_t sizePoint = mOption.at( "planet-size-point", 5u );
-            contentActor->GetProperty()->SetPointSize( sizePoint );
-            contentActor->GetProperty()->SetColor( 0.0, 0.0, 1.0 );
-            renderer->AddActor( contentActor );
-        }
-    }
+
+    auto actor = vtkSmartPointer< vtkActor >::New();
+    actor->SetMapper( mapper );
+    actor->GetProperty()->SetPointSize( sizePoint );
+    actor->GetProperty()->SetColor( color.x, color.y, color.z );
+    renderer->AddActor( actor );
+}
 
 
-    // астероиды
-    {
-        auto points = vtkSmartPointer< vtkPoints >::New();
-        points->SetDataTypeToDouble();
-        auto vertices = vtkSmartPointer< vtkCellArray >::New();
-        for (size_t i = 0; i < pns::ASTEROID_COUNT; ++i) {
-            const pns::aboutAsteroid_t& a = topology.asteroid.content[ i ];
-            if ( pns::absentAsteroid( a ) ) {
-                // # Завершаем поиск, как только встречается
-                //   отсутствующий астероид.
-                break;
-            }
-            vtkIdType pid[ 1 ];
-            pid[ 0 ] = points->InsertNextPoint(
-                a.coord[ 0 ], a.coord[ 1 ], a.coord[ 2 ]
-            );
-            vertices->InsertNextCell( 1, pid );
-        }
 
-        if (points->GetNumberOfPoints() > 0) {
-            auto point = vtkSmartPointer< vtkPolyData >::New(); 
-            point->SetPoints( points );
-            point->SetVerts( vertices );
-            auto mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-#if VTK_MAJOR_VERSION <= 5
-            mapper->SetInput( point );
-#else
-            mapper->SetInputData( point );
-#endif
-            auto contentActor = vtkSmartPointer< vtkActor >::New();
-            contentActor->SetMapper( mapper );
-            const size_t sizePoint = mOption.at( "asteroid-size-point", 2u );
-            contentActor->GetProperty()->SetPointSize( sizePoint );
-            contentActor->GetProperty()->SetColor( 0.5, 0.5, 0.5 );
-            renderer->AddActor( contentActor );
-        }
-    }
 
+inline void VolumeVTKVisual::drawSphere(
+    const pns::real_t  coord[ 3 ],
+    const pns::real_t  radius,
+    const typelib::vector_t&  color
+) {
+    const pns::real_t  r[ 3 ] = { radius, radius, radius };
+    drawEllipsoid( coord, r, color );
+}
+
+
+
+
+inline void VolumeVTKVisual::drawEllipsoid(
+    const pns::real_t  coord[ 3 ],
+    const pns::real_t  radius[ 3 ],
+    const typelib::vector_t&  color
+) {
+    const auto vo = vtkSmartPointer< vtkParametricEllipsoid >::New();
+    vo->SetXRadius( radius[ 0 ] );
+    vo->SetYRadius( radius[ 1 ] );
+    vo->SetZRadius( radius[ 2 ] );
+
+    auto pf = vtkSmartPointer< vtkParametricFunctionSource >::New();
+    pf->SetParametricFunction( vo );
+    pf->Update();
+
+    auto mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
+    mapper->SetInputConnection( pf->GetOutputPort() );
+
+    auto actor = vtkSmartPointer< vtkActor >::New();
+    actor->SetPosition( coord[ 0 ],  coord[ 1 ],  coord[ 2 ] );
+    actor->SetMapper( mapper );
+    actor->GetProperty()->SetColor( color.x, color.y, color.z );
+    renderer->AddActor( actor );
 }
 
 
