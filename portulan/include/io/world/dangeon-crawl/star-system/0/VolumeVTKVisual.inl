@@ -242,6 +242,8 @@ inline void VolumeVTKVisual::drawTopology(
     points->SetDataTypeToDouble();
     auto vertices = vtkSmartPointer< vtkCellArray >::New();
     const size_t sizePoint = mOption.at( "star-size-point", 5u );
+    // @todo Давать цвет звезде в зависимости от температуры поверхности.
+    //       Включить в typelib::compute.
     static const typelib::vector_t  color( 1.0, 1.0, 0.0 );
     for (size_t i = 0; i < pns::STAR_COUNT; ++i) {
         const pns::aboutStar_t& a = topo[ i ];

@@ -117,7 +117,8 @@ void starIlluminancePlanet(
     // @todo угловой размер звезды влияет на угол падения света
     const cl_float angle = 0.0;
     
-    const cl_float e = ais->luminousIntensity / distanceSquare * cos( angle );
+    const cl_float e =
+        ais->luminosity / distanceSquare * cos( angle );
     u[ 0 ].star += e;
 }
 

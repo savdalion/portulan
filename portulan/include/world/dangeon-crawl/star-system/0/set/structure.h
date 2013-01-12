@@ -92,6 +92,15 @@ enum EVENT {
     // столкновение элементов звЄздной системы
     E_COLLISION,
 
+    // изменение температуры
+    E_CHANGE_TEMPERATURE,
+
+    // изменение скорости
+    E_CHANGE_VELOCITY,
+
+    // раскалывание на N частей
+    E_CRUSH_N,
+
     // последнее
     E_last
 };
@@ -128,6 +137,15 @@ static __constant size_t STAR_COUNT = 10 + 1;
 static __constant size_t ASTEROID_EVENT_COUNT = 10;
 static __constant size_t PLANET_EVENT_COUNT = 20;
 static __constant size_t STAR_EVENT_COUNT = 40;
+
+
+
+/**
+* ћакс. кол-во характеристик, которое может содержать событие.
+*
+* @see event_t
+*/
+static __constant size_t MAX_FEATURE_EVENT = 5;
 
 
 
@@ -243,6 +261,14 @@ typedef struct __attribute__ ((packed)) {
     * указатель на планету в списке топологии портулана.
     */
     pointerElement_t pi;
+
+    /**
+    * ’арактеристики событи€.
+    *
+    * #i ”добно было бы оформить характеристик в виде union-структур, но
+    *    OpenCL 1.0 не дружит с обменом подобных структур.
+    */
+    real_t fReal[ MAX_FEATURE_EVENT ];
 
 } event_t;
 

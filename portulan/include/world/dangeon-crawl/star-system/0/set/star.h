@@ -55,16 +55,15 @@ typedef struct __attribute__ ((packed)) {
     real_t radius;
 
     /**
-    * Средняя температура, К.
+    * Температура ядра звезды, К.
     */
-    real_t temperature;
+    real_t kernelTemperature;
 
     /**
-    * Сила света, кд.
-    *
-    * @source http://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BB%D0%B0_%D1%81%D0%B2%D0%B5%D1%82%D0%B0
+    * Температура поверхности звезды, К.
+    * Введена для расчёта светимости звезды.
     */
-    real_t luminousIntensity;
+    real_t surfaceTemperature;
 
     /**
     * Координаты звезды в звёздной системе, XYZ, м.
@@ -106,6 +105,10 @@ typedef struct __attribute__ ((packed)) {
     */
     real_t tm[ 16 ];
 
+    /**
+    * Светимость звезды.
+    */
+    real_t luminosity;
 
     /**
     * Тестовый набор.
