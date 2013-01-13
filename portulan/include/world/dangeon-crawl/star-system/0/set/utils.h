@@ -166,6 +166,65 @@ static inline cl_int lastIndexOfPresentStar(
 
 
 /**
+* @return Следующий свободный UID для астероида.
+*
+* # UID элементов звёздной системы только увеличиваются.
+*/
+static inline cl_int nextUIDAsteroid(
+    const aboutAsteroid_t* ec
+) {
+    uid_t maxUID = ec[ 0 ].uid;
+    for (size_t i = 1; i < ASTEROID_COUNT; ++i) {
+        const uid_t uid = ec[ i ].uid;
+        if (uid > maxUID) {
+            maxUID = uid;
+        }
+    }
+    return (maxUID + 1);
+}
+
+
+
+
+/**
+* @see Коммент. к nextUIDAsteroid().
+*/
+static inline cl_int nextUIDPlanet(
+    const aboutPlanet_t* ec
+) {
+    uid_t maxUID = ec[ 0 ].uid;
+    for (size_t i = 1; i < PLANET_COUNT; ++i) {
+        const uid_t uid = ec[ i ].uid;
+        if (uid > maxUID) {
+            maxUID = uid;
+        }
+    }
+    return (maxUID + 1);
+}
+
+
+
+
+/**
+* @see Коммент. к nextUIDAsteroid().
+*/
+static inline cl_int nextUIDStar(
+    const aboutStar_t* ec
+) {
+    uid_t maxUID = ec[ 0 ].uid;
+    for (size_t i = 1; i < STAR_COUNT; ++i) {
+        const uid_t uid = ec[ i ].uid;
+        if (uid > maxUID) {
+            maxUID = uid;
+        }
+    }
+    return (maxUID + 1);
+}
+
+
+
+
+/**
 * @return Указанный список элементов звёздной системы - пустой.
 */
 static inline bool emptyAsteroid( const aboutAsteroid_t* ec ) {
