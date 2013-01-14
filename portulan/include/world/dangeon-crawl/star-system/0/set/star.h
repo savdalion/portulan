@@ -46,8 +46,10 @@ typedef struct __attribute__ ((packed)) {
 
     /**
     * Масса звезды, кг.
+    *
+    * @see pns::massStar()
     */
-    real_t mass;
+    mass_t mass;
 
     /**
     * Радиус звезды, м.

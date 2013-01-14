@@ -108,6 +108,48 @@ static inline bool presentStar( const aboutStar_t& e ) {
 
 
 /**
+* @return Масса элемента звёздной системы.
+*/
+static inline real_t massAsteroid( const aboutAsteroid_t& e ) {
+    return (e.mass.base + e.mass.knoll);
+}
+
+static inline real_t massPlanet( const aboutPlanet_t& e ) {
+    return (e.mass.base + e.mass.knoll);
+}
+
+static inline real_t massStar( const aboutStar_t& e ) {
+    return (e.mass.base + e.mass.knoll);
+}
+
+
+
+
+/**
+* @return Результат сравнения масс.
+*/
+static inline bool equalMass( const mass_t& a,  const mass_t& b ) {
+    return
+        ( typelib::equal( a.base, b.base ) && typelib::equal( a.knoll, b.knoll ) )
+     || typelib::equal( a.base + a.knoll,  b.base + b.knoll );
+}
+
+static inline bool gtMass( const mass_t& a,  const mass_t& b ) {
+    return
+        ( typelib::equal( a.base, b.base ) && (a.knoll > b.knoll) )
+     || ( (a.base + a.knoll) > (b.base + b.knoll) );
+}
+
+static inline bool ltMass( const mass_t& a,  const mass_t& b ) {
+    return
+        ( typelib::equal( a.base, b.base ) && (a.knoll < b.knoll) )
+     || ( (a.base + a.knoll) < (b.base + b.knoll) );
+}
+
+
+
+
+/**
 * @return Указатель на след. не пустой элемент в списке, начиная с конца.
 *         -1 если список пустой.
 */
@@ -592,10 +634,7 @@ static inline bool equalPointerElement(
 /**
 * @return События одинаковы.
 */
-static inline bool equalEvent(
-    const event_t&  a,
-    const event_t&  b
-) {
+static inline bool equalEvent( const event_t&  a,  const event_t&  b ) {
     return (a.uid == b.uid) && equalPointerElement( a.pi, b.pi );
 }
 
@@ -715,9 +754,9 @@ static inline void printEventTwo(
     static const auto fnMass = [ topology ]( enum GROUP_ELEMENT g,  cl_uint i ) -> real_t {
         return
             (g == GE_NONE)     ? 0.0 :
-            (g == GE_ASTEROID) ? topology->asteroid.content[ i ].mass :
-            (g == GE_PLANET)   ? topology->planet.content[ i ].mass :
-            (g == GE_STAR)     ? topology->star.content[ i ].mass :
+            (g == GE_ASTEROID) ? massAsteroid( topology->asteroid.content[ i ] ) :
+            (g == GE_PLANET)   ? massPlanet( topology->planet.content[ i ] ) :
+            (g == GE_STAR)     ? massStar( topology->star.content[ i ] ) :
             0.0;
     };
 

@@ -54,8 +54,10 @@ typedef struct __attribute__ ((packed)) {
 
     /**
     * Масса астероида, кг.
+    *
+    * @see pns::massAsteroid()
     */
-    real_t mass;
+    mass_t mass;
 
     /**
     * Размеры астероида по XYZ, м.
