@@ -254,8 +254,13 @@ Statistics< N >::harvest(
     oneValueTwoElement_t*       maxDistance
 ) const {
     const auto ftr = l.find( mUIDElement );
+    /* - Ёлемент мог быть уничтожен. Ќапример, столкнувшись с крупным.
     assert( (ftr != l.cend())
         && "Ёлемент звЄздной системы на найден." );
+    */
+    if (ftr == l.cend()) {
+        return;
+    }
 
     *coord    = ftr->second.coord;
     *velocity = ftr->second.lVelocity;

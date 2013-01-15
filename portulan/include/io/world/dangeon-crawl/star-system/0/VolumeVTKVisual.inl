@@ -255,7 +255,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        if (scale > 2.0) {
+        if (scale > 0.5) {
             insertPoint( points, vertices, a.coord );
         } else {
             drawSphere( a.coord, a.radius, color );
@@ -286,7 +286,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        if (scale > 2.0) {
+        if (scale > 0.5) {
             insertPoint( points, vertices, a.coord );
         } else {
             drawSphere( a.coord, a.radius, color );

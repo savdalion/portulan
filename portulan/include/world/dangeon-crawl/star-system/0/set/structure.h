@@ -95,11 +95,15 @@ enum EVENT {
     // изменение температуры
     E_CHANGE_TEMPERATURE,
 
-    // изменение скорости
+    // изменение характеристик
+    E_CHANGE_MASS,
     E_CHANGE_VELOCITY,
 
     // раскалывание на N частей
     E_CRUSH_N,
+
+    // уничтожение элемента
+    E_DESTROY,
 
     // последнее
     E_last

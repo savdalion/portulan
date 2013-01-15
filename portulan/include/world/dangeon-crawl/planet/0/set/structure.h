@@ -313,8 +313,9 @@ static __constant size_t ILLUMINANCE_GRID = 27;
 * Максимально возможное кол-во звёзд для рассчёта освещённости.
 *
 * @see illuminance-utils.h
+* @see Прим. к starsystem::structure::STAR_COUNT.
 */
-static __constant size_t ILLUMINANCE_STAR_COUNT = 10;
+static __constant size_t ILLUMINANCE_STAR_COUNT = 10 + 1;
 
 
 
