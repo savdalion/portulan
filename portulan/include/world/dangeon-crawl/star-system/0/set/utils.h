@@ -38,9 +38,11 @@ namespace portulan {
 *   порядок наступления которых не определён.
 */
 static inline void excludeAsteroid( aboutAsteroid_t* e ) {
+/* - Нельзя: порядок вызова событий не определён.
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
     assert( e->live && "Элемент уже исключён." );
 #endif
+*/
     e->live = false;
 }
 
@@ -50,9 +52,6 @@ static inline void excludeAsteroid( aboutAsteroid_t* e ) {
 * @see Коммент. к excludeAsteroid().
 */
 static inline void excludePlanet( aboutPlanet_t* e ) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( e->live && "Элемент уже исключён." );
-#endif
     e->live = false;
 }
 
@@ -62,9 +61,6 @@ static inline void excludePlanet( aboutPlanet_t* e ) {
 * @see Коммент. к excludeAsteroid().
 */
 static inline void excludeStar( aboutStar_t* e ) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( e->live && "Элемент уже исключён." );
-#endif
     e->live = false;
 }
 
