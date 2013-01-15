@@ -96,6 +96,7 @@ enum EVENT {
     E_CHANGE_TEMPERATURE,
 
     // изменение характеристик
+    E_CHANGE_COORD,
     E_CHANGE_MASS,
     E_CHANGE_VELOCITY,
 
@@ -104,6 +105,9 @@ enum EVENT {
 
     // уничтожение элемента
     E_DESTROY,
+
+    // воздействие силы
+    E_IMPACT_FORCE,
 
     // последнее
     E_last

@@ -79,8 +79,10 @@ typedef struct __attribute__ ((packed)) {
 
     /**
     * Вектор гравитационных сил, действующих на звезду, Н.
+    * Также храним длину вектора.
     */
     real_t force[ 3 ];
+    real_t absForce;
 
     /**
     * Скорость движения звезды в звёздной системе, XYZ, м/с.
@@ -93,6 +95,22 @@ typedef struct __attribute__ ((packed)) {
     * @see #Соглашения в 'event_t'.
     */
     starMemoryEvent_t memoryEvent;
+
+
+    /**
+    * Последнее изменение скорости движения, м/с.
+    * Также храним длину вектора.
+    */
+    real_t deltaVelocity[ 3 ];
+    real_t absDeltaVelocity;
+
+
+    /**
+    * Последнее изменение координат, м/с.
+    * Также храним длину вектора.
+    */
+    real_t deltaCoord[ 3 ];
+    real_t absDeltaCoord;
 
 
     /**

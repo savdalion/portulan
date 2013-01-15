@@ -129,9 +129,6 @@
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\asteroid.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\utils.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -172,6 +169,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\observer.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\utils.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

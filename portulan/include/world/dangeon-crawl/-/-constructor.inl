@@ -627,19 +627,19 @@ inline void copyFill(
 ) {
     auto itrSrc = src.cbegin();
     auto itrDst = dst;
-	for ( ; itrSrc != src.cend(); ++itrSrc, ++itrDst) {
+    for ( ; itrSrc != src.cend(); ++itrSrc, ++itrDst) {
         itrDst->code = static_cast< cl_uchar >( itrSrc->first );
-		itrDst->count = static_cast< cl_float >( itrSrc->second * k );
+        itrDst->count = static_cast< cl_float >( itrSrc->second * k );
     }
 
     // дозаполняем хвост не определёнными элементами и нулями
-	for (size_t i = 0; i < n; ++i, ++itrDst) {
+    for (size_t i = 0; i < n; ++i, ++itrDst) {
         itrDst->code = static_cast< codeLiving_t >( 0 );
-		itrDst->count = static_cast< cl_float >( 0.0 );
+        itrDst->count = static_cast< cl_float >( 0.0 );
     }
 
     /* @test */
-	for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < n; ++i) {
         std::cout << static_cast< int >( dst[i].code ) <<
             " " << dst[i].count <<
         std::endl;
@@ -659,17 +659,17 @@ inline void copyFill(
 ) {
     auto itrSrc = src.cbegin();
     auto itrDst = dst;
-	for ( ; itrSrc != src.cend(); ++itrSrc, ++itrDst) {
+    for ( ; itrSrc != src.cend(); ++itrSrc, ++itrDst) {
         *itrDst = static_cast< D >( (*itrSrc) * k );
     }
 
     // дозаполняем хвост не определёнными элементами и нулями
-	for (size_t i = 0; i < n; ++i, ++itrDst) {
+    for (size_t i = 0; i < n; ++i, ++itrDst) {
         *itrDst = static_cast< D >( 0 );
     }
 
     /* @test
-	for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < n; ++i) {
         std::cout << dst[i] << std::endl;
     }
     */
@@ -690,7 +690,7 @@ inline void copyFillComponent(
     }
 
     /* @test */
-	for (size_t n = 0; n < portulan::planet::COMPONENT_COUNT; ++n) {
+    for (size_t n = 0; n < portulan::planet::COMPONENT_COUNT; ++n) {
         std::cout << static_cast< portulan::planet::CODE_COMPONENT >( dst[ n ].code ) <<
             " " << dst[ n ].count <<
         std::endl;
