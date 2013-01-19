@@ -106,8 +106,14 @@ enum EVENT {
     // уничтожение элемента
     E_DESTROY,
 
+    // гравитационное притяжение других объектов
+    E_GRAVITY,
+
     // воздействие силы
     E_IMPACT_FORCE,
+
+    // излучение света
+    E_LUMINOSITY,
 
     // последнее
     E_last
@@ -136,35 +142,19 @@ static __constant size_t STAR_COUNT = 10 + 1;
 
 
 /**
-* Макс. кол-во событий, которые способен помнить элемент.
-*
-* # Элемент должен уметь помнить больше одного события.
-*
-* @see event_t
-*/
-static __constant size_t ASTEROID_EVENT_COUNT = 10;
-static __constant size_t PLANET_EVENT_COUNT = 20;
-static __constant size_t STAR_EVENT_COUNT = 40;
-
-
-
-/**
 * Макс. кол-во характеристик, которое может содержать событие.
 *
-* @see event_t
+* @see eventTwo_t
 */
 static __constant size_t MAX_FEATURE_EVENT = 5;
 
 
 
+
 /**
-* Макс. кол-во событий, которые способен помнить наблюдатель.
-*
-* # Объём памяти наблюдателя должен быть достаточен, чтобы охватить все
-*   события с двумя (@todo extend и более) участниками, которые могут случиться
-*   за один пульс.
+* Какое макс. кол-во событий может выдать элемент за 1 пульс.
 */
-static __constant size_t OBSERVER_EVENT_TWO_COUNT = 200;
+static __constant size_t EMITTER_EVENT_COUNT = 10;
 
 
 #endif
@@ -186,7 +176,7 @@ typedef cl_int  uid_t;
 /**
 * Идентификатор элемента в звёздной системе.
 */
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     enum GROUP_ELEMENT ge;
     uid_t uid;
 } uidElement_t;
@@ -222,39 +212,10 @@ typedef struct __attribute__ ((packed)) {
 * Из-за огромных значений, вынуждены держать массу в двух переменных
 * Для получения полной массы элемента следует вызывать pns::mass*().
 */
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     real_t base;
     real_t knoll;
 } mass_t;
-
-
-
-
-/**
-* События для наблюдателя за элементами звёздной системы.
-*
-* Соглашения для *MemoryEventTwo_t
-*   # Наблюдатель звёздной системы помнит о *_EVENT_*_COUNT событиях.
-*   # События записываются последовательно от меньшей адресации к большей.
-*   # Индекс для записи текущего события всегда лежит в диапазоне
-*     [0; *_EVENT_*_COUNT - 1]
-*   # Первое событие записывается по индексу 0.
-*   # Каждая запись нового события увеличивает индекс на 1.
-*   # При достижения границы *_EVENT_*_COUNT, индекс вновь указывает
-*     на первую ячейку памяти для события.
-*/
-typedef struct __attribute__ ((packed)) {
-    EVENT uid;
-
-    /**
-    * Элементы-участники события.
-    * Например, при столкновении астероида со звездой, будет содержать
-    * указатели на астероид и на звезду в списке топологии портулана.
-    */
-    pointerElement_t piA;
-    pointerElement_t piB;
-
-} eventTwo_t;
 
 
 
@@ -274,7 +235,7 @@ typedef struct __attribute__ ((packed)) {
 *     на первую ячейку памяти для события.
 */
 typedef struct __attribute__ ((packed)) {
-    EVENT uid;
+    enum EVENT uid;
 
     /**
     * Второй элемент-участник события.
@@ -291,22 +252,26 @@ typedef struct __attribute__ ((packed)) {
     */
     real_t fReal[ MAX_FEATURE_EVENT ];
 
-} event_t;
+} eventTwo_t;
+
 
 
 
 /**
-* Указатель для последовательного прохождения по событиям звёздной системы.
+* Все выпущенные элементом за 1 пульс события.
 */
 typedef struct __attribute__ ((packed)) {
-    pointerElement_t pi;
+    cl_int waldo;
+    eventTwo_t content[ EMITTER_EVENT_COUNT ];
+} emitterEvent_t;
 
-    /**
-    * Индекс события в памяти элемента.
-    */
-    cl_uint kk;
 
-} pointerEvent_t;
+
+
+/**
+* Указатель для прохождения по всем событиям элемента.
+*/
+typedef cl_uint  pointerEvent_t;
 
 
 

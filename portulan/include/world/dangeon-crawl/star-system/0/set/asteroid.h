@@ -17,36 +17,19 @@ namespace portulan {
 
 
 /**
-* Память астероида о событиях в звёздной системе.
-*
-* @see #Соглашения в 'event_t'.
+* Минимум событий, испускаемых астероидом каждый пульс.
 */
-typedef struct __attribute__ ((packed)) {
-    /**
-    * Индекс ("валдо" - см. игру 'SpaceChem') для записи текущего события.
-    * [0; *_EVENT_COUNT - 1]
-    *
-    * # Позволяем быть отрицательным, чтобы ускорить работу с ним.
-    */
-    cl_int   waldo;
-
-    event_t  content[ ASTEROID_EVENT_COUNT ];
-    
-} asteroidMemoryEvent_t;
+const enum EVENT ASTEROID_EVENT[] = {
+    E_NONE
+};
 
 
 
 
 /**
-* Информация об астероиде в звёздной системе.
-* Хранить будем по координатам: сетка MapContent3D - слишком накладно.
+* @see #Соглашения для 'aboutStar_t'.
 */
 typedef struct __attribute__ ((packed)) {
-    /**
-    * Идентификатор астероида.
-    */
-    uid_t uid;
-
     /**
     * Астероид взаимодействует с другими элементами звёздной системы.
     */
@@ -154,40 +137,33 @@ typedef struct __attribute__ ((packed)) {
     */
     real_t enthalpyVaporization;
 
+} characteristicAsteroid_t;
+
+
+
+
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Идентификатор астероида.
+    */
+    uid_t uid;
+
+    // @test
+    cl_float  tf1;
+    cl_float  tf2;
+    cl_double td1;
+    cl_double td2;
 
     /**
-    * События, которые произошли с астероидом.
-    *
-    * @see #Соглашения в 'event_t'.
+    * Характеристика астероида: сейчас и для след. пульса.
     */
-    asteroidMemoryEvent_t memoryEvent;
-
+    characteristicAsteroid_t today;
+    characteristicAsteroid_t future;
 
     /**
-    * Последнее изменение скорости движения, м/с.
-    * Также храним длину вектора.
+    * События, выпущенные астероидом за 1 пульс.
     */
-    real_t deltaVelocity[ 3 ];
-    real_t absDeltaVelocity;
-
-
-    /**
-    * Последнее изменение координат, м/с.
-    * Также храним длину вектора.
-    */
-    real_t deltaCoord[ 3 ];
-    real_t absDeltaCoord;
-
-    /**
-    * @see star.h
-    */
-    real_t tm[ 16 ];
-
-
-    /**
-    * Тестовый набор.
-    */
-    real_t test[ 5 ];
+    emitterEvent_t emitterEvent;
 
 } aboutAsteroid_t;
 
@@ -195,20 +171,13 @@ typedef struct __attribute__ ((packed)) {
 
 
 /**
-* Перечисление всех астероидов в звёздной системе.
+* Астероиды в области звёздной системы.
 *
 * # Если тело отсутствует - разрушено, вышло за границу звёздной системы
 *   и т.п. - его масса = 0.
 * # Отсутствующий астероид - сигнал конца списка.
 */
-typedef aboutAsteroid_t asteroidContent_t[ ASTEROID_COUNT ];
-
-
-
-
-/**
-* Астероиды в области звёздной системы.
-*/
+typedef aboutAsteroid_t*  asteroidContent_t;
 typedef struct __attribute__ ((packed)) {
     asteroidContent_t content;
 } asteroid_t;

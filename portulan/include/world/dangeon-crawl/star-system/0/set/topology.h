@@ -15,15 +15,14 @@ namespace portulan {
 * (см. starsystem::Portulan).
 *
 * Соглашения
-*   # Физические величины указываются в системе измерения СИ.
+*   # Физические величины указываются в системе измерения СИ. Исключение -
+*     температура (сделано для наглядности).
 *   # Типы данных топологии сразу готовы к передаче OpenCL: это позволит
 *     избежать создания booster-структуры (см. porte::Booster).
 *   # Любые характеристики тела, включая группу элемента, могут меняться движком.
 */
 typedef struct __attribute__ ((packed)) {
     aboutStarSystem_t  aboutStarSystem;
-
-    observer_t  observer;
 
     asteroid_t  asteroid;
     planet_t    planet;

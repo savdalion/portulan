@@ -6,26 +6,26 @@ namespace portulan {
 
 
 inline Topology::Topology() {
-    /* - Используем стек.
-    mTopology.planet.content = new aboutPlanet_t[ PLANET_COUNT ];
-    ...
-    */
-
     // # Все структуры инициализируем нулями. Удобно для отладки.
 
     std::memset( &mTopology.aboutStarSystem, 0, sizeof( mTopology.aboutStarSystem ) );
 
-    std::memset( &mTopology.observer, 0, sizeof( mTopology.observer ) );
+    mTopology.asteroid.content = new aboutAsteroid_t[ ASTEROID_COUNT ];
+    std::memset( mTopology.asteroid.content, 0, sizeof( *mTopology.asteroid.content ) );
 
-    std::memset( &mTopology.asteroid, 0, sizeof( mTopology.asteroid ) );
-    std::memset( &mTopology.planet, 0, sizeof( mTopology.planet ) );
-    std::memset( &mTopology.star, 0, sizeof( mTopology.star ) );
+    mTopology.planet.content = new aboutPlanet_t[ PLANET_COUNT ];
+    std::memset( mTopology.planet.content, 0, sizeof( *mTopology.planet.content ) );
+
+    mTopology.star.content = new aboutStar_t[ STAR_COUNT ];
+    std::memset( mTopology.star.content, 0, sizeof( *mTopology.star.content ) );
 }
 
 
 
 inline Topology::~Topology() {
-    //delete[] mTopology.planet.content;
+    delete[] mTopology.asteroid.content;
+    delete[] mTopology.planet.content;
+    delete[] mTopology.star.content;
 }
 
 

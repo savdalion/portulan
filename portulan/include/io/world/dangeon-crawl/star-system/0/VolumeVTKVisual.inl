@@ -247,18 +247,18 @@ inline void VolumeVTKVisual::drawTopology(
     static const typelib::vector_t  color( 1.0, 1.0, 0.0 );
     for (size_t i = 0; i < pns::STAR_COUNT; ++i) {
         const pns::aboutStar_t& a = topo[ i ];
-        if ( pns::absentStar( a ) ) {
+        if ( pns::absentStar( &a ) ) {
             // # Завершаем поиск, как только нет элемента.
             break;
         }
         // размер делаем таким, чтобы элемент всегда был показан
-        const auto minRealSize = a.radius;
+        const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
         if (scale > 0.5) {
-            insertPoint( points, vertices, a.coord );
+            insertPoint( points, vertices, a.today.coord );
         } else {
-            drawSphere( a.coord, a.radius, color );
+            drawSphere( a.today.coord, a.today.radius, color );
         }
     } // for (size_t i = 0; ...
     drawPoints( points, vertices, sizePoint, color );
@@ -278,18 +278,18 @@ inline void VolumeVTKVisual::drawTopology(
     static const typelib::vector_t  color( 0.0, 0.0, 1.0 );
     for (size_t i = 0; i < pns::PLANET_COUNT; ++i) {
         const pns::aboutPlanet_t& a = topo[ i ];
-        if ( pns::absentPlanet( a ) ) {
+        if ( pns::absentPlanet( &a ) ) {
             // # Завершаем поиск, как только нет элемента.
             break;
         }
         // размер делаем таким, чтобы элемент всегда был показан
-        const auto minRealSize = a.radius;
+        const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
         if (scale > 0.5) {
-            insertPoint( points, vertices, a.coord );
+            insertPoint( points, vertices, a.today.coord );
         } else {
-            drawSphere( a.coord, a.radius, color );
+            drawSphere( a.today.coord, a.today.radius, color );
         }
     } // for (size_t i = 0; ...
     drawPoints( points, vertices, sizePoint, color );
@@ -309,19 +309,19 @@ inline void VolumeVTKVisual::drawTopology(
     static const typelib::vector_t  color( 0.5, 0.5, 0.5 );
     for (size_t i = 0; i < pns::ASTEROID_COUNT; ++i) {
         const pns::aboutAsteroid_t& a = topo[ i ];
-        if ( pns::absentAsteroid( a ) ) {
+        if ( pns::absentAsteroid( &a ) ) {
             // # Завершаем поиск, как только нет элемента.
             break;
         }
         // размер делаем таким, чтобы элемент всегда был показан
-        const auto realSize = typelib::SizeT< pns::real_t >( a.size );
+        const auto realSize = typelib::SizeT< pns::real_t >( a.today.size );
         const auto minRealSize = realSize.min();
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
         if (scale > 2.0) {
-            insertPoint( points, vertices, a.coord );
+            insertPoint( points, vertices, a.today.coord );
         } else {
-            drawEllipsoid( a.coord, a.size, color );
+            drawEllipsoid( a.today.coord, a.today.size, color );
         }
     } // for (size_t i = 0; ...
     drawPoints( points, vertices, sizePoint, color );

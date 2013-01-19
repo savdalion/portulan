@@ -214,27 +214,27 @@ Statistics< N >::preparedTopology() const {
     const auto& asteroid = topology.asteroid.content;
     for (size_t i = 0; i < ASTEROID_COUNT; ++i) {
         const auto body = asteroid[ i ];
-        if ( presentAsteroid( body ) ) {
+        if ( presentAsteroid( &body ) ) {
             const uidElement_t uid = { GE_ASTEROID, body.uid };
-            insertElement( uid, body.coord, body.velocity );
+            insertElement( uid, body.today.coord, body.today.velocity );
         }
     }
 
     const auto& planet = topology.planet.content;
     for (size_t i = 0; i < PLANET_COUNT; ++i) {
         const auto body = planet[ i ];
-        if ( presentPlanet( body ) ) {
+        if ( presentPlanet( &body ) ) {
             const uidElement_t uid = { GE_PLANET, body.uid };
-            insertElement( uid, body.coord, body.velocity );
+            insertElement( uid, body.today.coord, body.today.velocity );
         }
     }
 
     const auto& star = topology.star.content;
     for (size_t i = 0; i < STAR_COUNT; ++i) {
         const auto body = star[ i ];
-        if ( presentStar( body ) ) {
+        if ( presentStar( &body ) ) {
             const uidElement_t uid = { GE_STAR, body.uid };
-            insertElement( uid, body.coord, body.velocity );
+            insertElement( uid, body.today.coord, body.today.velocity );
         }
     }
 

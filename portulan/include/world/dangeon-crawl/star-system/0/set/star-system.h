@@ -3,7 +3,6 @@
 #pragma once
 
 #include "structure.h"
-#include "observer.h"
 #include "asteroid.h"
 #include "planet.h"
 #include "star.h"
@@ -54,14 +53,14 @@ typedef struct __attribute__ ((packed)) {
 * Структура для обмена данными при рассчёте физ. взаимодействий.
 */
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     real_t  coord[ 3 ];
     real_t  velocity[ 3 ];
     real_t  lengthVelocity;
 } point_t;
 
 #else
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     typelib::CoordT< real_t >   coord;
     typelib::VectorT< real_t >  velocity;
     real_t                      lengthVelocity;

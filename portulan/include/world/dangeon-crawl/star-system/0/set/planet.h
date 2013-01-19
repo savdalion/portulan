@@ -17,28 +17,20 @@ namespace portulan {
 
 
 /**
-* Память планеты о событиях в звёздной системе.
-*
-* @see Комментарии в 'asteroid.h'.
+* Минимум событий, испускаемых планетой каждый пульс.
 */
-typedef struct __attribute__ ((packed)) {
-    cl_int   waldo;
-    event_t  content[ PLANET_EVENT_COUNT ];
-} planetMemoryEvent_t;
+const enum EVENT PLANET_EVENT[] = {
+    E_GRAVITY,
+    E_NONE
+};
 
 
 
 
 /**
 * Информация о планете в звёздной системе.
-* Хранить будем по координатам: сетка MapContent3D - слишком накладно.
 */
 typedef struct __attribute__ ((packed)) {
-    /**
-    * Идентификатор планеты.
-    */
-    uid_t uid;
-
     /**
     * Планета взаимодействует с другими элементами звёздной системы.
     */
@@ -62,9 +54,16 @@ typedef struct __attribute__ ((packed)) {
     real_t coord[ 3 ];
 
     /**
-    * Наклон планеты по XYZ.
+    * Наклон оси планеты, градусы.
+    *
+    * @see http://en.wikipedia.org/wiki/Axial_tilt
     */
-    real_t rotation[ 3 ];
+    real_t axialTilt;
+
+    /**
+    * Период вращения планеты, с.
+    */
+    real_t rotationPeriod;
 
     /**
     * Вектор гравитационных сил, действующих на планету, Н.
@@ -78,52 +77,27 @@ typedef struct __attribute__ ((packed)) {
     */
     real_t velocity[ 3 ];
 
-    /**
-    * Наклон оси планеты, градусы.
-    *
-    * @see http://en.wikipedia.org/wiki/Axial_tilt
-    */
-    real_t axilTilt;
+} characteristicPlanet_t;
 
-    /**
-    * Период вращения планеты, с.
-    */
-    real_t rotationPeriod;
 
+
+
+typedef struct __attribute__ ((packed)) {
+    /**
+    * Идентификатор планеты.
+    */
+    uid_t uid;
 
     /**
-    * События, которые произошли с планетой.
-    * @see #Соглашения в 'event_t'.
+    * Характеристика планеты: сейчас и для след. пульса.
     */
-    planetMemoryEvent_t memoryEvent;
-
+    characteristicPlanet_t today;
+    characteristicPlanet_t future;
 
     /**
-    * Последнее изменение скорости движения, м/с.
-    * Также храним длину вектора.
+    * События, выпущенные планетой за 1 пульс.
     */
-    real_t deltaVelocity[ 3 ];
-    real_t absDeltaVelocity;
-
-
-    /**
-    * Последнее изменение координат, м/с.
-    * Также храним длину вектора.
-    */
-    real_t deltaCoord[ 3 ];
-    real_t absDeltaCoord;
-
-
-    /**
-    * @see star.h
-    */
-    real_t tm[ 16 ];
-
-
-    /**
-    * Тестовый набор.
-    */
-    real_t test[ 5 ];
+    emitterEvent_t emitterEvent;
 
 } aboutPlanet_t;
 
@@ -131,20 +105,9 @@ typedef struct __attribute__ ((packed)) {
 
 
 /**
-* Перечисление всех планет в звёздной системе.
-*
-* # Если тело отсутствует - разрушено, вышло за границу звёздной системы
-*   и т.п. - его масса = 0.
-* # Отсутствующая планета - сигнал конца списка.
-*/
-typedef aboutPlanet_t  planetContent_t[ PLANET_COUNT ];
-
-
-
-
-/**
 * Планеты в области звёздной системы.
 */
+typedef aboutPlanet_t*   planetContent_t;
 typedef struct __attribute__ ((packed)) {
     planetContent_t content;
 } planet_t;

@@ -17,28 +17,27 @@ namespace portulan {
 
 
 /**
-* Память звезды о событиях в звёздной системе.
-*
-* @see Комментарии в 'asteroid.h'.
+* Минимум событий, испускаемых звездой каждый пульс.
 */
-typedef struct __attribute__ ((packed)) {
-    cl_int   waldo;
-    event_t  content[ STAR_EVENT_COUNT ];
-} starMemoryEvent_t;
+const enum EVENT STAR_EVENT[] = {
+    E_GRAVITY,
+    // излучение всегда приводит к потере массы
+    E_LUMINOSITY, /* E_CHANGE_MASS, - меняем в 'future' */
+    E_NONE
+};
 
 
 
 
 /**
 * Информация о звезде в звёздной системе.
-* Хранить будем по координатам: сетка MapContent3D - слишком накладно.
+*
+* # Хранить будем по координатам: сетка MapContent3D - слишком накладно.
+* # Характеристика, которая может быть изменена, имеет близнеца с именем
+*   'future'. Этот близнец служит как память для событий об изменении
+*   характеристик элемента.
 */
 typedef struct __attribute__ ((packed)) {
-    /**
-    * Идентификатор звезды.
-    */
-    uid_t uid;
-
     /**
     * Звезда взаимодействует с другими элементами звёздной системы.
     */
@@ -89,51 +88,32 @@ typedef struct __attribute__ ((packed)) {
     */
     real_t velocity[ 3 ];
 
-
-    /**
-    * События, которые произошли со звездой.
-    * @see #Соглашения в 'event_t'.
-    */
-    starMemoryEvent_t memoryEvent;
-
-
-    /**
-    * Последнее изменение скорости движения, м/с.
-    * Также храним длину вектора.
-    */
-    real_t deltaVelocity[ 3 ];
-    real_t absDeltaVelocity;
-
-
-    /**
-    * Последнее изменение координат, м/с.
-    * Также храним длину вектора.
-    */
-    real_t deltaCoord[ 3 ];
-    real_t absDeltaCoord;
-
-
-    /**
-    * Переменные используются некоторыми движками, чтобы оптимизировать
-    * работу с элементом.
-    *
-    * @example EngineND
-    *
-    * # Переменные ниже заполняются движком.
-    * # Для получения актуальной информации в переменные выше, должен
-    *   быть вызван метод Engine::sync().
-    */
-    real_t tm[ 16 ];
-
     /**
     * Светимость звезды.
     */
     real_t luminosity;
 
+} characteristicStar_t;
+
+
+
+
+typedef struct __attribute__ ((packed)) {
     /**
-    * Тестовый набор.
+    * Идентификатор звезды.
     */
-    real_t test[ 5 ];
+    uid_t uid;
+
+    /**
+    * Характеристика звезды: сейчас и для след. пульса.
+    */
+    characteristicStar_t today;
+    characteristicStar_t future;
+
+    /**
+    * События, выпущенные звездой за 1 пульс.
+    */
+    emitterEvent_t emitterEvent;
 
 } aboutStar_t;
 
@@ -141,20 +121,13 @@ typedef struct __attribute__ ((packed)) {
 
 
 /**
-* Перечисление всех звёзд в звёздной системе.
+* Звёзды в области звёздной системы.
 *
 * # Если тело отсутствует - разрушено, вышло за границу звёздной системы
 *   и т.п. - его масса = 0.
 * # Отсутствующая звезда - сигнал конца списка.
 */
-typedef aboutStar_t starContent_t[ STAR_COUNT ];
-
-
-
-
-/**
-* Звёзды в области звёздной системы.
-*/
+typedef aboutStar_t*  starContent_t;
 typedef struct __attribute__ ((packed)) {
     starContent_t content;
 } star_t;

@@ -37,13 +37,13 @@ namespace portulan {
 * # Не можем, например, обнулять массу, т.к. элемент участвует в событиях,
 *   порядок наступления которых не определён.
 */
-static inline void excludeAsteroid( aboutAsteroid_t* e ) {
+inline void excludeAsteroid( aboutAsteroid_t* e ) {
 /* - Нельзя: порядок вызова событий не определён.
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
     assert( e->live && "Элемент уже исключён." );
 #endif
 */
-    e->live = false;
+    e->future.live = false;
 }
 
 
@@ -51,17 +51,18 @@ static inline void excludeAsteroid( aboutAsteroid_t* e ) {
 /**
 * @see Коммент. к excludeAsteroid().
 */
-static inline void excludePlanet( aboutPlanet_t* e ) {
-    e->live = false;
+inline void excludePlanet( aboutPlanet_t* e ) {
+    e->future.live = false;
 }
+
 
 
 
 /**
 * @see Коммент. к excludeAsteroid().
 */
-static inline void excludeStar( aboutStar_t* e ) {
-    e->live = false;
+inline void excludeStar( __global aboutStar_t* e ) {
+    e->future.live = false;
 }
 
 
@@ -70,16 +71,16 @@ static inline void excludeStar( aboutStar_t* e ) {
 /**
 * @return Указанный элемент отсутствует в звёздной системе.
 */
-static inline bool absentAsteroid( const aboutAsteroid_t& e ) {
-    return !e.live;
+inline bool absentAsteroid( const aboutAsteroid_t* e ) {
+    return !e->today.live;
 }
 
-static inline bool absentPlanet( const aboutPlanet_t& e ) {
-    return !e.live;
+inline bool absentPlanet( const aboutPlanet_t* e ) {
+    return !e->today.live;
 }
 
-static inline bool absentStar( const aboutStar_t& e ) {
-    return !e.live;
+inline bool absentStar( __global const aboutStar_t* e ) {
+    return !e->today.live;
 }
 
 
@@ -88,16 +89,16 @@ static inline bool absentStar( const aboutStar_t& e ) {
 /**
 * @return Указанный элемент присутствует в звёздной системе.
 */
-static inline bool presentAsteroid( const aboutAsteroid_t& e ) {
-    return e.live;
+inline bool presentAsteroid( const aboutAsteroid_t* e ) {
+    return e->today.live;
 }
 
-static inline bool presentPlanet( const aboutPlanet_t& e ) {
-    return e.live;
+inline bool presentPlanet( const aboutPlanet_t* e ) {
+    return e->today.live;
 }
 
-static inline bool presentStar( const aboutStar_t& e ) {
-    return e.live;
+inline bool presentStar( __global const aboutStar_t* e ) {
+    return e->today.live;
 }
 
 
@@ -106,16 +107,16 @@ static inline bool presentStar( const aboutStar_t& e ) {
 /**
 * @return Масса элемента звёздной системы.
 */
-static inline real_t massAsteroid( const aboutAsteroid_t& e ) {
-    return (e.mass.base + e.mass.knoll);
+inline real_t massAsteroid( const aboutAsteroid_t* e ) {
+    return (e->today.mass.base + e->today.mass.knoll);
 }
 
-static inline real_t massPlanet( const aboutPlanet_t& e ) {
-    return (e.mass.base + e.mass.knoll);
+inline real_t massPlanet( const aboutPlanet_t* e ) {
+    return (e->today.mass.base + e->today.mass.knoll);
 }
 
-static inline real_t massStar( const aboutStar_t& e ) {
-    return (e.mass.base + e.mass.knoll);
+inline real_t massStar( const aboutStar_t* e ) {
+    return (e->today.mass.base + e->today.mass.knoll);
 }
 
 
@@ -124,22 +125,27 @@ static inline real_t massStar( const aboutStar_t& e ) {
 /**
 * @return Результат сравнения масс.
 */
-static inline bool equalMass( const mass_t& a,  const mass_t& b ) {
+inline bool equalMass( const mass_t* a,  const mass_t* b ) {
+    // @todo optimize fine Переписать через abs_diff().
+    const real_t abab = a->base - b->base;
+    const real_t absABAB = (abab > 0) ? abab : -abab;
+    const real_t akak = a->knoll - b->knoll;
+    const real_t absAKAK = (akak > 0) ? akak : -akak;
+    const real_t ab = (a->base + a->knoll) - (b->base + b->knoll);
+    const real_t absAB = (ab > 0) ? ab : -ab;
     return
-        ( typelib::equal( a.base, b.base ) && typelib::equal( a.knoll, b.knoll ) )
-     || typelib::equal( a.base + a.knoll,  b.base + b.knoll );
+        ( (absABAB < 0.001) && (absAKAK < 0.001) )
+     || (absAB < 0.001);
 }
 
-static inline bool gtMass( const mass_t& a,  const mass_t& b ) {
-    return
-        ( typelib::equal( a.base, b.base ) && (a.knoll > b.knoll) )
-     || ( (a.base + a.knoll) > (b.base + b.knoll) );
+inline bool gtMass( const mass_t* a,  const mass_t* b ) {
+    // @todo fine Для малых 'knoll' не будет работать. Переписать.
+    return (a->base + a->knoll) > (b->base + b->knoll);
 }
 
-static inline bool ltMass( const mass_t& a,  const mass_t& b ) {
-    return
-        ( typelib::equal( a.base, b.base ) && (a.knoll < b.knoll) )
-     || ( (a.base + a.knoll) < (b.base + b.knoll) );
+inline bool ltMass( const mass_t* a,  const mass_t* b ) {
+    // @todo fine Для малых 'knoll' не будет работать. Переписать.
+    return (a->base + a->knoll) < (b->base + b->knoll);
 }
 
 
@@ -149,17 +155,22 @@ static inline bool ltMass( const mass_t& a,  const mass_t& b ) {
 * @return Указатель на след. не пустой элемент в списке, начиная с конца.
 *         -1 если список пустой.
 */
-static inline cl_int lastIndexOfPresentAsteroid(
+inline cl_int lastIndexOfPresentAsteroidTail(
     const aboutAsteroid_t* ec,
-    cl_int startI = ASTEROID_COUNT - 1
+    cl_int startI
 ) {
     cl_int tail = startI;
     for ( ; tail >= 0; --tail) {
-        if ( presentAsteroid( ec[ tail ] ) ) {
+        if ( presentAsteroid( &ec[ tail ] ) ) {
             return tail;
         }
     }
     return -1;
+}
+
+
+inline cl_int lastIndexOfPresentAsteroid( const aboutAsteroid_t* ec ) {
+    return lastIndexOfPresentAsteroidTail( ec, ASTEROID_COUNT - 1 );
 }
 
 
@@ -168,17 +179,22 @@ static inline cl_int lastIndexOfPresentAsteroid(
 /**
 * @see Коммент. к lastIndexOfPresentAsteroid().
 */
-static inline cl_int lastIndexOfPresentPlanet(
+inline cl_int lastIndexOfPresentPlanetTail(
     const aboutPlanet_t* ec,
-    cl_int startI = PLANET_COUNT - 1
+    cl_int startI
 ) {
     cl_int tail = startI;
     for ( ; tail >= 0; --tail) {
-        if ( presentPlanet( ec[ tail ] ) ) {
+        if ( presentPlanet( &ec[ tail ] ) ) {
             return tail;
         }
     }
     return -1;
+}
+
+
+inline cl_int lastIndexOfPresentPlanet( const aboutPlanet_t* ec ) {
+    return lastIndexOfPresentPlanetTail( ec, PLANET_COUNT - 1 );
 }
 
 
@@ -187,17 +203,22 @@ static inline cl_int lastIndexOfPresentPlanet(
 /**
 * @see Коммент. к lastIndexOfPresentAsteroid().
 */
-static inline cl_int lastIndexOfPresentStar(
-    const aboutStar_t* ec,
-    cl_int startI = STAR_COUNT - 1
+inline cl_int lastIndexOfPresentStarTail(
+    __global const aboutStar_t* ec,
+    cl_int startI
 ) {
     cl_int tail = startI;
     for ( ; tail >= 0; --tail) {
-        if ( presentStar( ec[ tail ] ) ) {
+        if ( presentStar( &ec[ tail ] ) ) {
             return tail;
         }
     }
     return -1;
+}
+
+
+inline cl_int lastIndexOfPresentStar( __global const aboutStar_t* ec ) {
+    return lastIndexOfPresentStarTail( ec, STAR_COUNT - 1 );
 }
 
 
@@ -208,7 +229,7 @@ static inline cl_int lastIndexOfPresentStar(
 *
 * # UID элементов звёздной системы только увеличиваются.
 */
-static inline cl_int nextUIDAsteroid(
+inline cl_int nextUIDAsteroid(
     const aboutAsteroid_t* ec
 ) {
     uid_t maxUID = ec[ 0 ].uid;
@@ -227,7 +248,7 @@ static inline cl_int nextUIDAsteroid(
 /**
 * @see Коммент. к nextUIDAsteroid().
 */
-static inline cl_int nextUIDPlanet(
+inline cl_int nextUIDPlanet(
     const aboutPlanet_t* ec
 ) {
     uid_t maxUID = ec[ 0 ].uid;
@@ -246,7 +267,7 @@ static inline cl_int nextUIDPlanet(
 /**
 * @see Коммент. к nextUIDAsteroid().
 */
-static inline cl_int nextUIDStar(
+inline cl_int nextUIDStar(
     const aboutStar_t* ec
 ) {
     uid_t maxUID = ec[ 0 ].uid;
@@ -265,7 +286,7 @@ static inline cl_int nextUIDStar(
 /**
 * @return Указанный список элементов звёздной системы - пустой.
 */
-static inline bool emptyAsteroid( const aboutAsteroid_t* ec ) {
+inline bool emptyAsteroid( const aboutAsteroid_t* ec ) {
     return (lastIndexOfPresentAsteroid( ec ) == -1);
 }
 
@@ -276,7 +297,7 @@ static inline bool emptyAsteroid( const aboutAsteroid_t* ec ) {
 * Оптимизирует список элементов звёздной системы.
 * Меняется размещение элементов в списке.
 */
-static inline void optimizeCountAsteroid( aboutAsteroid_t* ec ) {
+inline void optimizeCountAsteroid( aboutAsteroid_t* ec ) {
     // удалим из списка все элементы, которые были исключены
     // с помощью exclude*()
     cl_int tail = lastIndexOfPresentAsteroid( ec );
@@ -287,11 +308,11 @@ static inline void optimizeCountAsteroid( aboutAsteroid_t* ec ) {
     }
 
     for (cl_int i = 0; i < tail; ++i) {
-        if ( absentAsteroid( ec[ i ] ) ) {
+        if ( absentAsteroid( &ec[ i ] ) ) {
             // перемещаем элемент из хвоста на место пустого элемента
             ec[ i ] = ec[ tail ];
             excludeAsteroid( &ec[ tail ] );
-            tail = lastIndexOfPresentAsteroid( ec, tail - 1 );
+            tail = lastIndexOfPresentAsteroidTail( ec, tail - 1 );
         }
     }
 }
@@ -302,17 +323,17 @@ static inline void optimizeCountAsteroid( aboutAsteroid_t* ec ) {
 /**
 * @see Коммент. к optimizeCountAsteroid().
 */
-static inline void optimizeCountPlanet( aboutPlanet_t* ec ) {
+inline void optimizeCountPlanet( aboutPlanet_t* ec ) {
     cl_int tail = lastIndexOfPresentPlanet( ec );
     if ( (tail == 0) || (tail == -1) ) {
         return;
     }
 
     for (cl_int i = 0; i < tail; ++i) {
-        if ( absentPlanet( ec[ i ] ) ) {
+        if ( absentPlanet( &ec[ i ] ) ) {
             ec[ i ] = ec[ tail ];
             excludePlanet( &ec[ tail ] );
-            tail = lastIndexOfPresentPlanet( ec, tail - 1 );
+            tail = lastIndexOfPresentPlanetTail( ec, tail - 1 );
         }
     }
 }
@@ -323,17 +344,17 @@ static inline void optimizeCountPlanet( aboutPlanet_t* ec ) {
 /**
 * @see Коммент. к optimizeCountAsteroid().
 */
-static inline void optimizeCountStar( aboutStar_t* ec ) {
+inline void optimizeCountStar( __global aboutStar_t* ec ) {
     cl_int tail = lastIndexOfPresentStar( ec );
     if ( (tail == 0) || (tail == -1) ) {
         return;
     }
 
     for (cl_int i = 0; i < tail; ++i) {
-        if ( absentStar( ec[ i ] ) ) {
+        if ( absentStar( &ec[ i ] ) ) {
             ec[ i ] = ec[ tail ];
             excludeStar( &ec[ tail ] );
-            tail = lastIndexOfPresentStar( ec, tail - 1 );
+            tail = lastIndexOfPresentStarTail( ec, tail - 1 );
         }
     }
 }
@@ -347,13 +368,13 @@ static inline void optimizeCountStar( aboutStar_t* ec ) {
 * @param optimized Когда список оптимизирован, установка этого признака
 *        ускорит подсчёт элементов.
 */
-static inline cl_uint countAsteroid(
+inline cl_uint countAsteroid(
     const aboutAsteroid_t* ec,
     bool optimized
 ) {
     cl_uint n = 0;
     for (cl_uint i = 0; i < ASTEROID_COUNT; ++i) {
-        if ( presentAsteroid( ec[ i ] ) ) {
+        if ( presentAsteroid( &ec[ i ] ) ) {
             ++n;
         } else if ( optimized ) {
             return n;
@@ -365,13 +386,13 @@ static inline cl_uint countAsteroid(
 
 
 
-static inline cl_uint countPlanet(
+inline cl_uint countPlanet(
     const aboutPlanet_t* ec,
     bool optimized
 ) {
     cl_uint n = 0;
     for (cl_uint i = 0; i < PLANET_COUNT; ++i) {
-        if ( presentPlanet( ec[ i ] ) ) {
+        if ( presentPlanet( &ec[ i ] ) ) {
             ++n;
         } else if ( optimized ) {
             return n;
@@ -383,13 +404,13 @@ static inline cl_uint countPlanet(
 
 
 
-static inline cl_uint countStar(
-    const aboutStar_t* ec,
+inline cl_uint countStar(
+    __global const aboutStar_t* ec,
     bool optimized
 ) {
     cl_uint n = 0;
     for (cl_uint i = 0; i < STAR_COUNT; ++i) {
-        if ( presentStar( ec[ i ] ) ) {
+        if ( presentStar( &ec[ i ] ) ) {
             ++n;
         } else if ( optimized ) {
             return n;
@@ -408,13 +429,13 @@ static inline cl_uint countStar(
 * @param optimized Когда список оптимизирован, установка этого признака
 *        ускорит подсчёт элементов.
 */
-static inline const aboutPlanet_t* findPlanet(
+inline const aboutPlanet_t* findPlanet(
     uid_t uid,
     const aboutPlanet_t* ec,
     bool optimized
 ) {
     for (cl_uint i = 0; i < PLANET_COUNT; ++i) {
-        if ( presentPlanet( ec[ i ] ) ) {
+        if ( presentPlanet( &ec[ i ] ) ) {
             if (ec[ i ].uid == uid) {
                 return &ec[ i ];
             }
@@ -429,114 +450,11 @@ static inline const aboutPlanet_t* findPlanet(
 
 
 /**
-* Запоминает событие с двумя участниками в первой свободной ячейке памяти
-* наблюдателя.
-* Устанавливает индекс на только что заполненный элемент.
-* Если новое значение счётчика превышает *_EVENT_*_COUNT, индекс обнуляется.
-*/
-static inline void observerMemorizeEventTwo(
-    observerMemoryEventTwo_t* me,
-    const eventTwo_t& eventTwo
-) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( me && "Память не указана." );
-#endif
-
-    me->content[ me->waldo ] = eventTwo;
-
-    ++me->waldo;
-    if (me->waldo >= OBSERVER_EVENT_TWO_COUNT) {
-        me->waldo = 0;
-    }
-}
-
-
-
-
-/**
-* Запоминает событие в первой свободной ячейке памяти астероида.
-* Устанавливает индекс на только что заполненный элемент.
-* Если новое значение счётчика превышает *_EVENT_COUNT, индекс обнуляется.
-*/
-static inline void asteroidMemorizeEvent(
-    asteroidMemoryEvent_t* me,
-    const event_t& event
-) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( me && "Память не указана." );
-#endif
-
-    me->content[ me->waldo ] = event;
-
-    ++me->waldo;
-    if (me->waldo >= ASTEROID_EVENT_COUNT) {
-        me->waldo = 0;
-    }
-}
-
-
-
-
-/**
-* @see Коммент. для asteroidMemorizeEvent().
-*/
-static inline void planetMemorizeEvent(
-    planetMemoryEvent_t* me,
-    const event_t& event
-) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( me && "Память не указана." );
-#endif
-
-    me->content[ me->waldo ] = event;
-
-    ++me->waldo;
-    if (me->waldo >= PLANET_EVENT_COUNT) {
-        me->waldo = 0;
-    }
-}
-
-
-
-
-/**
-* @see Коммент. для asteroidMemorizeEvent().
-*/
-static inline void starMemorizeEvent(
-    starMemoryEvent_t* me,
-    const event_t& event
-) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( me && "Память не указана." );
-#endif
-
-    me->content[ me->waldo ] = event;
-
-    ++me->waldo;
-    if (me->waldo >= STAR_EVENT_COUNT) {
-        me->waldo = 0;
-    }
-}
-
-
-
-
-/**
 * Забывает событие.
 */
-static inline void forgetEvent( event_t* event ) {
+inline void forgetEvent( eventTwo_t* event ) {
     event->uid = E_NONE;
     // # Достаточно сбросить только UID события.
-}
-
-
-
-
-/**
-* @see Коммент. для forgetEvent().
-*/
-static inline void forgetEventTwo( eventTwo_t* eventTwo ) {
-    eventTwo->uid = E_NONE;
 }
 
 
@@ -546,14 +464,13 @@ static inline void forgetEventTwo( eventTwo_t* eventTwo ) {
 * @return Указатель на след. не пустое событие, начиная с конца.
 *         -1 если список не содержит событий.
 */
-static inline cl_int lastIndexOfPresentEvent(
-    event_t*  contentEvent,
+inline cl_int lastIndexOfPresentEvent(
+    eventTwo_t*  contentEvent,
     cl_int startI
 ) {
     cl_int tail = startI;
     for ( ; tail >= 0; --tail) {
-        const event_t& event = contentEvent[ tail ];
-        if (event.uid != E_NONE) {
+        if (contentEvent[ tail ].uid != E_NONE) {
             return tail;
         }
     }
@@ -569,8 +486,8 @@ static inline cl_int lastIndexOfPresentEvent(
 *
 * #! Порядок событий не сохраняется.
 */
-static inline void optimizeMemoryEvent(
-    event_t*  contentEvent,
+inline void optimizeEmitterEvent(
+    eventTwo_t*  contentEvent,
     cl_int*   waldo,
     cl_int    size
 ) {
@@ -593,8 +510,7 @@ static inline void optimizeMemoryEvent(
 
     // заполняем дырки 
     for (cl_int i = 0; i < tail; ++i) {
-        event_t& event = contentEvent[ i ];
-        if (event.uid == E_NONE) {
+        if (contentEvent[ i ].uid == E_NONE) {
             contentEvent[ i ] = contentEvent[ tail ];
             forgetEvent( &contentEvent[ tail ] );
             tail = lastIndexOfPresentEvent( contentEvent, tail - 1 );
@@ -617,11 +533,11 @@ static inline void optimizeMemoryEvent(
 /**
 * @return Указатели на элементы одинаковы.
 */
-static inline bool equalPointerElement(
-    const pointerElement_t&  a,
-    const pointerElement_t&  b
+inline bool equalPointerElement(
+    const pointerElement_t*  a,
+    const pointerElement_t*  b
 ) {
-    return (a.ge == b.ge) && (a.ii == b.ii ) && (a.uu == b.uu);
+    return (a->ge == b->ge) && (a->ii == b->ii ) && (a->uu == b->uu);
 }
 
 
@@ -630,8 +546,34 @@ static inline bool equalPointerElement(
 /**
 * @return События одинаковы.
 */
-static inline bool equalEvent( const event_t&  a,  const event_t&  b ) {
-    return (a.uid == b.uid) && equalPointerElement( a.pi, b.pi );
+inline bool equalEvent( const eventTwo_t*  a,  const eventTwo_t*  b ) {
+    return (a->uid == b->uid) && equalPointerElement( &a->pi, &b->pi );
+}
+
+
+
+
+/**
+* @return Тела столкнулись.
+*/
+inline bool collision(
+    const real_t coordA[ 3 ],
+    const real_t coordB[ 3 ],
+    real_t collisionDistance
+) {
+    // расстояние
+    const real_t r[ 3 ] = {
+        coordA[ 0 ] - coordB[ 0 ],
+        coordA[ 1 ] - coordB[ 1 ],
+        coordA[ 2 ] - coordB[ 2 ],
+    };
+    const real_t distance2 = (
+        r[ 0 ] * r[ 0 ] +
+        r[ 1 ] * r[ 1 ] +
+        r[ 2 ] * r[ 2 ]
+    );
+
+    return (distance2 < (collisionDistance * collisionDistance));
 }
 
 
@@ -642,8 +584,8 @@ static inline bool equalEvent( const event_t&  a,  const event_t&  b ) {
 * 
 * @see Методы *UniqueEvent() ниже.
 */
-static inline void uniqueEvent(
-    event_t*  contentEvent,
+inline void uniqueEmitterEvent(
+    eventTwo_t*  contentEvent,
     cl_int*   waldo,
     cl_int    size
 ) {
@@ -658,84 +600,40 @@ static inline void uniqueEvent(
 
     // отмечаем дубликаты как пустые события
     for (cl_int i = 0; i < size - 1; ++i) {
-        const event_t& event = contentEvent[ i ];
-        if (event.uid == E_NONE) {
+        if (contentEvent[ i ].uid == E_NONE) {
             // пустые события пропускаем
             continue;
         }
         for (cl_int j = i + 1; j < size; ++j) {
-            event_t& itEvent = contentEvent[ j ];
-            if (itEvent.uid == E_NONE) {
+            if (contentEvent[ j ].uid == E_NONE) {
                 continue;
             }
-            if ( equalEvent( event, itEvent ) ) {
+            if ( equalEvent( &contentEvent[ i ],  &contentEvent[ j ] ) ) {
                 // дубликат, удаляем
                 // в памяти останется только первое событие
-                forgetEvent( &itEvent );
+                forgetEvent( &contentEvent[ j ] );
             }
         }
     }
 
     // выбрасываем пустые события
     // указатель перемещается на посл. событие
-    optimizeMemoryEvent( contentEvent, waldo, size );
+    optimizeEmitterEvent( contentEvent, waldo, size );
 }
 
 
+
+
+#ifndef PORTULAN_AS_OPEN_CL_STRUCT
 
 
 /**
-* Удаляет дубликаты событий из памяти астероида.
-* Устанавливает индекс на последний заполненный элемент
-* (см. asteroidMemorizeEvent()).
+* Выводит в поток информацию о событии.
+* Мысль в коде, пример: "астероид[a] столкнулся[+] со звездой[s]".
 */
-static inline void asteroidUniqueEvent(
-    asteroidMemoryEvent_t* me
-) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( me && "Память не указана." );
-#endif
-    uniqueEvent( me->content,  &me->waldo,  ASTEROID_EVENT_COUNT );
-}
-
-
-
-
-/**
-* @see Коммент. к asteroidUniqueEvent().
-*/
-static inline void planetUniqueEvent(
-    planetMemoryEvent_t* me
-) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( me && "Память не указана." );
-#endif
-    uniqueEvent( me->content,  &me->waldo,  PLANET_EVENT_COUNT );
-}
-
-
-
-
-/**
-* @see Коммент. к asteroidUniqueEvent().
-*/
-static inline void starUniqueEvent(
-    starMemoryEvent_t* me
-) {
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-    assert( me && "Память не указана." );
-#endif
-    uniqueEvent( me->content,  &me->waldo,  STAR_EVENT_COUNT );
-}
-
-
-
-
-#ifndef PORTULAN_AS_OPEN_CL_STRUCT
-
-
-static inline void printEventTwo(
-    const eventTwo_t& eventTwo,
+inline void printEvent(
+    const pointerElement_t& first,
+    const eventTwo_t& event,
     topology_t* topology
 ) {
     static const auto fnWho = []( enum GROUP_ELEMENT g ) -> std::string {
@@ -750,61 +648,34 @@ static inline void printEventTwo(
     static const auto fnMass = [ topology ]( enum GROUP_ELEMENT g,  cl_uint i ) -> real_t {
         return
             (g == GE_NONE)     ? 0.0 :
-            (g == GE_ASTEROID) ? massAsteroid( topology->asteroid.content[ i ] ) :
-            (g == GE_PLANET)   ? massPlanet( topology->planet.content[ i ] ) :
-            (g == GE_STAR)     ? massStar( topology->star.content[ i ] ) :
+            (g == GE_ASTEROID) ? massAsteroid( &topology->asteroid.content[ i ] ) :
+            (g == GE_PLANET)   ? massPlanet( &topology->planet.content[ i ] ) :
+            (g == GE_STAR)     ? massStar( &topology->star.content[ i ] ) :
             0.0;
     };
 
-    const std::string whoA = fnWho( eventTwo.piA.ge );
+    const std::string whoA = fnWho( first.ge );
     const std::string how =
-        (eventTwo.uid == E_NONE) ? "!none" :
-        (eventTwo.uid == E_COLLISION) ? "+" :
+        (event.uid == E_NONE) ? "!none" :
+        (event.uid == E_COLLISION) ? "+" :
         "!?";
-    const std::string whoB = fnWho( eventTwo.piB.ge );
+    const std::string whoB = fnWho( event.pi.ge );
 
     std::cout << whoA;
     if ( topology ) {
-        std::cout << eventTwo.piA.uu <<
-            " (" << fnMass( eventTwo.piA.ge, eventTwo.piA.ii ) << ")";
+        std::cout << first.uu <<
+            " (" << fnMass( first.ge, first.ii ) << ")";
     }
 
     std::cout << " " << how << " ";
 
     std::cout << whoB;
     if ( topology ) {
-        std::cout << eventTwo.piB.uu <<
-            " (" << fnMass( eventTwo.piB.ge, eventTwo.piB.ii ) << ")";
+        std::cout << event.pi.uu <<
+            " (" << fnMass( event.pi.ge, event.pi.ii ) << ")";
     }
 
     std::cout << std::endl;
-}
-
-
-
-
-/**
-* Выводит в поток информацию о событии.
-* Мысль в коде, пример: "астероид[a] столкнулся[+] с планетой[p]".
-*
-* @param detail Будет отображаться больше инфо о событии. Например,
-*        рядом с названием участника, напишем уникальный код участника
-*        в звёздной системе.
-*/
-static inline void printEvent(
-    enum GROUP_ELEMENT ge1,
-    uid_t uid1,
-    const event_t& event,
-    topology_t* topology
-) {
-    const eventTwo_t eventTwo = {
-        // uid event
-        event.uid,
-        // участники: ge, ii, uu
-        { ge1, 0, uid1 },
-        event.pi
-    };
-    printEventTwo( eventTwo, topology );
 }
 
 
