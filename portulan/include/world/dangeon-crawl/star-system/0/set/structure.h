@@ -2,6 +2,12 @@
 
 #pragma once
 
+// #! Структуры OpenCL и C++ должны быть одинакового размера.
+//    Особое внимание стоит обратить на структуры, которые содержат
+//    вложенные структуры и атрибут "упаковать".
+#pragma pack( 1 )
+
+
 /* - ?
 #ifdef cl_khr_fp64
     #pragma OPENCL EXTENSION cl_khr_fp64 : enable
@@ -19,8 +25,8 @@
 
 
 /**
-* # Для звёздной системы расчёты желательно вести в double: float даёт
-*   ощутимую погрешность.
+* # Для звёздной системы расчёты желательно вести с большей точностью:
+*   чистый float даёт ощутимую погрешность.
 * # Координаты (~0, ~0, ~0) - центр звёздной системы.
 * # Структуры организованы т. о., чтобы не дублировать их при включении
 *   в код OpenCL.
@@ -42,14 +48,15 @@ namespace portulan {
             namespace starsystem {
                 namespace l0 {
                     
-// Увы, не все видеокарты поддерживают 'double' для OpenCL.
-// #! Типы данных должны быть согласованы с OpenCL GPU.
-// # double4 поддерживается не всеми устройствами OpenCL. Не используем.
-#ifdef PERMIT_DOUBLE_ENGINE_PORTULAN
-typedef cl_double  real_t;
-#else
+// # Т.к. не все видеокарты поддерживают 'double' для OpenCL и не все CPU
+//   на сегодня корректно отрабатывают двойную точность (на CPU Intel i5 под
+//   Windows мне не удалось подключить расширение cl_khr_fp64), я отказался
+//   от работы с типом 'double' в пользу составных чисел, где требуется
+//   большая точность.
+// @see coordOne_t, mass_t
 typedef cl_float   real_t;
-#endif
+typedef cl_float2  real2_t;
+typedef cl_float4  real4_t;
 
 #endif
 
@@ -92,12 +99,10 @@ enum EVENT {
     // столкновение элементов звёздной системы
     E_COLLISION,
 
-    // изменение температуры
-    E_CHANGE_TEMPERATURE,
-
     // изменение характеристик
     E_CHANGE_COORD,
     E_CHANGE_MASS,
+    E_CHANGE_TEMPERATURE,
     E_CHANGE_VELOCITY,
 
     // раскалывание на N частей
@@ -106,14 +111,17 @@ enum EVENT {
     // уничтожение элемента
     E_DESTROY,
 
-    // гравитационное притяжение других объектов
+    // притягивание / отталкивание гравитацией других объектов
     E_GRAVITY,
+
+    // тело ускоряется
+    E_IMPACT_ACCELERATION,
 
     // воздействие силы
     E_IMPACT_FORCE,
 
-    // излучение света
-    E_LUMINOSITY,
+    // излучение энергии (например, свет звезды)
+    E_RADIATION,
 
     // последнее
     E_last
@@ -155,6 +163,16 @@ static __constant size_t MAX_FEATURE_EVENT = 5;
 * Какое макс. кол-во событий может выдать элемент за 1 пульс.
 */
 static __constant size_t EMITTER_EVENT_COUNT = 10;
+
+
+
+
+/**
+* База по которой вычисляются координаты для coordOne_t.
+*
+* @see utils.h / convertCoord()
+*/
+static __constant real_t COORD_ONE_BASE = 1000000000.0f;
 
 
 #endif
@@ -203,6 +221,26 @@ typedef struct __attribute__ ((packed)) {
     uid_t uu;
 
 } pointerElement_t;
+
+
+
+
+/**
+* Координата элемента с увеличенной точностью.
+*
+* # Задача структуры - обеспечить достаточную точность вычисления
+*   1D-координаты с максимально высокой скоростью.
+*
+* @see utils.h / convertCoord() для отражения float-значения в coordOne_t.
+* @see utils.h / coord() для получения coordOne_t как float-значения.
+* @see Коммент. к typedef real_t.
+*/
+typedef struct __attribute__ ((packed)) {
+    real_t a;
+    real_t b;
+    real_t c;
+} coordOne_t;
+
 
 
 

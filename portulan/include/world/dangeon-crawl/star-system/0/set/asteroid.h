@@ -17,16 +17,6 @@ namespace portulan {
 
 
 /**
-* Минимум событий, испускаемых астероидом каждый пульс.
-*/
-const enum EVENT ASTEROID_EVENT[] = {
-    E_NONE
-};
-
-
-
-
-/**
 * @see #Соглашения для 'aboutStar_t'.
 */
 typedef struct __attribute__ ((packed)) {
@@ -50,7 +40,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Координаты астероида в звёздной системе, XYZ, м.
     */
-    real_t coord[ 3 ];
+    coordOne_t coord[ 3 ];
 
     /**
     * Наклон астероида по XYZ.
@@ -149,10 +139,9 @@ typedef struct __attribute__ ((packed)) {
     uid_t uid;
 
     // @test
-    cl_float  tf1;
-    cl_float  tf2;
-    cl_double td1;
-    cl_double td2;
+    cl_int ti1;
+    cl_float tf1;
+    cl_float tf2;
 
     /**
     * Характеристика астероида: сейчас и для след. пульса.

@@ -103,6 +103,7 @@
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\utils.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\Statistics.h" />
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\Topology.h" />
+    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\compute-utils.h" />
     <ClInclude Include="include\world\dangeon-crawl\star\!.txt" />
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\biome-utils.h" />
     <ClInclude Include="include\io\world\dangeon-crawl\planet\0\TextVisual.h" />

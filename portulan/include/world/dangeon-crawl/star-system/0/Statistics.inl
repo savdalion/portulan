@@ -216,7 +216,12 @@ Statistics< N >::preparedTopology() const {
         const auto body = asteroid[ i ];
         if ( presentAsteroid( &body ) ) {
             const uidElement_t uid = { GE_ASTEROID, body.uid };
-            insertElement( uid, body.today.coord, body.today.velocity );
+            const real_t coord[ 3 ] = {
+                coord1( &body.today.coord[ 0 ] ),
+                coord1( &body.today.coord[ 1 ] ),
+                coord1( &body.today.coord[ 2 ] )
+            };
+            insertElement( uid, coord, body.today.velocity );
         }
     }
 

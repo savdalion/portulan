@@ -52,6 +52,16 @@ public:
 
 
 
+private:
+    /**
+    * Резервирует место для элементов топологии в куче.
+    * Инициализирует элементы нулями.
+    */
+    template< class T, size_t G >
+    static void initContent3D( T** );
+
+
+
 
 private:
     topology_t mTopology;

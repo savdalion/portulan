@@ -17,17 +17,6 @@ namespace portulan {
 
 
 /**
-* Минимум событий, испускаемых планетой каждый пульс.
-*/
-const enum EVENT PLANET_EVENT[] = {
-    E_GRAVITY,
-    E_NONE
-};
-
-
-
-
-/**
 * Информация о планете в звёздной системе.
 */
 typedef struct __attribute__ ((packed)) {

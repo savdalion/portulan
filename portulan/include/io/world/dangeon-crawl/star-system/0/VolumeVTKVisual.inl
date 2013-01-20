@@ -318,10 +318,15 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = realSize.min();
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
+        const pns::real_t coord[ 3 ] = {
+            pns::coord1( &a.today.coord[ 0 ] ),
+            pns::coord1( &a.today.coord[ 1 ] ),
+            pns::coord1( &a.today.coord[ 2 ] )
+        };
         if (scale > 2.0) {
-            insertPoint( points, vertices, a.today.coord );
+            insertPoint( points, vertices, coord );
         } else {
-            drawEllipsoid( a.today.coord, a.today.size, color );
+            drawEllipsoid( coord, a.today.size, color );
         }
     } // for (size_t i = 0; ...
     drawPoints( points, vertices, sizePoint, color );

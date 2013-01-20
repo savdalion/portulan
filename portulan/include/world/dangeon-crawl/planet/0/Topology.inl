@@ -21,46 +21,21 @@ inline Topology::Topology() {
     std::memset( &mTopology.aboutLiving, 0, sizeof( mTopology.aboutLiving ) );
     std::memset( &mTopology.aboutIlluminanceSource, 0, sizeof( mTopology.aboutIlluminanceSource ) );
 
-    mTopology.component.content =
-        new componentCell_t[ COMPONENT_GRID * COMPONENT_GRID * COMPONENT_GRID ];
-    std::memset( mTopology.component.content, 0, sizeof( *mTopology.component.content ) );
-
-    mTopology.temperature.content =
-        new temperatureCell_t[ TEMPERATURE_GRID * TEMPERATURE_GRID * TEMPERATURE_GRID ];
-    std::memset( mTopology.temperature.content, 0, sizeof( *mTopology.temperature.content ) );
-
-    mTopology.surfaceTemperature.content =
-        new surfaceTemperatureCell_t[ SURFACE_TEMPERATURE_GRID * SURFACE_TEMPERATURE_GRID * SURFACE_TEMPERATURE_GRID ];
-    std::memset( mTopology.surfaceTemperature.content, 0, sizeof( *mTopology.surfaceTemperature.content ) );
-
-    mTopology.rainfall.content =
-        new rainfallCell_t[ RAINFALL_GRID * RAINFALL_GRID * RAINFALL_GRID ];
-    std::memset( mTopology.rainfall.content, 0, sizeof( *mTopology.rainfall.content ) );
-
-    mTopology.drainage.content =
-        new drainageCell_t[ DRAINAGE_GRID * DRAINAGE_GRID * DRAINAGE_GRID ];
-    std::memset( mTopology.drainage.content, 0, sizeof( *mTopology.drainage.content ) );
-
-    mTopology.landscape.content =
-        new landscapeCell_t[ LANDSCAPE_GRID * LANDSCAPE_GRID * LANDSCAPE_GRID ];
-    std::memset( mTopology.landscape.content, 0, sizeof( *mTopology.landscape.content ) );
-
-    mTopology.illuminance.content =
-        new illuminanceCell_t[ ILLUMINANCE_GRID * ILLUMINANCE_GRID * ILLUMINANCE_GRID ];
-    std::memset( mTopology.illuminance.content, 0, sizeof( *mTopology.illuminance.content ) );
-
-    mTopology.biome.content =
-        new biomeCell_t[ BIOME_GRID * BIOME_GRID * BIOME_GRID ];
-    std::memset( mTopology.biome.content, 0, sizeof( *mTopology.biome.content ) );
-
-    mTopology.living.content =
-        new livingCell_t[ LIVING_GRID * LIVING_GRID * LIVING_GRID ];
-    std::memset( mTopology.living.content, 0, sizeof( *mTopology.living.content ) );
+    initContent3D< componentCell_t,   COMPONENT_GRID >( &mTopology.component.content );
+    initContent3D< temperatureCell_t, TEMPERATURE_GRID >( &mTopology.temperature.content );
+    initContent3D< surfaceTemperatureCell_t, SURFACE_TEMPERATURE_GRID >( &mTopology.surfaceTemperature.content );
+    initContent3D< rainfallCell_t,    RAINFALL_GRID >( &mTopology.rainfall.content );
+    initContent3D< drainageCell_t,    DRAINAGE_GRID >( &mTopology.drainage.content );
+    initContent3D< landscapeCell_t,   LANDSCAPE_GRID >( &mTopology.landscape.content );
+    initContent3D< illuminanceCell_t, ILLUMINANCE_GRID >( &mTopology.illuminance.content );
+    initContent3D< biomeCell_t,       BIOME_GRID >( &mTopology.biome.content );
+    initContent3D< livingCell_t,      LIVING_GRID >( &mTopology.living.content );
 }
 
 
 
 inline Topology::~Topology() {
+    // @todo fine Переписать через unique_ptr.
     delete[] mTopology.component.content;
     delete[] mTopology.temperature.content;
     delete[] mTopology.surfaceTemperature.content;
@@ -84,6 +59,16 @@ inline topology_t const& Topology::topology() const {
 
 inline topology_t& Topology::topology() {
     return mTopology;
+}
+
+
+
+
+template< class T, size_t G >
+inline void Topology::initContent3D( T** content ) {
+    const size_t N = G * G * G;
+    *content = new T[ N ];
+    std::memset( *content,  0,  sizeof( T ) * N );
 }
 
 

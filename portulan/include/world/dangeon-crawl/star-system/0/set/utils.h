@@ -37,7 +37,7 @@ namespace portulan {
 * # Не можем, например, обнулять массу, т.к. элемент участвует в событиях,
 *   порядок наступления которых не определён.
 */
-inline void excludeAsteroid( aboutAsteroid_t* e ) {
+inline void excludeAsteroid( __global aboutAsteroid_t* e ) {
 /* - Нельзя: порядок вызова событий не определён.
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
     assert( e->live && "Элемент уже исключён." );
@@ -51,7 +51,7 @@ inline void excludeAsteroid( aboutAsteroid_t* e ) {
 /**
 * @see Коммент. к excludeAsteroid().
 */
-inline void excludePlanet( aboutPlanet_t* e ) {
+inline void excludePlanet( __global aboutPlanet_t* e ) {
     e->future.live = false;
 }
 
@@ -71,11 +71,11 @@ inline void excludeStar( __global aboutStar_t* e ) {
 /**
 * @return Указанный элемент отсутствует в звёздной системе.
 */
-inline bool absentAsteroid( const aboutAsteroid_t* e ) {
+inline bool absentAsteroid( __global const aboutAsteroid_t* e ) {
     return !e->today.live;
 }
 
-inline bool absentPlanet( const aboutPlanet_t* e ) {
+inline bool absentPlanet( __global const aboutPlanet_t* e ) {
     return !e->today.live;
 }
 
@@ -89,11 +89,11 @@ inline bool absentStar( __global const aboutStar_t* e ) {
 /**
 * @return Указанный элемент присутствует в звёздной системе.
 */
-inline bool presentAsteroid( const aboutAsteroid_t* e ) {
+inline bool presentAsteroid( __global const aboutAsteroid_t* e ) {
     return e->today.live;
 }
 
-inline bool presentPlanet( const aboutPlanet_t* e ) {
+inline bool presentPlanet( __global const aboutPlanet_t* e ) {
     return e->today.live;
 }
 
@@ -105,18 +105,86 @@ inline bool presentStar( __global const aboutStar_t* e ) {
 
 
 /**
+* @return Координата, обёрнутая в структуру coordOne_t.
+*/
+inline coordOne_t convertCoord1( real_t v ) {
+    coordOne_t coord = {};
+
+    real_t K = (real_t)COORD_ONE_BASE * (real_t)COORD_ONE_BASE;
+    coord.a = v / K;
+    real_t vt = v - floor( coord.a ) * K;
+
+    K = (real_t)COORD_ONE_BASE;
+    coord.b = vt / K;
+    vt -= floor( coord.b ) * K;
+
+    coord.c = vt;
+    
+    return coord;
+}
+
+
+
+
+/**
+* @return Координата, извлечённая из структуры coordOne_t.
+*/
+inline real_t coord1( __global const coordOne_t* coord ) {
+    return
+        coord->a * (real_t)COORD_ONE_BASE * (real_t)COORD_ONE_BASE +
+        coord->b * (real_t)COORD_ONE_BASE +
+        coord->c;
+}
+
+
+
+
+/**
+* Сложение координаты со структурой coordOne_t.
+*/
+inline void addCoord1(
+    __global coordOne_t* coord,
+    const real_t delta
+) {
+    // # Максимум скорости. Просто меняем значение младшего разряда.
+    coord->c += delta;
+}
+
+
+
+
+/**
 * @return Масса элемента звёздной системы.
 */
-inline real_t massAsteroid( const aboutAsteroid_t* e ) {
+inline real_t massAsteroid( __global const aboutAsteroid_t* e ) {
     return (e->today.mass.base + e->today.mass.knoll);
 }
 
-inline real_t massPlanet( const aboutPlanet_t* e ) {
+inline real_t massPlanet( __global const aboutPlanet_t* e ) {
     return (e->today.mass.base + e->today.mass.knoll);
 }
 
-inline real_t massStar( const aboutStar_t* e ) {
+inline real_t massStar( __global const aboutStar_t* e ) {
     return (e->today.mass.base + e->today.mass.knoll);
+}
+
+
+
+
+/**
+* Сложение массы со структурой mass_t.
+*/
+inline void addMass(
+    __global mass_t* mass,
+    const real_t delta
+) {
+    /* - @todo Переписать по аналогии с coordOne_t.
+    const real_t P = (real_t)( 1e15 );
+    ( (delta > P) || (delta < -P) )
+        ? (mass->base  += delta)
+        : (mass->knoll += delta);
+    */
+    mass->knoll += delta;
 }
 
 
@@ -156,7 +224,7 @@ inline bool ltMass( const mass_t* a,  const mass_t* b ) {
 *         -1 если список пустой.
 */
 inline cl_int lastIndexOfPresentAsteroidTail(
-    const aboutAsteroid_t* ec,
+    __global const aboutAsteroid_t* ec,
     cl_int startI
 ) {
     cl_int tail = startI;
@@ -169,7 +237,7 @@ inline cl_int lastIndexOfPresentAsteroidTail(
 }
 
 
-inline cl_int lastIndexOfPresentAsteroid( const aboutAsteroid_t* ec ) {
+inline cl_int lastIndexOfPresentAsteroid( __global const aboutAsteroid_t* ec ) {
     return lastIndexOfPresentAsteroidTail( ec, ASTEROID_COUNT - 1 );
 }
 
@@ -180,7 +248,7 @@ inline cl_int lastIndexOfPresentAsteroid( const aboutAsteroid_t* ec ) {
 * @see Коммент. к lastIndexOfPresentAsteroid().
 */
 inline cl_int lastIndexOfPresentPlanetTail(
-    const aboutPlanet_t* ec,
+    __global const aboutPlanet_t* ec,
     cl_int startI
 ) {
     cl_int tail = startI;
@@ -193,7 +261,7 @@ inline cl_int lastIndexOfPresentPlanetTail(
 }
 
 
-inline cl_int lastIndexOfPresentPlanet( const aboutPlanet_t* ec ) {
+inline cl_int lastIndexOfPresentPlanet( __global const aboutPlanet_t* ec ) {
     return lastIndexOfPresentPlanetTail( ec, PLANET_COUNT - 1 );
 }
 
@@ -230,7 +298,7 @@ inline cl_int lastIndexOfPresentStar( __global const aboutStar_t* ec ) {
 * # UID элементов звёздной системы только увеличиваются.
 */
 inline cl_int nextUIDAsteroid(
-    const aboutAsteroid_t* ec
+    __global const aboutAsteroid_t* ec
 ) {
     uid_t maxUID = ec[ 0 ].uid;
     for (size_t i = 1; i < ASTEROID_COUNT; ++i) {
@@ -249,7 +317,7 @@ inline cl_int nextUIDAsteroid(
 * @see Коммент. к nextUIDAsteroid().
 */
 inline cl_int nextUIDPlanet(
-    const aboutPlanet_t* ec
+    __global const aboutPlanet_t* ec
 ) {
     uid_t maxUID = ec[ 0 ].uid;
     for (size_t i = 1; i < PLANET_COUNT; ++i) {
@@ -268,7 +336,7 @@ inline cl_int nextUIDPlanet(
 * @see Коммент. к nextUIDAsteroid().
 */
 inline cl_int nextUIDStar(
-    const aboutStar_t* ec
+    __global const aboutStar_t* ec
 ) {
     uid_t maxUID = ec[ 0 ].uid;
     for (size_t i = 1; i < STAR_COUNT; ++i) {
@@ -286,7 +354,7 @@ inline cl_int nextUIDStar(
 /**
 * @return Указанный список элементов звёздной системы - пустой.
 */
-inline bool emptyAsteroid( const aboutAsteroid_t* ec ) {
+inline bool emptyAsteroid( __global const aboutAsteroid_t* ec ) {
     return (lastIndexOfPresentAsteroid( ec ) == -1);
 }
 
@@ -297,7 +365,7 @@ inline bool emptyAsteroid( const aboutAsteroid_t* ec ) {
 * Оптимизирует список элементов звёздной системы.
 * Меняется размещение элементов в списке.
 */
-inline void optimizeCountAsteroid( aboutAsteroid_t* ec ) {
+inline void optimizeCountAsteroid( __global aboutAsteroid_t* ec ) {
     // удалим из списка все элементы, которые были исключены
     // с помощью exclude*()
     cl_int tail = lastIndexOfPresentAsteroid( ec );
@@ -323,7 +391,7 @@ inline void optimizeCountAsteroid( aboutAsteroid_t* ec ) {
 /**
 * @see Коммент. к optimizeCountAsteroid().
 */
-inline void optimizeCountPlanet( aboutPlanet_t* ec ) {
+inline void optimizeCountPlanet( __global aboutPlanet_t* ec ) {
     cl_int tail = lastIndexOfPresentPlanet( ec );
     if ( (tail == 0) || (tail == -1) ) {
         return;
@@ -369,7 +437,7 @@ inline void optimizeCountStar( __global aboutStar_t* ec ) {
 *        ускорит подсчёт элементов.
 */
 inline cl_uint countAsteroid(
-    const aboutAsteroid_t* ec,
+    __global const aboutAsteroid_t* ec,
     bool optimized
 ) {
     cl_uint n = 0;
@@ -387,7 +455,7 @@ inline cl_uint countAsteroid(
 
 
 inline cl_uint countPlanet(
-    const aboutPlanet_t* ec,
+    __global const aboutPlanet_t* ec,
     bool optimized
 ) {
     cl_uint n = 0;
@@ -429,9 +497,9 @@ inline cl_uint countStar(
 * @param optimized Когда список оптимизирован, установка этого признака
 *        ускорит подсчёт элементов.
 */
-inline const aboutPlanet_t* findPlanet(
+inline __global const aboutPlanet_t* findPlanet(
     uid_t uid,
-    const aboutPlanet_t* ec,
+    __global const aboutPlanet_t* ec,
     bool optimized
 ) {
     for (cl_uint i = 0; i < PLANET_COUNT; ++i) {
@@ -451,10 +519,36 @@ inline const aboutPlanet_t* findPlanet(
 
 /**
 * Забывает событие.
+*
+* @see absentEvent(), presentEvent()
 */
-inline void forgetEvent( eventTwo_t* event ) {
+inline void forgetEvent( __global eventTwo_t* event ) {
     event->uid = E_NONE;
     // # Достаточно сбросить только UID события.
+}
+
+
+
+
+/**
+* @return Событие отсутствует.
+*
+* @see forgetEvent()
+*/
+inline bool absentEvent( __global eventTwo_t* event ) {
+    return (event->uid == E_NONE);
+}
+
+
+
+
+/**
+* @return Событие существует.
+*
+* @see forgetEvent()
+*/
+inline bool presentEvent( __global eventTwo_t* event ) {
+    return (event->uid != E_NONE);
 }
 
 
@@ -465,7 +559,7 @@ inline void forgetEvent( eventTwo_t* event ) {
 *         -1 если список не содержит событий.
 */
 inline cl_int lastIndexOfPresentEvent(
-    eventTwo_t*  contentEvent,
+    __global eventTwo_t*  contentEvent,
     cl_int startI
 ) {
     cl_int tail = startI;
@@ -487,8 +581,8 @@ inline cl_int lastIndexOfPresentEvent(
 * #! Порядок событий не сохраняется.
 */
 inline void optimizeEmitterEvent(
-    eventTwo_t*  contentEvent,
-    cl_int*   waldo,
+    __global eventTwo_t*  contentEvent,
+    __global cl_int*   waldo,
     cl_int    size
 ) {
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
@@ -531,11 +625,24 @@ inline void optimizeEmitterEvent(
 
 
 /**
+* @return Указатель на элемент соотв. заданным параметрам.
+*/
+inline bool accordancePointerElement(
+    const enum GROUP_ELEMENT ge,  const cl_uint ii,  const uid_t uu,
+    __global const pointerElement_t*  b
+) {
+    return (ge == b->ge) && (ii == b->ii ) && (uu == b->uu);
+}
+
+
+
+
+/**
 * @return Указатели на элементы одинаковы.
 */
 inline bool equalPointerElement(
-    const pointerElement_t*  a,
-    const pointerElement_t*  b
+    __global const pointerElement_t*  a,
+    __global const pointerElement_t*  b
 ) {
     return (a->ge == b->ge) && (a->ii == b->ii ) && (a->uu == b->uu);
 }
@@ -546,34 +653,11 @@ inline bool equalPointerElement(
 /**
 * @return События одинаковы.
 */
-inline bool equalEvent( const eventTwo_t*  a,  const eventTwo_t*  b ) {
-    return (a->uid == b->uid) && equalPointerElement( &a->pi, &b->pi );
-}
-
-
-
-
-/**
-* @return Тела столкнулись.
-*/
-inline bool collision(
-    const real_t coordA[ 3 ],
-    const real_t coordB[ 3 ],
-    real_t collisionDistance
+inline bool equalEvent(
+    __global const eventTwo_t*  a,
+    __global const eventTwo_t*  b
 ) {
-    // расстояние
-    const real_t r[ 3 ] = {
-        coordA[ 0 ] - coordB[ 0 ],
-        coordA[ 1 ] - coordB[ 1 ],
-        coordA[ 2 ] - coordB[ 2 ],
-    };
-    const real_t distance2 = (
-        r[ 0 ] * r[ 0 ] +
-        r[ 1 ] * r[ 1 ] +
-        r[ 2 ] * r[ 2 ]
-    );
-
-    return (distance2 < (collisionDistance * collisionDistance));
+    return (a->uid == b->uid) && equalPointerElement( &a->pi, &b->pi );
 }
 
 
@@ -585,8 +669,8 @@ inline bool collision(
 * @see Методы *UniqueEvent() ниже.
 */
 inline void uniqueEmitterEvent(
-    eventTwo_t*  contentEvent,
-    cl_int*   waldo,
+    __global eventTwo_t*  contentEvent,
+    __global cl_int*   waldo,
     cl_int    size
 ) {
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
