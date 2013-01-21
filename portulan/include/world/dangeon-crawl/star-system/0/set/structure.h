@@ -53,7 +53,6 @@ namespace portulan {
 //   Windows мне не удалось подключить расширение cl_khr_fp64), € отказалс€
 //   от работы с типом 'double' в пользу составных чисел, где требуетс€
 //   больша€ точность.
-// @see coordOne_t, mass_t
 typedef cl_float   real_t;
 typedef cl_float2  real2_t;
 typedef cl_float4  real4_t;
@@ -168,11 +167,25 @@ static __constant size_t EMITTER_EVENT_COUNT = 10;
 
 
 /**
-* Ѕаза по которой вычисл€ютс€ координаты дл€ coordOne_t.
+* Ѕазы по которым вычисл€ютс€ "большие числа".
 *
-* @see utils.h / convertCoord()
+* # "Ѕольшие числа" храним в структуре real4_t.
+* # «адача структуры - обеспечить достаточную точность вычислени€
+*   1D-координаты с максимально высокой скоростью.
+* # „исла одинарной точности обеспечивают относит. точность
+*   7-8 дес€тичных цифр в диапазоне ( 1e-38; 1e38 ).
+*
+* @see utils.h / convertToBigValue() дл€ отражени€ float-значени€ в real4_t.
+* @see utils.h / convertFromBigValue() дл€ получени€ real4_t как float или double.
+* @see  оммент. к typedef real*_t.
+*
+* @see utils.h / convertBigValue()
 */
-static __constant real_t COORD_ONE_BASE = 1000000000.0f;
+static __constant real_t BIG_VALUE_BASE_0 = static_cast< real_t >( 1e10 );
+static __constant real_t BIG_VALUE_BASE_1 = static_cast< real_t >( 1e20 );
+static __constant real_t BIG_VALUE_BASE_2 = static_cast< real_t >( 1e30 );
+// # „етвЄртое число записываетс€ в float уменьшенное в 1e38 раз.
+static __constant real_t BIG_VALUE_BASE_3 = static_cast< real_t >( 1e38 );
 
 
 #endif
@@ -226,34 +239,15 @@ typedef struct __attribute__ ((packed)) {
 
 
 /**
-*  оордината элемента с увеличенной точностью.
+*  оординаты элемента в звЄздной системе.
 *
-* # «адача структуры - обеспечить достаточную точность вычислени€
-*   1D-координаты с максимально высокой скоростью.
-*
-* @see utils.h / convertCoord() дл€ отражени€ float-значени€ в coordOne_t.
-* @see utils.h / coord() дл€ получени€ coordOne_t как float-значени€.
-* @see  оммент. к typedef real_t.
+* @see utils.h / convert*BigValue() дл€ работы с "большими числами".
 */
 typedef struct __attribute__ ((packed)) {
-    real_t a;
-    real_t b;
-    real_t c;
-} coordOne_t;
-
-
-
-
-
-/**
-* ћасса элемента и прирост к массе (бугорок).
-* »з-за огромных значений, вынуждены держать массу в двух переменных
-* ƒл€ получени€ полной массы элемента следует вызывать pns::mass*().
-*/
-typedef struct __attribute__ ((packed)) {
-    real_t base;
-    real_t knoll;
-} mass_t;
+    real4_t x;
+    real4_t y;
+    real4_t z;
+} coord_t;
 
 
 

@@ -319,9 +319,9 @@ inline void VolumeVTKVisual::drawTopology(
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
         const pns::real_t coord[ 3 ] = {
-            pns::coord1( &a.today.coord[ 0 ] ),
-            pns::coord1( &a.today.coord[ 1 ] ),
-            pns::coord1( &a.today.coord[ 2 ] )
+            pns::convertFromBigValue< pns::real_t >( a.today.coord.x ),
+            pns::convertFromBigValue< pns::real_t >( a.today.coord.y ),
+            pns::convertFromBigValue< pns::real_t >( a.today.coord.z )
         };
         if (scale > 2.0) {
             insertPoint( points, vertices, coord );

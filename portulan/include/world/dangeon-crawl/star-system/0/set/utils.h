@@ -105,49 +105,142 @@ inline bool presentStar( __global const aboutStar_t* e ) {
 
 
 /**
-* @return Координата, обёрнутая в структуру coordOne_t.
+* @return "Большое число", обёрнутое в структуру real4_t.
 */
-inline coordOne_t convertCoord1( real_t v ) {
-    coordOne_t coord = {};
+inline real4_t convertToBigValue( real_t v ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    const real_t absV = (v < 0) ? -v : v;
+    if (absV < BIG_VALUE_BASE_0) {
+        return (real4_t)( v, 0, 0, 0 );
+    } else if (absV < BIG_VALUE_BASE_1) {
+        return (real4_t)( 0, v, 0, 0 );
+    } else if (absV < BIG_VALUE_BASE_2) {
+        return (real4_t)( 0, 0, v, 0 );
+    }
+    return (real4_t)( 0,  0,  0,  v / BIG_VALUE_BASE_3 );
 
-    real_t K = (real_t)COORD_ONE_BASE * (real_t)COORD_ONE_BASE;
-    coord.a = v / K;
-    real_t vt = v - floor( coord.a ) * K;
-
-    K = (real_t)COORD_ONE_BASE;
-    coord.b = vt / K;
-    vt -= floor( coord.b ) * K;
-
-    coord.c = vt;
-    
-    return coord;
+#else
+    real4_t bv = {};
+    const real_t absV = (v < 0) ? -v : v;
+    if (absV < BIG_VALUE_BASE_0) {
+        bv.s[ 0 ] = v;
+    } else if (absV < BIG_VALUE_BASE_1) {
+        bv.s[ 1 ] = v;
+    } else if (absV < BIG_VALUE_BASE_2) {
+        bv.s[ 2 ] = v;
+    } else {
+        bv.s[ 3 ] = v / BIG_VALUE_BASE_3;
+    }
+    return bv;
+#endif
 }
 
 
 
 
 /**
-* @return Координата, извлечённая из структуры coordOne_t.
+* @return "Большое число", собранное из структуры real4_t.
+*
+* #! Теряется точность.
+* #! Возможно переполнение.
 */
-inline real_t coord1( __global const coordOne_t* coord ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+inline real_t convertFromBigValue( const real4_t bv ) {
     return
-        coord->a * (real_t)COORD_ONE_BASE * (real_t)COORD_ONE_BASE +
-        coord->b * (real_t)COORD_ONE_BASE +
-        coord->c;
+        bv.s0 + bv.s1 + bv.s2 +
+        bv.s3 * BIG_VALUE_BASE_3;
+}
+
+#else
+// # На стороне хоста можем обеспечить бОльшую точность.
+template< typename T >
+inline T convertFromBigValue( const real4_t bv ) {
+    return
+        static_cast< T >( bv.s[ 0 ] ) +
+        static_cast< T >( bv.s[ 1 ] ) +
+        static_cast< T >( bv.s[ 2 ] ) +
+        static_cast< T >( bv.s[ 3 ] ) * static_cast< T >( BIG_VALUE_BASE_3 );
+}
+#endif
+
+
+
+
+/**
+* Сложение "больших чисел".
+*/
+inline void addBigValueV( __global real4_t* bv,  const real_t v ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    printf( "Use expression 'bv += convertToBigValue( v )'.\n" );
+
+#else
+    if (v < BIG_VALUE_BASE_0) {
+        bv->s[ 0 ] += v;
+    } else if (v < BIG_VALUE_BASE_1) {
+        bv->s[ 1 ] += v;
+    } else if (v < BIG_VALUE_BASE_2) {
+        bv->s[ 2 ] += v;
+    } else {
+        bv->s[ 3 ] += (v / BIG_VALUE_BASE_3);
+    }
+#endif
 }
 
 
 
 
 /**
-* Сложение координаты со структурой coordOne_t.
+* @return Результат сравнения "больших чисел".
 */
-inline void addCoord1(
-    __global coordOne_t* coord,
-    const real_t delta
-) {
-    // # Максимум скорости. Просто меняем значение младшего разряда.
-    coord->c += delta;
+inline bool equalBigValue( const real4_t a,  const real4_t b ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    {
+        const real_t ab = (a.s3 > b.s3) ? (a.s3 - b.s3) : (b.s3 - a.s3);
+        if (ab >= PRECISION) { return false; }
+    }
+    {
+        const real_t ab = (a.s2 > b.s2) ? (a.s2 - b.s2) : (b.s2 - a.s2);
+        if (ab >= PRECISION) { return false; }
+    }
+    {
+        const real_t ab = (a.s1 > b.s1) ? (a.s1 - b.s1) : (b.s1 - a.s1);
+        if (ab >= PRECISION) { return false; }
+    }
+    const real_t ab = (a.s0 > b.s0) ? (a.s0 - b.s0) : (b.s0 - a.s0);
+    return (ab < PRECISION);
+
+#else
+    return typelib::equal(
+        convertFromBigValue< double >( a ),
+        convertFromBigValue< double >( b )
+    );
+#endif
+}
+
+
+
+
+inline bool gtBigValue( const real4_t a,  const real4_t b ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    printf( "gtBigValue() Не реализовано." );
+    return false;
+
+#else
+    return (convertFromBigValue< double >( a ) > convertFromBigValue< double >( b ));
+#endif
+}
+
+
+
+
+inline bool ltBigValue( const real4_t a,  const real4_t b ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    printf( "ltBigValue() Не реализовано." );
+    return false;
+
+#else
+    return (convertFromBigValue< double >( a ) < convertFromBigValue< double >( b ));
+#endif
 }
 
 
@@ -157,63 +250,30 @@ inline void addCoord1(
 * @return Масса элемента звёздной системы.
 */
 inline real_t massAsteroid( __global const aboutAsteroid_t* e ) {
-    return (e->today.mass.base + e->today.mass.knoll);
+    const real4_t bv = e->today.mass;
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    return convertFromBigValue( bv );
+#else
+    return convertFromBigValue< real_t >( bv );
+#endif
 }
 
 inline real_t massPlanet( __global const aboutPlanet_t* e ) {
-    return (e->today.mass.base + e->today.mass.knoll);
+    const real4_t bv = e->today.mass;
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    return convertFromBigValue( bv );
+#else
+    return convertFromBigValue< real_t >( bv );
+#endif
 }
 
 inline real_t massStar( __global const aboutStar_t* e ) {
-    return (e->today.mass.base + e->today.mass.knoll);
-}
-
-
-
-
-/**
-* Сложение массы со структурой mass_t.
-*/
-inline void addMass(
-    __global mass_t* mass,
-    const real_t delta
-) {
-    /* - @todo Переписать по аналогии с coordOne_t.
-    const real_t P = (real_t)( 1e15 );
-    ( (delta > P) || (delta < -P) )
-        ? (mass->base  += delta)
-        : (mass->knoll += delta);
-    */
-    mass->knoll += delta;
-}
-
-
-
-
-/**
-* @return Результат сравнения масс.
-*/
-inline bool equalMass( const mass_t* a,  const mass_t* b ) {
-    // @todo optimize fine Переписать через abs_diff().
-    const real_t abab = a->base - b->base;
-    const real_t absABAB = (abab > 0) ? abab : -abab;
-    const real_t akak = a->knoll - b->knoll;
-    const real_t absAKAK = (akak > 0) ? akak : -akak;
-    const real_t ab = (a->base + a->knoll) - (b->base + b->knoll);
-    const real_t absAB = (ab > 0) ? ab : -ab;
-    return
-        ( (absABAB < 0.001) && (absAKAK < 0.001) )
-     || (absAB < 0.001);
-}
-
-inline bool gtMass( const mass_t* a,  const mass_t* b ) {
-    // @todo fine Для малых 'knoll' не будет работать. Переписать.
-    return (a->base + a->knoll) > (b->base + b->knoll);
-}
-
-inline bool ltMass( const mass_t* a,  const mass_t* b ) {
-    // @todo fine Для малых 'knoll' не будет работать. Переписать.
-    return (a->base + a->knoll) < (b->base + b->knoll);
+    const real4_t bv = e->today.mass;
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    return convertFromBigValue( bv );
+#else
+    return convertFromBigValue< real_t >( bv );
+#endif
 }
 
 

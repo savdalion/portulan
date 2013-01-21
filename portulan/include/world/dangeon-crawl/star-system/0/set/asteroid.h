@@ -30,7 +30,7 @@ typedef struct __attribute__ ((packed)) {
     *
     * @see pns::massAsteroid()
     */
-    mass_t mass;
+    real4_t mass;
 
     /**
     * Размеры астероида по XYZ, м.
@@ -40,7 +40,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Координаты астероида в звёздной системе, XYZ, м.
     */
-    coordOne_t coord[ 3 ];
+    coord_t coord;
 
     /**
     * Наклон астероида по XYZ.
@@ -137,11 +137,6 @@ typedef struct __attribute__ ((packed)) {
     * Идентификатор астероида.
     */
     uid_t uid;
-
-    // @test
-    cl_int ti1;
-    cl_float tf1;
-    cl_float tf2;
 
     /**
     * Характеристика астероида: сейчас и для след. пульса.

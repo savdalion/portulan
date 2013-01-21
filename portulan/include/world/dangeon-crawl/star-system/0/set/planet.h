@@ -30,7 +30,7 @@ typedef struct __attribute__ ((packed)) {
     *
     * @see pns::massPlanet()
     */
-    mass_t mass;
+    real4_t mass;
 
     /**
     * Радиус планеты, м.

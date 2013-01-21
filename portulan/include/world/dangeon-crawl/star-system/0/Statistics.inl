@@ -217,9 +217,9 @@ Statistics< N >::preparedTopology() const {
         if ( presentAsteroid( &body ) ) {
             const uidElement_t uid = { GE_ASTEROID, body.uid };
             const real_t coord[ 3 ] = {
-                coord1( &body.today.coord[ 0 ] ),
-                coord1( &body.today.coord[ 1 ] ),
-                coord1( &body.today.coord[ 2 ] )
+                convertFromBigValue< real_t >( body.today.coord.x ),
+                convertFromBigValue< real_t >( body.today.coord.y ),
+                convertFromBigValue< real_t >( body.today.coord.z )
             };
             insertElement( uid, coord, body.today.velocity );
         }
