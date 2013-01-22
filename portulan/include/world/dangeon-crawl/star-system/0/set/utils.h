@@ -43,7 +43,7 @@ inline void excludeAsteroid( __global aboutAsteroid_t* e ) {
     assert( e->live && "Элемент уже исключён." );
 #endif
 */
-    e->future.live = false;
+    e->today.live = false;
 }
 
 
@@ -52,7 +52,7 @@ inline void excludeAsteroid( __global aboutAsteroid_t* e ) {
 * @see Коммент. к excludeAsteroid().
 */
 inline void excludePlanet( __global aboutPlanet_t* e ) {
-    e->future.live = false;
+    e->today.live = false;
 }
 
 
@@ -62,7 +62,7 @@ inline void excludePlanet( __global aboutPlanet_t* e ) {
 * @see Коммент. к excludeAsteroid().
 */
 inline void excludeStar( __global aboutStar_t* e ) {
-    e->future.live = false;
+    e->today.live = false;
 }
 
 

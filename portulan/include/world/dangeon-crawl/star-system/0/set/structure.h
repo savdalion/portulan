@@ -99,10 +99,21 @@ enum EVENT {
     E_COLLISION,
 
     // изменение характеристик
+    // # Включает в себя их уменьшение и увеличения.
     E_CHANGE_COORD,
     E_CHANGE_MASS,
     E_CHANGE_TEMPERATURE,
     E_CHANGE_VELOCITY,
+
+    // уменьшение характеристик
+    E_DECREASE_MASS,
+    E_DECREASE_TEMPERATURE,
+    E_DECREASE_VELOCITY,
+
+    // увеличение характеристик
+    E_INCREASE_MASS,
+    E_INCREASE_TEMPERATURE,
+    E_INCREASE_VELOCITY,
 
     // раскалывание на N частей
     E_CRUSH_N,
