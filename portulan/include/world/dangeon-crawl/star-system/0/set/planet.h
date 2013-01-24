@@ -40,7 +40,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Координаты планеты в звёздной системе, XYZ, м.
     */
-    real_t coord[ 3 ];
+    big3d_t coord;
 
     /**
     * Наклон оси планеты, градусы.
@@ -55,16 +55,9 @@ typedef struct __attribute__ ((packed)) {
     real_t rotationPeriod;
 
     /**
-    * Вектор гравитационных сил, действующих на планету, Н.
-    * Также храним длину вектора.
-    */
-    real_t force[ 3 ];
-    real_t absForce;
-
-    /**
     * Скорость движения планеты в звёздной системе, XYZ, м/с.
     */
-    real_t velocity[ 3 ];
+    small3d_t velocity;
 
 } characteristicPlanet_t;
 

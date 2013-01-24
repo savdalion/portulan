@@ -25,7 +25,15 @@ inline VolumeVTKVisual::VolumeVTKVisual(
 
     renderWindow->AddRenderer( renderer );
 
-    const size_t sizeWindow = mOption.at( "size-window", 500u );
+    // зададим размер и расположим окно по центру
+    // # ƒостаточно примерного позиционировани€.
+    const int sizeWindow = mOption.at( "size-window", 500 );
+    const int* sizeScreen = renderWindow->GetScreenSize();
+    int wx = sizeScreen[ 0 ] / 2 - sizeWindow / 2;
+    if (wx < 0) { wx = 0; }
+    int wy = sizeScreen[ 1 ] / 2 - sizeWindow / 2 - 25;
+    if (wy < 0) { wy = 0; }
+    renderWindow->SetPosition( wx, wy );
     renderWindow->SetSize( sizeWindow, sizeWindow );
 
     // Ќастраиваем камеру
@@ -255,10 +263,12 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
+        const pns::small3d_t coord =
+            pns::convertFromBig3DValue( a.today.coord );
         if (scale > 0.5) {
-            insertPoint( points, vertices, a.today.coord );
+            insertPoint( points, vertices, coord );
         } else {
-            drawSphere( a.today.coord, a.today.radius, color );
+            drawSphere( coord, a.today.radius, color );
         }
     } // for (size_t i = 0; ...
     drawPoints( points, vertices, sizePoint, color );
@@ -286,10 +296,12 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
+        const pns::small3d_t coord =
+            pns::convertFromBig3DValue( a.today.coord );
         if (scale > 0.5) {
-            insertPoint( points, vertices, a.today.coord );
+            insertPoint( points, vertices, coord );
         } else {
-            drawSphere( a.today.coord, a.today.radius, color );
+            drawSphere( coord, a.today.radius, color );
         }
     } // for (size_t i = 0; ...
     drawPoints( points, vertices, sizePoint, color );
@@ -314,16 +326,17 @@ inline void VolumeVTKVisual::drawTopology(
             break;
         }
         // размер делаем таким, чтобы элемент всегда был показан
-        const auto realSize = typelib::SizeT< pns::real_t >( a.today.size );
+        const auto realSize = typelib::SizeT< pns::real_t >(
+            a.today.size.s[ 0 ],
+            a.today.size.s[ 1 ],
+            a.today.size.s[ 2 ]
+        );
         const auto minRealSize = realSize.min();
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        const pns::real_t coord[ 3 ] = {
-            pns::convertFromBigValue< pns::real_t >( a.today.coord.x ),
-            pns::convertFromBigValue< pns::real_t >( a.today.coord.y ),
-            pns::convertFromBigValue< pns::real_t >( a.today.coord.z )
-        };
-        if (scale > 2.0) {
+        const pns::small3d_t coord =
+            pns::convertFromBig3DValue( a.today.coord );
+        if (scale > 0.5) {
             insertPoint( points, vertices, coord );
         } else {
             drawEllipsoid( coord, a.today.size, color );
@@ -338,10 +351,10 @@ inline void VolumeVTKVisual::drawTopology(
 inline void VolumeVTKVisual::insertPoint(
     vtkSmartPointer< vtkPoints >  points,
     vtkSmartPointer< vtkCellArray >  vertices,
-    const pns::real_t  coord[ 3 ]
+    const pns::small3d_t&  coord
 ) {
     vtkIdType pid[ 1 ];
-    pid[ 0 ] = points->InsertNextPoint( coord[ 0 ],  coord[ 1 ],  coord[ 2 ] );
+    pid[ 0 ] = points->InsertNextPoint( coord.s[ 0 ],  coord.s[ 1 ],  coord.s[ 2 ] );
     vertices->InsertNextCell( 1, pid );
 }
 
@@ -380,11 +393,11 @@ inline void VolumeVTKVisual::drawPoints(
 
 
 inline void VolumeVTKVisual::drawSphere(
-    const pns::real_t  coord[ 3 ],
-    const pns::real_t  radius,
+    const pns::small3d_t&  coord,
+    const pns::real_t     radius,
     const typelib::vector_t&  color
 ) {
-    const pns::real_t  r[ 3 ] = { radius, radius, radius };
+    const pns::small3d_t  r = { radius, radius, radius };
     drawEllipsoid( coord, r, color );
 }
 
@@ -392,14 +405,14 @@ inline void VolumeVTKVisual::drawSphere(
 
 
 inline void VolumeVTKVisual::drawEllipsoid(
-    const pns::real_t  coord[ 3 ],
-    const pns::real_t  radius[ 3 ],
+    const pns::small3d_t&  coord,
+    const pns::small3d_t&  radius,
     const typelib::vector_t&  color
 ) {
     const auto vo = vtkSmartPointer< vtkParametricEllipsoid >::New();
-    vo->SetXRadius( radius[ 0 ] );
-    vo->SetYRadius( radius[ 1 ] );
-    vo->SetZRadius( radius[ 2 ] );
+    vo->SetXRadius( radius.s[ 0 ] );
+    vo->SetYRadius( radius.s[ 1 ] );
+    vo->SetZRadius( radius.s[ 2 ] );
 
     auto pf = vtkSmartPointer< vtkParametricFunctionSource >::New();
     pf->SetParametricFunction( vo );
@@ -409,7 +422,7 @@ inline void VolumeVTKVisual::drawEllipsoid(
     mapper->SetInputConnection( pf->GetOutputPort() );
 
     auto actor = vtkSmartPointer< vtkActor >::New();
-    actor->SetPosition( coord[ 0 ],  coord[ 1 ],  coord[ 2 ] );
+    actor->SetPosition( coord.s[ 0 ],  coord.s[ 1 ],  coord.s[ 2 ] );
     actor->SetMapper( mapper );
     actor->GetProperty()->SetColor( color.x, color.y, color.z );
     renderer->AddActor( actor );

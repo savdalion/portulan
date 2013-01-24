@@ -202,11 +202,17 @@ Statistics< N >::preparedTopology() const {
 
     const auto insertElement = [ &l ] (
         const uidElement_t&  uide,
-        const real_t         coord[ 3 ],
-        const real_t         velocity[ 3 ]
+        const big3d_t&       coord,
+        const small3d_t&     velocity
     ) {
-        const auto c = typelib::CoordT< real_t >( coord );
-        const auto v = typelib::VectorT< real_t >( velocity );
+        const auto c = typelib::CoordT< real_t >(
+            convertFromBigValue< real_t >( coord.x ),
+            convertFromBigValue< real_t >( coord.y ),
+            convertFromBigValue< real_t >( coord.z )
+        );
+        const auto v = typelib::VectorT< real_t >(
+            velocity.s[ 0 ],  velocity.s[ 1 ],  velocity.s[ 2 ]
+        );
         const element_t element = { c,  v,  v.length() };
         l.insert( std::make_pair( uide, element ) );
     };
@@ -216,12 +222,7 @@ Statistics< N >::preparedTopology() const {
         const auto body = asteroid[ i ];
         if ( presentAsteroid( &body ) ) {
             const uidElement_t uid = { GE_ASTEROID, body.uid };
-            const real_t coord[ 3 ] = {
-                convertFromBigValue< real_t >( body.today.coord.x ),
-                convertFromBigValue< real_t >( body.today.coord.y ),
-                convertFromBigValue< real_t >( body.today.coord.z )
-            };
-            insertElement( uid, coord, body.today.velocity );
+            insertElement( uid,  body.today.coord,  body.today.velocity );
         }
     }
 

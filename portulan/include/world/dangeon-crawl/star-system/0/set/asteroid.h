@@ -35,29 +35,22 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Размеры астероида по XYZ, м.
     */
-    real_t size[ 3 ];
+    small3d_t size;
 
     /**
     * Координаты астероида в звёздной системе, XYZ, м.
     */
-    coord_t coord;
+    big3d_t coord;
 
     /**
     * Наклон астероида по XYZ.
     */
-    real_t rotation[ 3 ];
-
-    /**
-    * Вектор гравитационных сил, действующих на астероид, Н.
-    * Также храним длину вектора.
-    */
-    real_t force[ 3 ];
-    real_t absForce;
+    small3d_t rotation;
 
     /**
     * Скорость движения астероида в звёздной системе, XYZ, м/с.
     */
-    real_t velocity[ 3 ];
+    small3d_t velocity;
 
 
     /**
@@ -148,6 +141,20 @@ typedef struct __attribute__ ((packed)) {
     * События, выпущенные астероидом за 1 пульс.
     */
     emitterEvent_t emitterEvent;
+
+    /**
+    * Все усвоенные астероидом модели поведения.
+    *
+    * #i Добавлено, чтобы протестировать портулан для живых организмов,
+    *    не создавая новых элементов звёздной системы или новых портуланов.
+    */
+    memoryModel_t memoryModel;
+
+    /**
+    * Модели поведения, которые будут выполняться астероидом через
+    * определённые промежутки времени.
+    */
+    frequencyMemoryModel_t  frequencyMemoryModel;
 
 } aboutAsteroid_t;
 

@@ -145,7 +145,7 @@
     <None Include="include\io\world\dangeon-crawl\star-system\0\VolumeVTKVisual.inl" />
     <None Include="include\portulan\Portulan.inl" />
     <None Include="include\world\dangeon-crawl\asteroid\!.txt" />
-    <None Include="include\world\dangeon-crawl\star-system\!.txt" />
+    <None Include="include\world\dangeon-crawl\star-system\!.md" />
     <None Include="include\world\dangeon-crawl\star-system\0\Statistics.inl" />
     <None Include="include\world\dangeon-crawl\star-system\0\Topology.inl" />
   </ItemGroup>

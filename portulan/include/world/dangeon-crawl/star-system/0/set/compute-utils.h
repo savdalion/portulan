@@ -35,15 +35,37 @@ namespace portulan {
 * @copy VectorT<>::squareLength()
 */
 inline real_t squareLengthVector( const real4_t v ) {
-    return
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    return
         v.s0 * v.s0 +
         v.s1 * v.s1 +
         v.s2 * v.s2;
+
 #else
+    return
         v.s[ 0 ] * v.s[ 0 ] +
         v.s[ 1 ] * v.s[ 1 ] +
         v.s[ 2 ] * v.s[ 2 ];
+
+#endif
+}
+
+
+inline real_t squareLengthVectorK( const real4_t v,  const real_t K ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    // # Уменьшаем число в К раз, чтобы избежать переполнения. Лучше
+    //   задавать экспонентой. Например, 1e15.
+    const real4_t pv = v / K;
+    return
+        pv.s0 * pv.s0 +
+        pv.s1 * pv.s1 +
+        pv.s2 * pv.s2;
+
+#else
+    assert( false
+        && "Не реализовано." );
+    return 0;
+
 #endif
 }
 
@@ -58,6 +80,18 @@ inline real_t lengthVector( const real4_t v ) {
     return sqrt( squareLengthVector( v ) );
 #else
     return std::sqrt( squareLengthVector( v ) );
+#endif
+}
+
+
+inline real_t lengthVectorAccurate( const real4_t v ) {
+    // # @todo bad Уменьшаем экспоненту, чтобы избежать переполнения.
+    // @todo Переписать через природную length() OpenCL.
+    const real_t K = 1e15;
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    return K * sqrt( squareLengthVectorK( v, K ) );
+#else
+    return std::sqrt( squareLengthVectorK( v, K ) );
 #endif
 }
 

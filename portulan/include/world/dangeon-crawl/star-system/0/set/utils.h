@@ -143,6 +143,8 @@ inline real4_t convertToBigValue( real_t v ) {
 *
 * #! “ер€етс€ точность.
 * #! ¬озможно переполнение.
+*
+* @see convertFromBig3DValue()
 */
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
 inline real_t convertFromBigValue( const real4_t bv ) {
@@ -160,6 +162,38 @@ inline T convertFromBigValue( const real4_t bv ) {
         static_cast< T >( bv.s[ 1 ] ) +
         static_cast< T >( bv.s[ 2 ] ) +
         static_cast< T >( bv.s[ 3 ] ) * static_cast< T >( BIG_VALUE_BASE_3 );
+}
+#endif
+
+
+
+
+/**
+* @return "Ѕольшое 3D-число", собранное из структуры real4_t.
+*
+* #! “ер€етс€ точность.
+* #! ¬озможно переполнение.
+*
+* @see convertFromBigValue()
+*/
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+inline small3d_t convertFromBig3DValue( const big3d_t b3v ) {
+    return (small3d_t)(
+        convertFromBigValue( b3v.x ),
+        convertFromBigValue( b3v.y ),
+        convertFromBigValue( b3v.z ),
+        0
+    );
+}
+
+#else
+inline small3d_t convertFromBig3DValue( const big3d_t& b3v ) {
+    small3d_t r;
+    r.s[ 0 ] = convertFromBigValue< real_t >( b3v.x );
+    r.s[ 1 ] = convertFromBigValue< real_t >( b3v.y );
+    r.s[ 2 ] = convertFromBigValue< real_t >( b3v.z );
+    r.s[ 3 ] = 0;
+    return r;
 }
 #endif
 
@@ -242,6 +276,62 @@ inline bool ltBigValue( const real4_t a,  const real4_t b ) {
     return (convertFromBigValue< double >( a ) < convertFromBigValue< double >( b ));
 #endif
 }
+
+
+
+
+/**
+* ѕроверка вещественных чисел на корректность.
+*/
+inline bool testReal( const real_t v ) {
+    // @source http://johndcook.com/IEEE_exceptions_in_cpp.html
+    return ( (v <= REAL_MAX) && (v >= -REAL_MAX) );
+}
+
+
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+inline void assertReal(
+    const real_t v,
+    __constant const char* s
+) {
+    if ( !testReal( v ) ) {
+        printf( s );
+    }
+}
+#endif
+
+
+
+
+inline bool testReal4( const real4_t v ) {
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    return
+        testReal( v.s0 )
+        && testReal( v.s1 )
+        && testReal( v.s2 )
+        && testReal( v.s3 );
+
+#else
+    return
+        testReal( v.s[ 0 ] )
+        && testReal( v.s[ 1 ] )
+        && testReal( v.s[ 2 ] )
+        && testReal( v.s[ 3 ] );
+
+#endif
+}
+
+
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+inline void assertReal4(
+    const real4_t v,
+    __constant const char* s
+) {
+    if ( !testReal4( v ) ) {
+        printf( s );
+    }
+}
+#endif
 
 
 
@@ -609,6 +699,105 @@ inline bool absentEvent( __global eventTwo_t* event ) {
 */
 inline bool presentEvent( __global eventTwo_t* event ) {
     return (event->uid != E_NONE);
+}
+
+
+
+
+/**
+* ќбучает модели поведени€ указанный элемент.
+*/
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+
+#else
+// @todo inline void learnModel*()
+
+inline void learnModelAsteroid(
+    __global aboutAsteroid_t* e,
+    const std::string& model
+) {
+    int w = e->memoryModel.waldo;
+    model_t m = {};
+    strcpy( reinterpret_cast< char* >( &m.uid[ 0 ] ),  model.c_str() );
+    e->memoryModel.content[ w ] = m;
+    ++w;
+    e->memoryModel.waldo = w;
+}
+
+#endif
+
+
+
+
+/**
+* Ёлемент узнаЄт, как часто должен отрабатывать на себе указанную модель.
+*
+* @param —колько пульсов надо пропустить. ѕри == 0, каждый пульс.
+*/
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+
+// @todo inline void frequenceModel*()
+#else
+
+inline void frequenceModelAsteroid(
+    __global aboutAsteroid_t* e,
+    const std::string& model,
+    const cl_int skipPulse
+) {
+    int w = e->frequencyMemoryModel.waldo;
+    frequencyModel_t m = {};
+    strcpy( reinterpret_cast< char* >( &m.uid[ 0 ] ),  model.c_str() );
+    m.skipPulse = skipPulse;
+    e->frequencyMemoryModel.content[ w ] = m;
+    ++w;
+    e->frequencyMemoryModel.waldo = w;
+}
+
+#endif
+
+
+
+
+/**
+* @return ”казанный элемент сейчас должен отработать эту модель.
+*/
+inline bool needPulseModelAsteroid(
+    __global const aboutAsteroid_t* e,
+#ifdef PORTULAN_AS_OPEN_CL_STRUCT
+    const uidModel_t model,
+#else
+    const std::string& model,
+#endif
+    const long pulselive
+) {
+    // проверим, есть ли заданна€ модель в списке дл€ отработки
+    __global const frequencyMemoryModel_t* fmm = &e->frequencyMemoryModel;
+    __global const frequencyModel_t* present = nullptr;
+    for (int w = fmm->waldo - 1; w >= 0; --w) {
+        __global const frequencyModel_t* fm = &fmm->content[ w ];
+        // # ћодель с таким UID в списке может быть только одна.
+        for (int q = 0; q < sizeof( model ); ++q) {
+            const char c1 = model[ q ];
+            const char c2 = fm->uid[ q ];
+	        if (c1 != c2) {
+                break;
+            }
+            if (c1 == '\0') {
+                break;
+            }
+        }
+        // uid совпадают
+        present = fm;
+    }
+
+    // провер€ем, должна ли модель выполн€тьс€ на этом пульсе
+    if ( present ) {
+        const long sp = present->skipPulse + 1;
+        const bool need = ((pulselive % sp) == 0);
+        return need;
+    }
+
+    return false;
 }
 
 

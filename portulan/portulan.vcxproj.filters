@@ -182,7 +182,6 @@
     <None Include="include\world\dangeon-crawl\planet\0\Topology.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
-    <None Include="include\world\dangeon-crawl\star-system\!.txt" />
     <None Include="include\world\dangeon-crawl\planet\!.txt" />
     <None Include="include\world\dangeon-crawl\asteroid\!.txt" />
     <None Include="include\io\world\dangeon-crawl\planet\0\SnapshotVTK.inl">
@@ -219,5 +218,6 @@
     <None Include="include\world\dangeon-crawl\star-system\0\Statistics.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
+    <None Include="include\world\dangeon-crawl\star-system\!.md" />
   </ItemGroup>
 </Project>

@@ -102,16 +102,19 @@ enum EVENT {
     // # Включает в себя их уменьшение и увеличения.
     E_CHANGE_COORD,
     E_CHANGE_MASS,
+    E_CHANGE_SIZE,
     E_CHANGE_TEMPERATURE,
     E_CHANGE_VELOCITY,
 
     // уменьшение характеристик
     E_DECREASE_MASS,
+    E_DECREASE_SIZE,
     E_DECREASE_TEMPERATURE,
     E_DECREASE_VELOCITY,
 
     // увеличение характеристик
     E_INCREASE_MASS,
+    E_INCREASE_SIZE,
     E_INCREASE_TEMPERATURE,
     E_INCREASE_VELOCITY,
 
@@ -140,6 +143,32 @@ enum EVENT {
 
 
 
+#if 0
+// - ?
+/**
+* Модели поведения, которые могут быть усвоены *конкретными* элементами
+* звёздной системы.
+*
+* # Декларированы как перечисление, чтобы модели можно было использовать
+*   в ядрах OpenCL.
+*/
+enum MODEL {
+    // пустая модель или отсутствует
+    M_NONE = 0,
+
+    /**
+    * Расти, питаясь светом от звезды.
+    */
+    M_GROW_UP_EAT_SUN_LIGHT,
+
+    // последняя
+    M_last
+};
+#endif
+
+
+
+
 
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
 // # В OpenCL передаём константы как define: OpenCL не воспринимает
@@ -153,7 +182,7 @@ enum EVENT {
 * # Резервируем на 1 элемент больше, чтобы в коде не заморачиваться с
 *   условиями добавления признака окончания списка.
 */
-static __constant size_t ASTEROID_COUNT = 1000 + 1;
+static __constant size_t ASTEROID_COUNT = 500 + 1;
 static __constant size_t PLANET_COUNT = 100 + 1;
 static __constant size_t STAR_COUNT = 10 + 1;
 
@@ -164,7 +193,7 @@ static __constant size_t STAR_COUNT = 10 + 1;
 *
 * @see eventTwo_t
 */
-static __constant size_t MAX_FEATURE_EVENT = 5;
+static __constant size_t FEATURE_EVENT_COUNT = 6;
 
 
 
@@ -178,7 +207,30 @@ static __constant size_t EMITTER_EVENT_COUNT = 10;
 
 
 /**
-* Базы по которым вычисляются "большие числа".
+* Какое макс. кол-во уникальных моделей поведения способен запомнить элемент.
+*
+* @todo Индивидуальная память для каждой группы элементов.
+* @todo extend Индивидуальная память для каждого конкретного элемента.
+*/
+static __constant size_t MEMORY_MODEL_COUNT = 7;
+
+
+
+
+/**
+* Сколько уникальных моделей поведения этот элемент может запомнить для
+* выполнения через определённые промежутки времени.
+*
+* @todo Индивидуальная память для каждой группы элементов.
+* @todo extend Индивидуальная память для каждого конкретного элемента.
+*/
+static __constant size_t FREQUENCY_MEMORY_MODEL_COUNT = 5;
+
+
+
+
+/**
+* Базы по которым распределяются "большие числа".
 *
 * # "Большие числа" храним в структуре real4_t.
 * # Задача структуры - обеспечить достаточную точность вычисления
@@ -195,8 +247,18 @@ static __constant size_t EMITTER_EVENT_COUNT = 10;
 static __constant real_t BIG_VALUE_BASE_0 = static_cast< real_t >( 1e10 );
 static __constant real_t BIG_VALUE_BASE_1 = static_cast< real_t >( 1e20 );
 static __constant real_t BIG_VALUE_BASE_2 = static_cast< real_t >( 1e30 );
-// # Четвёртое число записывается в float уменьшенное в 1e38 раз.
-static __constant real_t BIG_VALUE_BASE_3 = static_cast< real_t >( 1e38 );
+// # Четвёртое число записывается в float уменьшенное в BIG_VALUE_BASE_3 раз.
+static __constant real_t BIG_VALUE_BASE_3 = static_cast< real_t >( 1e37 );
+
+
+
+
+/**
+* Максимальное значение вещественного числа.
+*
+* @see real_t
+*/
+static __constant real_t REAL_MAX = std::numeric_limits< real_t >().max();
 
 
 #endif
@@ -250,15 +312,23 @@ typedef struct __attribute__ ((packed)) {
 
 
 /**
-* Координаты элемента в звёздной системе.
+* 3D-структуры для характеристики элемента в звёздной системе.
+* Например, координаты элемента, вектор скорости.
+*
+* # Храним в real4_t для оптимальной работы с OpenCL.
+* # Четвёртое значение является зарезервированным и *может* использоваться
+*   движком. Например, в нём может храниться длина XYZ-вектора.
 *
 * @see utils.h / convert*BigValue() для работы с "большими числами".
 */
+typedef real4_t  small3d_t;
+
+
 typedef struct __attribute__ ((packed)) {
     real4_t x;
     real4_t y;
     real4_t z;
-} coord_t;
+} big3d_t;
 
 
 
@@ -266,15 +336,15 @@ typedef struct __attribute__ ((packed)) {
 /**
 * События для элементов звёздной системы.
 *
-* Соглашения для *MemoryEvent_t
-*   # Каждый элемент звёздной системы помнит о *_EVENT_COUNT событиях,
+* Соглашения для emitterEvent_t
+*   # Каждый элемент звёздной системы помнит о EMITTER_EVENT_COUNT событиях,
 *     которые как-то воздействовали на него - см. *ImpactIn().
 *   # События записываются последовательно от меньшей адресации к большей.
 *   # Индекс для записи текущего события всегда лежит в диапазоне
-*     [0; *_EVENT_COUNT - 1]
+*     [0; EMITTER_EVENT_COUNT - 1]
 *   # Первое событие записывается по индексу 0.
 *   # Каждая запись нового события увеличивает индекс на 1.
-*   # При достижения границы *_EVENT_COUNT, индекс вновь указывает
+*   # При достижения границы EMITTER_EVENT_COUNT, индекс вновь указывает
 *     на первую ячейку памяти для события.
 */
 typedef struct __attribute__ ((packed)) {
@@ -293,7 +363,7 @@ typedef struct __attribute__ ((packed)) {
     * #i Удобно было бы оформить характеристик в виде union-структур, но
     *    OpenCL 1.0 не дружит с обменом подобных структур.
     */
-    real_t fReal[ MAX_FEATURE_EVENT ];
+    real_t fReal[ FEATURE_EVENT_COUNT ];
 
 } eventTwo_t;
 
@@ -315,6 +385,83 @@ typedef struct __attribute__ ((packed)) {
 * Указатель для прохождения по всем событиям элемента.
 */
 typedef cl_uint  pointerEvent_t;
+
+
+
+
+/**
+* UID для моделей поведения.
+* 
+* # Хранятся названия моделей, т.к. модели оформлены в виде ядер OpenCL.
+*
+* @todo optimize bad Можно не держать последний символ - всегда '\0'.
+*
+* @see model_t
+*/
+typedef cl_char  uidModel_t[ 10 + 1 ];
+
+
+
+
+/**
+* Модели поведения для элементов звёздной системы.
+* Эти модели делают элемент *уникальным*.
+*
+* Соглашения для memoryModel_t
+*   # Те же соглашения, что для emitterEvent_t.
+*/
+typedef struct __attribute__ ((packed)) {
+    uidModel_t uid;
+
+    // @todo Модель должна уметь распозновать может ли её усвоить
+    //       конкретный элемент.
+
+} model_t;
+
+
+
+
+/**
+* Все усвоенные элементом модели поведения.
+*/
+typedef struct __attribute__ ((packed)) {
+    cl_int waldo;
+    model_t content[ MEMORY_MODEL_COUNT ];
+} memoryModel_t;
+
+
+
+
+/**
+* Структура для 'frequencyMemoryModel_t'.
+*/
+typedef struct __attribute__ ((packed)) {
+    uidModel_t uid;
+
+    /**
+    * Сколько пульсов движка должна пропустить модель до своего выполнения
+    * на элементе.
+    *
+    * # Промежуток простаивания модели задаётся в пульсах, т.к. это проще
+    *   для реализации и быстрее, чем задавать в секундах.
+    */
+    cl_int skipPulse;
+
+} frequencyModel_t;
+
+
+
+
+/**
+* Модели поведения, которые будут выполняться элементом через
+* определённые промежутки времени.
+*
+* # Все перечисленные в этой памяти модели есть в 'memoryModel'.
+*/
+typedef struct __attribute__ ((packed)) {
+    cl_int waldo;
+    frequencyModel_t content[ FREQUENCY_MEMORY_MODEL_COUNT ];
+} frequencyMemoryModel_t;
 
 
 
