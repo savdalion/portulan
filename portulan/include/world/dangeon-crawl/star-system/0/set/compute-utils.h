@@ -77,7 +77,7 @@ inline real_t squareLengthVectorK( const real4_t v,  const real_t K ) {
 */
 inline real_t lengthVector( const real4_t v ) {
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-    return sqrt( squareLengthVector( v ) );
+    return length( (real4_t)( v.x, v.y, v.z, 0 ) );
 #else
     return std::sqrt( squareLengthVector( v ) );
 #endif
@@ -87,9 +87,10 @@ inline real_t lengthVector( const real4_t v ) {
 inline real_t lengthVectorAccurate( const real4_t v ) {
     // # @todo bad Уменьшаем экспоненту, чтобы избежать переполнения.
     // @todo Переписать через природную length() OpenCL.
-    const real_t K = 1e15;
+    const real_t K = 1e15f;
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-    return K * sqrt( squareLengthVectorK( v, K ) );
+    //return K * sqrt( squareLengthVectorK( v, K ) );
+    return length( (real4_t)( v.x, v.y, v.z, 0 ) );
 #else
     return std::sqrt( squareLengthVectorK( v, K ) );
 #endif

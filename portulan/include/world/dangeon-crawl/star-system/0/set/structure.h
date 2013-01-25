@@ -182,7 +182,7 @@ enum MODEL {
 * # Резервируем на 1 элемент больше, чтобы в коде не заморачиваться с
 *   условиями добавления признака окончания списка.
 */
-static __constant size_t ASTEROID_COUNT = 500 + 1;
+static __constant size_t ASTEROID_COUNT = 1 + 1;
 static __constant size_t PLANET_COUNT = 100 + 1;
 static __constant size_t STAR_COUNT = 10 + 1;
 
@@ -225,6 +225,18 @@ static __constant size_t MEMORY_MODEL_COUNT = 7;
 * @todo extend Индивидуальная память для каждого конкретного элемента.
 */
 static __constant size_t FREQUENCY_MEMORY_MODEL_COUNT = 5;
+
+
+
+
+/**
+* Макс. длина UID для модели поведения.
+*
+* @todo optimize bad Можно не держать последний символ - всегда '\0'.
+*
+* @see real_t
+*/
+static __constant size_t UID_MODEL_LENGTH = 10 + 1;
 
 
 
@@ -394,11 +406,9 @@ typedef cl_uint  pointerEvent_t;
 * 
 * # Хранятся названия моделей, т.к. модели оформлены в виде ядер OpenCL.
 *
-* @todo optimize bad Можно не держать последний символ - всегда '\0'.
-*
 * @see model_t
 */
-typedef cl_char  uidModel_t[ 10 + 1 ];
+typedef cl_char  uidModel_t[ UID_MODEL_LENGTH ];
 
 
 

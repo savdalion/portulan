@@ -177,8 +177,8 @@ inline T convertFromBigValue( const real4_t bv ) {
 * @see convertFromBigValue()
 */
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-inline small3d_t convertFromBig3DValue( const big3d_t b3v ) {
-    return (small3d_t)(
+inline void convertFromBig3DValue( small3d_t* r, const big3d_t b3v ) {
+    *r = (small3d_t)(
         convertFromBigValue( b3v.x ),
         convertFromBigValue( b3v.y ),
         convertFromBigValue( b3v.z ),
@@ -708,10 +708,9 @@ inline bool presentEvent( __global eventTwo_t* event ) {
 * ќбучает модели поведени€ указанный элемент.
 */
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-
-#else
 // @todo inline void learnModel*()
 
+#else
 inline void learnModelAsteroid(
     __global aboutAsteroid_t* e,
     const std::string& model
@@ -735,10 +734,9 @@ inline void learnModelAsteroid(
 * @param —колько пульсов надо пропустить. ѕри == 0, каждый пульс.
 */
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-
 // @todo inline void frequenceModel*()
-#else
 
+#else
 inline void frequenceModelAsteroid(
     __global aboutAsteroid_t* e,
     const std::string& model,
@@ -759,7 +757,7 @@ inline void frequenceModelAsteroid(
 
 
 /**
-* @return ”казанный элемент сейчас должен отработать эту модель.
+* @return ”казанный элемент должен отработать заданую модель на этом пульсе.
 */
 inline bool needPulseModelAsteroid(
     __global const aboutAsteroid_t* e,
@@ -770,13 +768,13 @@ inline bool needPulseModelAsteroid(
 #endif
     const long pulselive
 ) {
-    // проверим, есть ли заданна€ модель в списке дл€ отработки
+    // проверим, есть ли запрашиваема€ модель в списке дл€ отработки
     __global const frequencyMemoryModel_t* fmm = &e->frequencyMemoryModel;
     __global const frequencyModel_t* present = nullptr;
     for (int w = fmm->waldo - 1; w >= 0; --w) {
         __global const frequencyModel_t* fm = &fmm->content[ w ];
         // # ћодель с таким UID в списке может быть только одна.
-        for (int q = 0; q < sizeof( model ); ++q) {
+        for (int q = 0; q < UID_MODEL_LENGTH; ++q) {
             const char c1 = model[ q ];
             const char c2 = fm->uid[ q ];
 	        if (c1 != c2) {
