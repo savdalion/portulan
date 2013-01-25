@@ -180,11 +180,18 @@ enum MODEL {
 * в области звЄздной системы (в портулане).
 *
 * # –езервируем на 1 элемент больше, чтобы в коде не заморачиватьс€ с
-*   услови€ми добавлени€ признака окончани€ списка.
+*   услови€ми добавлени€ признака окончани€ списка. “.е. последний
+*   элемент всегда пустой.
+* # “.к. структуры будут передаватьс€ OpenCL, их оптимальный размер должен
+*   быть кратен максимально возможному кол-ву рабочих групп на устройстве -
+*   CL_DEVICE_MAX_WORK_GROUP_SIZE. Ќо если кол-во э. заведомо меньшего кол-ва
+*   групп, надо придерживатьс€ кратности устройства (multiple of the
+*   wavefront / warp size).
 */
-static __constant size_t ASTEROID_COUNT = 1 + 1;
-static __constant size_t PLANET_COUNT = 100 + 1;
-static __constant size_t STAR_COUNT = 10 + 1;
+static __constant size_t WAVEFRONT_OPENCL_DEVICE = 64;
+static __constant size_t ASTEROID_COUNT = WAVEFRONT_OPENCL_DEVICE * 30;
+static __constant size_t PLANET_COUNT =   WAVEFRONT_OPENCL_DEVICE * 2;
+static __constant size_t STAR_COUNT =     WAVEFRONT_OPENCL_DEVICE * 1;
 
 
 
