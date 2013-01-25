@@ -177,22 +177,20 @@ inline T convertFromBigValue( const real4_t bv ) {
 * @see convertFromBigValue()
 */
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-inline void convertFromBig3DValue( small3d_t* r, const big3d_t b3v ) {
-    *r = (small3d_t)(
+inline void convertFromBig3DValue( real3_t* r, const big3d_t b3v ) {
+    *r = (real3_t)(
         convertFromBigValue( b3v.x ),
         convertFromBigValue( b3v.y ),
-        convertFromBigValue( b3v.z ),
-        0
+        convertFromBigValue( b3v.z )
     );
 }
 
 #else
-inline small3d_t convertFromBig3DValue( const big3d_t& b3v ) {
-    small3d_t r;
+inline real3_t convertFromBig3DValue( const big3d_t& b3v ) {
+    real3_t r;
     r.s[ 0 ] = convertFromBigValue< real_t >( b3v.x );
     r.s[ 1 ] = convertFromBigValue< real_t >( b3v.y );
     r.s[ 2 ] = convertFromBigValue< real_t >( b3v.z );
-    r.s[ 3 ] = 0;
     return r;
 }
 #endif

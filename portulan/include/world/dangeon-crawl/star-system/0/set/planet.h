@@ -57,7 +57,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Скорость движения планеты в звёздной системе, XYZ, м/с.
     */
-    small3d_t velocity;
+    real3_t velocity;
 
 } characteristicPlanet_t;
 

@@ -263,7 +263,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        const pns::small3d_t coord =
+        const pns::real3_t coord =
             pns::convertFromBig3DValue( a.today.coord );
         if (scale > 0.5) {
             insertPoint( points, vertices, coord );
@@ -296,7 +296,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        const pns::small3d_t coord =
+        const pns::real3_t coord =
             pns::convertFromBig3DValue( a.today.coord );
         if (scale > 0.5) {
             insertPoint( points, vertices, coord );
@@ -334,7 +334,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = realSize.min();
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        const pns::small3d_t coord =
+        const pns::real3_t coord =
             pns::convertFromBig3DValue( a.today.coord );
         if (scale > 0.5) {
             insertPoint( points, vertices, coord );
@@ -351,7 +351,7 @@ inline void VolumeVTKVisual::drawTopology(
 inline void VolumeVTKVisual::insertPoint(
     vtkSmartPointer< vtkPoints >  points,
     vtkSmartPointer< vtkCellArray >  vertices,
-    const pns::small3d_t&  coord
+    const pns::real3_t&  coord
 ) {
     vtkIdType pid[ 1 ];
     pid[ 0 ] = points->InsertNextPoint( coord.s[ 0 ],  coord.s[ 1 ],  coord.s[ 2 ] );
@@ -393,11 +393,11 @@ inline void VolumeVTKVisual::drawPoints(
 
 
 inline void VolumeVTKVisual::drawSphere(
-    const pns::small3d_t&  coord,
+    const pns::real3_t&  coord,
     const pns::real_t     radius,
     const typelib::vector_t&  color
 ) {
-    const pns::small3d_t  r = { radius, radius, radius };
+    const pns::real3_t  r = { radius, radius, radius };
     drawEllipsoid( coord, r, color );
 }
 
@@ -405,8 +405,8 @@ inline void VolumeVTKVisual::drawSphere(
 
 
 inline void VolumeVTKVisual::drawEllipsoid(
-    const pns::small3d_t&  coord,
-    const pns::small3d_t&  radius,
+    const pns::real3_t&  coord,
+    const pns::real3_t&  radius,
     const typelib::vector_t&  color
 ) {
     const auto vo = vtkSmartPointer< vtkParametricEllipsoid >::New();

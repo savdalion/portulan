@@ -140,7 +140,7 @@ protected:
     void insertPoint(
         vtkSmartPointer< vtkPoints >,
         vtkSmartPointer< vtkCellArray >,
-        const pns::small3d_t&  coord
+        const pns::real3_t&  coord
     );
 
 
@@ -153,15 +153,15 @@ protected:
 
 
     void drawSphere(
-        const pns::small3d_t&  coord,
+        const pns::real3_t&  coord,
         const pns::real_t      radius,
         const typelib::vector_t&  color
     );
 
 
     void drawEllipsoid(
-        const pns::small3d_t&  coord,
-        const pns::small3d_t&  radius,
+        const pns::real3_t&  coord,
+        const pns::real3_t&  radius,
         const typelib::vector_t&  color
     );
 

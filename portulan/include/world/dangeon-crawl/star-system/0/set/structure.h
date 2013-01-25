@@ -55,6 +55,7 @@ namespace portulan {
 //   большая точность.
 typedef cl_float   real_t;
 typedef cl_float2  real2_t;
+typedef cl_float3  real3_t;
 typedef cl_float4  real4_t;
 
 #endif
@@ -335,14 +336,9 @@ typedef struct __attribute__ ((packed)) {
 * Например, координаты элемента, вектор скорости.
 *
 * # Храним в real4_t для оптимальной работы с OpenCL.
-* # Четвёртое значение является зарезервированным и *может* использоваться
-*   движком. Например, в нём может храниться длина XYZ-вектора.
 *
 * @see utils.h / convert*BigValue() для работы с "большими числами".
 */
-typedef real4_t  small3d_t;
-
-
 typedef struct __attribute__ ((packed)) {
     real4_t x;
     real4_t y;

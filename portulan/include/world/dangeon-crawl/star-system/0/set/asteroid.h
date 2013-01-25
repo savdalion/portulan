@@ -35,7 +35,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Размеры астероида по XYZ, м.
     */
-    small3d_t size;
+    real3_t size;
 
     /**
     * Координаты астероида в звёздной системе, XYZ, м.
@@ -45,12 +45,12 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Наклон астероида по XYZ.
     */
-    small3d_t rotation;
+    real3_t rotation;
 
     /**
     * Скорость движения астероида в звёздной системе, XYZ, м/с.
     */
-    small3d_t velocity;
+    real3_t velocity;
 
 
     /**

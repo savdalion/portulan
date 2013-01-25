@@ -64,24 +64,14 @@ inline void lengthVectorL( real4_t* v ) {
 
 /**
 * @return Тела столкнулись.
-*
-* В 'coordA.w' появится расстояние между телами.
 */
 inline bool collision(
-    real4_t* coordA,
-    const real4_t coordB,
+    const real3_t coordA,
+    const real3_t coordB,
     const real_t  collisionDistance
 ) {
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-    // расстояние
-    coordA->s3 = length( (real4_t)(
-        coordA->x - coordB.x,
-        coordA->y - coordB.y,
-        coordA->z - coordB.z,
-        0
-    ) );
-
-    return (coordA->w < collisionDistance);
+    return (length( coordA - coordB ) < collisionDistance);
 
 #else
     assert( false &&
@@ -111,14 +101,14 @@ inline void speedCollision(
 
 
 inline void speedCollisionVector(
-    real4_t* rsA,        real4_t* rsB,
-    const real_t massA,  const real4_t  speedA,
-    const real_t massB,  const real4_t  speedB,
+    real3_t* rsA,        real3_t* rsB,
+    const real_t massA,  const real3_t  speedA,
+    const real_t massB,  const real3_t  speedB,
     const real_t COR
 ) {
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
     const real_t allMass = massA + massB;
-    const real4_t mvab = massA * speedA + massB * speedB;
+    const real3_t mvab = massA * speedA + massB * speedB;
     *rsA = (mvab + massB * COR * (speedB - speedA)) / allMass;
     *rsB = (mvab + massA * COR * (speedA - speedB)) / allMass;
 
@@ -136,18 +126,17 @@ inline void speedCollisionVector(
 /**
 * @copy typelib::compute::physics::luminosity()
 */
-inline void luminosity(
-    __global real_t*        r,
-    __global const real_t*  radius,
-    __global const real_t*  temperature
+inline real_t luminosity(
+    const real_t  radius,
+    const real_t  temperature
 ) {
 #ifdef PORTULAN_AS_OPEN_CL_STRUCT
-    *r =
-        4.0f * PI * ( *radius ) * ( *radius ) * STEFAN_BOLTZMANN *
-        ( *temperature ) * ( *temperature ) * ( *temperature ) * ( *temperature );
+    return
+        4.0f * PI * radius * radius * STEFAN_BOLTZMANN *
+        temperature * temperature * temperature * temperature;
 
 #else
-    *r = typelib::compute::physics::luminosity( *radius, *temperature );
+    return typelib::compute::physics::luminosity( radius, temperature );
 #endif
 }
 
