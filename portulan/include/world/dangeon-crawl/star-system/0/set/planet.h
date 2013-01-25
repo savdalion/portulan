@@ -27,10 +27,8 @@ typedef struct __attribute__ ((packed)) {
 
     /**
     * Масса планеты, кг.
-    *
-    * @see pns::massPlanet()
     */
-    real4_t mass;
+    real_t mass;
 
     /**
     * Радиус планеты, м.

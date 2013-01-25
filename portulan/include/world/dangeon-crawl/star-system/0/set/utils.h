@@ -335,39 +335,6 @@ inline void assertReal4(
 
 
 /**
-* @return Масса элемента звёздной системы.
-*/
-inline real_t massAsteroid( __global const aboutAsteroid_t* e ) {
-    const real4_t bv = e->today.mass;
-#ifdef PORTULAN_AS_OPEN_CL_STRUCT
-    return convertFromBigValue( bv );
-#else
-    return convertFromBigValue< real_t >( bv );
-#endif
-}
-
-inline real_t massPlanet( __global const aboutPlanet_t* e ) {
-    const real4_t bv = e->today.mass;
-#ifdef PORTULAN_AS_OPEN_CL_STRUCT
-    return convertFromBigValue( bv );
-#else
-    return convertFromBigValue< real_t >( bv );
-#endif
-}
-
-inline real_t massStar( __global const aboutStar_t* e ) {
-    const real4_t bv = e->today.mass;
-#ifdef PORTULAN_AS_OPEN_CL_STRUCT
-    return convertFromBigValue( bv );
-#else
-    return convertFromBigValue< real_t >( bv );
-#endif
-}
-
-
-
-
-/**
 * @return Указатель на след. не пустой элемент в списке, начиная с конца.
 *         -1 если список пустой.
 */
@@ -977,9 +944,9 @@ inline void printEvent(
     static const auto fnMass = [ topology ]( enum GROUP_ELEMENT g,  cl_uint i ) -> real_t {
         return
             (g == GE_NONE)     ? 0.0 :
-            (g == GE_ASTEROID) ? massAsteroid( &topology->asteroid.content[ i ] ) :
-            (g == GE_PLANET)   ? massPlanet( &topology->planet.content[ i ] ) :
-            (g == GE_STAR)     ? massStar( &topology->star.content[ i ] ) :
+            (g == GE_ASTEROID) ? topology->asteroid.content[ i ].today.mass :
+            (g == GE_PLANET)   ? topology->planet.content[ i ].today.mass :
+            (g == GE_STAR)     ? topology->star.content[ i ].today.mass :
             0.0;
     };
 
