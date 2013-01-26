@@ -202,13 +202,11 @@ Statistics< N >::preparedTopology() const {
 
     const auto insertElement = [ &l ] (
         const uidElement_t&  uide,
-        const big3d_t&       coord,
-        const real3_t&     velocity
+        const real3_t&       coord,
+        const real3_t&       velocity
     ) {
         const auto c = typelib::CoordT< real_t >(
-            convertFromBigValue< real_t >( coord.x ),
-            convertFromBigValue< real_t >( coord.y ),
-            convertFromBigValue< real_t >( coord.z )
+            coord.s[ 0 ],  coord.s[ 1 ],  coord.s[ 2 ]
         );
         const auto v = typelib::VectorT< real_t >(
             velocity.s[ 0 ],  velocity.s[ 1 ],  velocity.s[ 2 ]

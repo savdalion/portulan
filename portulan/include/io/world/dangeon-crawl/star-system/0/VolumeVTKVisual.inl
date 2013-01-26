@@ -263,8 +263,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        const pns::real3_t coord =
-            pns::convertFromBig3DValue( a.today.coord );
+        const pns::real3_t coord = a.today.coord;
         if (scale > 0.5) {
             insertPoint( points, vertices, coord );
         } else {
@@ -296,8 +295,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = a.today.radius;
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        const pns::real3_t coord =
-            pns::convertFromBig3DValue( a.today.coord );
+        const pns::real3_t coord = a.today.coord;
         if (scale > 0.5) {
             insertPoint( points, vertices, coord );
         } else {
@@ -334,8 +332,7 @@ inline void VolumeVTKVisual::drawTopology(
         const auto minRealSize = realSize.min();
         const auto scale = csDIVws / minRealSize;
         // элемент покажем точкой или формой
-        const pns::real3_t coord =
-            pns::convertFromBig3DValue( a.today.coord );
+        const pns::real3_t coord = a.today.coord;
         if (scale > 0.5) {
             insertPoint( points, vertices, coord );
         } else {

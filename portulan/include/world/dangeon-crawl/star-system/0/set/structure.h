@@ -107,18 +107,6 @@ enum EVENT {
     E_CHANGE_TEMPERATURE,
     E_CHANGE_VELOCITY,
 
-    // уменьшение характеристик
-    E_DECREASE_MASS,
-    E_DECREASE_SIZE,
-    E_DECREASE_TEMPERATURE,
-    E_DECREASE_VELOCITY,
-
-    // увеличение характеристик
-    E_INCREASE_MASS,
-    E_INCREASE_SIZE,
-    E_INCREASE_TEMPERATURE,
-    E_INCREASE_VELOCITY,
-
     // раскалывание на N частей
     E_CRUSH_N,
 
@@ -250,30 +238,6 @@ static __constant size_t UID_MODEL_LENGTH = 10 + 1;
 
 
 /**
-* Ѕазы по которым распредел€ютс€ "большие числа".
-*
-* # "Ѕольшие числа" храним в структуре real4_t.
-* # «адача структуры - обеспечить достаточную точность вычислени€
-*   1D-координаты с максимально высокой скоростью.
-* # „исла одинарной точности обеспечивают относит. точность
-*   7-8 дес€тичных цифр в диапазоне ( 1e-38; 1e38 ).
-*
-* @see utils.h / convertToBigValue() дл€ отражени€ float-значени€ в real4_t.
-* @see utils.h / convertFromBigValue() дл€ получени€ real4_t как float или double.
-* @see  оммент. к typedef real*_t.
-*
-* @see utils.h / convertBigValue()
-*/
-static __constant real_t BIG_VALUE_BASE_0 = static_cast< real_t >( 1e10 );
-static __constant real_t BIG_VALUE_BASE_1 = static_cast< real_t >( 1e20 );
-static __constant real_t BIG_VALUE_BASE_2 = static_cast< real_t >( 1e30 );
-// # „етвЄртое число записываетс€ в float уменьшенное в BIG_VALUE_BASE_3 раз.
-static __constant real_t BIG_VALUE_BASE_3 = static_cast< real_t >( 1e37 );
-
-
-
-
-/**
 * ћаксимальное значение вещественного числа.
 *
 * @see real_t
@@ -327,23 +291,6 @@ typedef struct __attribute__ ((packed)) {
     uid_t uu;
 
 } pointerElement_t;
-
-
-
-
-/**
-* 3D-структуры дл€ характеристики элемента в звЄздной системе.
-* Ќапример, координаты элемента, вектор скорости.
-*
-* # ’раним в real4_t дл€ оптимальной работы с OpenCL.
-*
-* @see utils.h / convert*BigValue() дл€ работы с "большими числами".
-*/
-typedef struct __attribute__ ((packed)) {
-    real4_t x;
-    real4_t y;
-    real4_t z;
-} big3d_t;
 
 
 

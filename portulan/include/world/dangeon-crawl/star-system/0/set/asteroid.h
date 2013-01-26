@@ -38,7 +38,7 @@ typedef struct __attribute__ ((packed)) {
     /**
     * Координаты астероида в звёздной системе, XYZ, м.
     */
-    big3d_t coord;
+    real3_t coord;
 
     /**
     * Наклон астероида по XYZ.
