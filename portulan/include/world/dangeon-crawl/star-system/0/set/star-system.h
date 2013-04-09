@@ -20,22 +20,6 @@ namespace portulan {
 
 
 /**
-* Информация о звёздной системе.
-*/
-typedef struct __attribute__ ((packed)) {
-    /**
-    * Протяжённость звёздной системы, XYZ, м.
-    */
-    real_t size[ 3 ];
-
-    // # Часть информации о звёздной системе декларирована в structure.h.
-
-} aboutStarSystem_t;
-
-
-
-
-/**
 * Информация о физическом теле.
 * Структура для обмена данными при рассчёте физ. взаимодействий.
 */
@@ -125,7 +109,32 @@ typedef struct __attribute__ ((packed)) {
 
 
 
+
+
+
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
+
+/**
+* Класс для работы с общей информацией о звёздной системе.
+*/
+class AboutStarSystem :
+    public Element
+{
+public:
+    inline AboutStarSystem( const real3_t& size ) : mSize( size ) {
+    }
+
+
+
+
+private:
+    /**
+    * Протяжённость звёздной системы, XYZ, м.
+    */
+    const real3_t mSize;
+};
+
+
                 } // l0
             } // starsystem
         } // dungeoncrawl

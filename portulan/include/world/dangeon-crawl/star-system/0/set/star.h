@@ -3,6 +3,7 @@
 #pragma once
 
 #include "structure.h"
+#include "../../../../../portulan/Element.h"
 
 
 /**
@@ -22,6 +23,11 @@ namespace portulan {
 * # Хранить будем по координатам: сетка MapContent3D - слишком накладно.
 */
 typedef struct __attribute__ ((packed)) {
+    /**
+    * Идентификатор звезды.
+    */
+    uid_t uid;
+
     /**
     * Звезда взаимодействует с другими элементами звёздной системы.
     */
@@ -74,44 +80,85 @@ typedef struct __attribute__ ((packed)) {
 
 
 
-typedef struct __attribute__ ((packed)) {
-    /**
-    * Идентификатор звезды.
-    */
-    uid_t uid;
-
-    /**
-    * Характеристика звезды: сейчас и для след. пульса.
-    */
-    characteristicStar_t today;
-    characteristicStar_t future;
-
-    /**
-    * События, выпущенные звездой за 1 пульс.
-    */
-    emitterEvent_t emitterEvent;
-
-} aboutStar_t;
+/**
+* Состояние звезды на данном пульсе.
+*/
+typedef characteristicStar_t  todayStar_t;
 
 
 
 
 /**
-* Звёзды в области звёздной системы.
+* События, выпущенные звездой за 1 пульс.
 *
-* # Если тело отсутствует - разрушено, вышло за границу звёздной системы
-*   и т.п. - его масса = 0.
-* # Отсутствующая звезда - сигнал конца списка.
+* # Хранятся отдельно от звезды, чтобы можно было гибче оптимизировать
+*   обработку на OpenCL.
 */
-typedef aboutStar_t*  starContent_t;
-typedef struct __attribute__ ((packed)) {
-    starContent_t content;
-} star_t;
+typedef eventTwo_t  emitterEventStar_t[ EMIT_EVENT_STAR_COUNT ];
+
+
+
+
 
 
 
 
 #ifndef PORTULAN_AS_OPEN_CL_STRUCT
+
+/**
+* Класс для работы со звёздами.
+*
+* # Отсутствующий в содержании элемент - сигнал конца списка.
+*/
+class Star :
+    public Element
+{
+public:
+    typedef std::unique_ptr< todayStar_t >         todayContent_t;
+    typedef std::unique_ptr< emitterEventStar_t >  emitterEventContent_t;
+
+
+
+
+public:
+    inline Star() {
+        mToday = createContent< characteristicStar_t, STAR_COUNT >();
+        mEmitterEvent = createContent< eventTwo_t,    STAR_COUNT >();
+    }
+
+
+
+
+    inline characteristicStar_t* today() const {
+        return mToday.get();
+    }
+
+
+    inline characteristicStar_t* today() {
+        return mToday.get();
+    }
+
+
+
+
+    inline eventTwo_t* emitterEvent() const {
+        return mEmitterEvent.get();
+    }
+
+
+    inline eventTwo_t* emitterEvent() {
+        return mEmitterEvent.get();
+    }
+
+
+
+
+private:
+    todayContent_t         mToday;
+    emitterEventContent_t  mEmitterEvent;
+};
+
+
                 } // l0
             } // starsystem
         } // dungeoncrawl

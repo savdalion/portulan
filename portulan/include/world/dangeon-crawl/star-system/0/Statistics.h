@@ -46,7 +46,7 @@ public:
         oneValue_t  asteroid;
         oneValue_t  planet;
         oneValue_t  star;
-        // результирующее по всем 'onVelue_t' выше
+        // результирующее по всем 'onValue_t' выше
         real_t  total;
     } oneValueTwoElement_t;
 

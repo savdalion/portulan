@@ -111,9 +111,6 @@
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\structure.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\planet.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star-system.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -124,9 +121,6 @@
       <Filter>Заголовочные файлы\io</Filter>
     </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\star.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\asteroid.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\planet\0\set\illuminance.h">
@@ -165,13 +159,13 @@
     <ClInclude Include="include\portulan\command.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\world\dangeon-crawl\star-system\0\Statistics.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\utils.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="include\world\dangeon-crawl\star-system\0\set\compute-utils.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="include\portulan\Element.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
@@ -193,9 +187,6 @@
     <None Include="include\world\dangeon-crawl\-\-constructor.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
-    <None Include="include\world\dangeon-crawl\star-system\0\Topology.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
     <None Include="include\io\VolumeVTKVisual.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
@@ -213,9 +204,6 @@
       <Filter>Заголовочные файлы</Filter>
     </None>
     <None Include="include\portulan\Topology.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="include\world\dangeon-crawl\star-system\0\Statistics.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
     <None Include="include\world\dangeon-crawl\star-system\!.md" />

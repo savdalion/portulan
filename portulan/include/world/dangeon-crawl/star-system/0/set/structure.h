@@ -48,15 +48,19 @@ namespace portulan {
             namespace starsystem {
                 namespace l0 {
                     
-// # Т.к. не все видеокарты поддерживают 'double' для OpenCL и не все CPU
-//   на сегодня корректно отрабатывают двойную точность (на CPU Intel i5 под
-//   Windows мне не удалось подключить расширение cl_khr_fp64), я отказался
-//   от работы с типом 'double' в пользу составных чисел, где требуется
-//   большая точность.
-typedef cl_float   real_t;
-typedef cl_float2  real2_t;
-typedef cl_float3  real3_t;
-typedef cl_float4  real4_t;
+// # Звёздной системе требуется большая точность.
+//   Пробы обойтись float-векторами для представления "больших чисел",
+//   принесли больше проблем, чем решили. В любом случае, пока получится
+//   что-то стоящее, современные компьютеры будут поддерживать OpenCL 1.2.
+typedef cl_double   real_t;
+typedef cl_double2  real2_t;
+typedef cl_double3  real3_t;
+typedef cl_double4  real4_t;
+
+// суффикс для корректного восприятия чисел компилятором OpenCL
+//   "f" - для float
+//   ""  - для double
+static const std::string NS = "";
 
 #endif
 
@@ -178,26 +182,24 @@ enum MODEL {
 *   wavefront / warp size).
 */
 static __constant size_t WAVEFRONT_OPENCL_DEVICE = 64;
+static __constant size_t HALF_WAVEFRONT_OPENCL_DEVICE =
+    WAVEFRONT_OPENCL_DEVICE / 2;
+
 static __constant size_t ASTEROID_COUNT = WAVEFRONT_OPENCL_DEVICE * 30;
 static __constant size_t PLANET_COUNT =   WAVEFRONT_OPENCL_DEVICE * 2;
 static __constant size_t STAR_COUNT =     WAVEFRONT_OPENCL_DEVICE * 1;
 
 
 
-/**
-* Макс. кол-во характеристик, которое может содержать событие.
-*
-* @see eventTwo_t
-*/
-static __constant size_t FEATURE_EVENT_COUNT = 6;
-
-
-
 
 /**
 * Какое макс. кол-во событий может выдать элемент за 1 пульс.
+*
+* @see Комм. к WAVEFRONT_OPENCL_DEVICE.
 */
-static __constant size_t EMITTER_EVENT_COUNT = 10;
+static __constant size_t EMIT_EVENT_ASTEROID_COUNT = HALF_WAVEFRONT_OPENCL_DEVICE;
+static __constant size_t EMIT_EVENT_PLANET_COUNT   = HALF_WAVEFRONT_OPENCL_DEVICE;
+static __constant size_t EMIT_EVENT_STAR_COUNT     = HALF_WAVEFRONT_OPENCL_DEVICE;
 
 
 
@@ -296,6 +298,21 @@ typedef struct __attribute__ ((packed)) {
 
 
 /**
+* Структура для обмена характеристиками событий.
+*/
+typedef struct __attribute__ ((packed)) {
+    real_t   a;
+    real_t   b;
+    real_t   c;
+    real_t   d;
+    real3_t  a3;
+    real3_t  b3;
+} cell_t;
+
+
+
+
+/**
 * События для элементов звёздной системы.
 *
 * Соглашения для emitterEvent_t
@@ -321,24 +338,10 @@ typedef struct __attribute__ ((packed)) {
 
     /**
     * Характеристики события.
-    *
-    * #i Удобно было бы оформить характеристик в виде union-структур, но
-    *    OpenCL 1.0 не дружит с обменом подобных структур.
     */
-    real_t fReal[ FEATURE_EVENT_COUNT ];
+    cell_t cell;
 
 } eventTwo_t;
-
-
-
-
-/**
-* Все выпущенные элементом за 1 пульс события.
-*/
-typedef struct __attribute__ ((packed)) {
-    cl_int waldo;
-    eventTwo_t content[ EMITTER_EVENT_COUNT ];
-} emitterEvent_t;
 
 
 
